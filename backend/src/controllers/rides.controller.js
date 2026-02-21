@@ -1,4 +1,5 @@
 const Ride = require('../models/Ride');
+const Booking = require('../models/Booking');
 
 const createRide = async (req, res) => {
   try {
@@ -72,24 +73,107 @@ const getRides = async (req, res) => {
   }
 };
 
-const getMyPostedRides = (req, res) => {
-  res.status(200).json({ success: true, message: 'TODO' });
+const getMyPostedRides = async (req, res) => {
+  try {
+    const rides = await Ride.find({ driverId: req.user._id }).sort({ date: -1 });
+    res.status(200).json({ success: true, count: rides.length, rides });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
-const getRideById = (req, res) => {
-  res.status(200).json({ success: true, message: 'TODO' });
+const getRideById = async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.id).populate('driverId', 'name profilePhoto rating vehicle bio isPhoneVerified');
+    if (!ride) {
+      return res.status(404).json({ success: false, message: 'Ride not found' });
+    }
+    res.status(200).json({ success: true, ride });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
-const updateRide = (req, res) => {
-  res.status(200).json({ success: true, message: 'TODO' });
+const updateRide = async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.id);
+    if (!ride) {
+      return res.status(404).json({ success: false, message: 'Ride not found' });
+    }
+    if (ride.driverId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+    if (ride.status !== 'active') {
+      return res.status(400).json({ success: false, message: 'Cannot edit non-active ride' });
+    }
+
+    const { from, to, stops, date, departureTime, pricePerSeat, luggageAllowance, preferences } = req.body;
+    
+    if (from) ride.from = from;
+    if (to) ride.to = to;
+    if (stops) ride.stops = stops;
+    if (date) ride.date = date;
+    if (departureTime) ride.departureTime = departureTime;
+    if (pricePerSeat !== undefined) ride.pricePerSeat = pricePerSeat;
+    if (luggageAllowance) ride.luggageAllowance = luggageAllowance;
+    if (preferences) ride.preferences = preferences;
+
+    await ride.save();
+    res.status(200).json({ success: true, ride });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
-const cancelRide = (req, res) => {
-  res.status(200).json({ success: true, message: 'TODO' });
+const cancelRide = async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.id);
+    if (!ride) {
+      return res.status(404).json({ success: false, message: 'Ride not found' });
+    }
+    if (ride.driverId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+    if (ride.status !== 'active' && ride.status !== 'fully_booked') {
+      return res.status(400).json({ success: false, message: 'Cannot cancel this ride' });
+    }
+
+    ride.status = 'cancelled';
+    await ride.save();
+
+    const result = await Booking.updateMany(
+      { rideId: ride._id, status: 'accepted' },
+      { status: 'cancelled' }
+    );
+
+    res.status(200).json({ success: true, message: 'Ride cancelled', cancelledBookings: result.modifiedCount });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
-const completeRide = (req, res) => {
-  res.status(200).json({ success: true, message: 'TODO' });
+const completeRide = async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.id);
+    if (!ride) {
+      return res.status(404).json({ success: false, message: 'Ride not found' });
+    }
+    if (ride.driverId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+
+    ride.status = 'completed';
+    await ride.save();
+
+    await Booking.updateMany(
+      { rideId: ride._id, status: 'accepted' },
+      { status: 'completed' }
+    );
+
+    res.status(200).json({ success: true, message: 'Ride completed' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 module.exports = { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, completeRide };
