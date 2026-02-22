@@ -76,7 +76,7 @@ export default function BookingRequests() {
               </h2>
               <div className="space-y-3">
                 {bookings.map((booking) => (
-                  <Card key={booking._id}>
+                  <Card key={booking._id} className="cursor-pointer hover:shadow-md transition" onClick={() => navigate(`/driver/rides/${ride._id}`)}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -92,7 +92,7 @@ export default function BookingRequests() {
                             <Badge className="mt-1">{booking.status}</Badge>
                           </div>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                           {booking.status === 'requested' && (
                             <>
                               <Button size="sm" className="bg-green-600" onClick={() => handleAccept(booking._id)}>

@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getRideById, createBooking } from '../../api';
+import { getRideById, createBooking, getUserRatings, submitRating, getMyBookings, cancelBooking } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../../components/ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { Textarea } from '../../components/ui/textarea';
+import { Star } from 'lucide-react';
 
 export default function RideDetail() {
   const { id } = useParams();
@@ -16,20 +19,89 @@ export default function RideDetail() {
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState(1);
+  const [ratings, setRatings] = useState([]);
+  const [ratingModal, setRatingModal] = useState({ open: false, rating: 0, comment: '' });
+  const [userBooking, setUserBooking] = useState(null);
 
   useEffect(() => {
     fetchRide();
   }, [id]);
 
+  useEffect(() => {
+    if (user && ride) {
+      fetchUserBooking();
+    }
+  }, [user, ride]);
+
+  const fetchUserBooking = async () => {
+    try {
+      const bookingsData = await getMyBookings();
+      const booking = bookingsData.bookings?.find(
+        b => b.rideId?._id === id && b.passengerId?._id === user._id && ['requested', 'accepted', 'completed'].includes(b.status)
+      );
+      setUserBooking(booking);
+    } catch (error) {
+      console.error('Error fetching booking:', error);
+    }
+  };
+
   const fetchRide = async () => {
     try {
       const response = await getRideById(id);
       setRide(response.ride);
+      if (response.ride.status === 'completed') {
+        const ratingsData = await getUserRatings(response.ride.driverId._id);
+        setRatings(ratingsData.ratings || []);
+        
+        if (user) {
+          const bookingsData = await getMyBookings();
+          const booking = bookingsData.bookings?.find(
+            b => b.rideId?._id === id && b.passengerId?._id === user._id && b.status === 'completed'
+          );
+          setUserBooking(booking);
+        }
+      }
     } catch (error) {
       console.error('Error fetching ride:', error);
       toast.error('Failed to load ride details');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancelBooking = async () => {
+    if (!confirm('Are you sure you want to cancel this booking?')) return;
+    try {
+      await cancelBooking(userBooking._id);
+      toast.success('Booking cancelled');
+      setUserBooking(null);
+      fetchRide();
+    } catch (error) {
+      toast.error('Failed to cancel booking');
+    }
+  };
+
+  const handleRatingSubmit = async () => {
+    if (ratingModal.rating === 0) {
+      toast.error('Please select a rating');
+      return;
+    }
+    if (!userBooking) {
+      toast.error('You must have completed this ride to rate');
+      return;
+    }
+    try {
+      await submitRating({
+        bookingId: userBooking._id,
+        ratedUserId: ride.driverId._id,
+        stars: ratingModal.rating,
+        comment: ratingModal.comment
+      });
+      setRatingModal({ open: false, rating: 0, comment: '' });
+      toast.success('Rating submitted');
+      fetchRide();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to submit rating');
     }
   };
 
@@ -55,15 +127,31 @@ export default function RideDetail() {
     }
   };
 
-  const formatDateTime = (date) => {
-    return new Date(date).toLocaleString('en-IN', {
+  const formatDateTime = (dateStr, timeStr) => {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return 'Invalid Date';
+    
+    const dateFormatted = date.toLocaleDateString('en-IN', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric'
     });
+    
+    // Handle time string
+    let timeFormatted = timeStr || 'N/A';
+    if (timeStr && typeof timeStr === 'string' && !timeStr.match(/^\d{2}:\d{2}/)) {
+      const timeDate = new Date(timeStr);
+      if (!isNaN(timeDate.getTime())) {
+        timeFormatted = timeDate.toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+    }
+    
+    return `${dateFormatted} at ${timeFormatted}`;
   };
 
   const isOwner = user && ride && ride.driverId && user._id === ride.driverId._id;
@@ -117,7 +205,7 @@ export default function RideDetail() {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <span className="text-gray-600">Departure:</span>
-                      <p className="font-medium">{formatDateTime(ride.departureTime)}</p>
+                      <p className="font-medium">{formatDateTime(ride.date, ride.departureTime)}</p>
                     </div>
                     <div>
                       <span className="text-gray-600">Price per seat:</span>
@@ -186,15 +274,15 @@ export default function RideDetail() {
                 <CardTitle>Driver</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-4 cursor-pointer" onClick={() => navigate(`/profile/${ride.driverId?._id}`)}>
                   <Avatar size="lg">
-                    <AvatarImage src={ride.driverId?.profilePicture} />
+                    <AvatarImage src={ride.driverId?.profilePhoto} />
                     <AvatarFallback>{ride.driverId?.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-semibold">{ride.driverId?.name}</h3>
+                    <h3 className="font-semibold hover:text-blue-600">{ride.driverId?.name}</h3>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <span>★ {ride.driverId?.rating?.average || 'New'}</span>
+                      <span>★ {ride.driverId?.rating?.average?.toFixed(1) || 'New'}</span>
                       {ride.driverId?.isPhoneVerified && (
                         <Badge variant="secondary" className="text-xs">✓ Verified</Badge>
                       )}
@@ -205,15 +293,11 @@ export default function RideDetail() {
                 {ride.driverId?.bio && (
                   <p className="text-sm text-gray-700 mb-3">{ride.driverId.bio}</p>
                 )}
-                
-                <div className="text-xs text-gray-500">
-                  Member since {new Date(ride.driverId?.createdAt).getFullYear()}
-                </div>
               </CardContent>
             </Card>
 
             {/* Booking Widget */}
-            {canBook && (
+            {canBook && !userBooking && (
               <Card>
                 <CardHeader>
                   <CardTitle>Book This Ride</CardTitle>
@@ -263,6 +347,40 @@ export default function RideDetail() {
               </Card>
             )}
 
+            {/* Booking Status for Passenger */}
+            {userBooking && ['requested', 'accepted'].includes(userBooking.status) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Your Booking</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="bg-gray-50 p-3 rounded-md">
+                    <div className="flex justify-between text-sm mb-2">
+                      <span>Status:</span>
+                      <Badge className={userBooking.status === 'requested' ? 'bg-yellow-500' : 'bg-green-500'}>
+                        {userBooking.status}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Seats booked:</span>
+                      <span>{userBooking.seatsBooked}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Total paid:</span>
+                      <span>₹{userBooking.totalPrice}</span>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="destructive" 
+                    className="w-full" 
+                    onClick={handleCancelBooking}
+                  >
+                    Cancel Booking
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Owner Actions */}
             {isOwner && (
               <Card>
@@ -291,9 +409,78 @@ export default function RideDetail() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Ratings Section for Completed Rides */}
+            {ride.status === 'completed' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Ratings</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {ratings.length === 0 ? (
+                    <p className="text-gray-500 text-sm">No ratings yet</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {ratings.slice(0, 3).map((rating) => (
+                        <div key={rating._id} className="border-b pb-2">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="font-medium text-sm">{rating.raterId?.name || 'Anonymous'}</p>
+                            <div className="flex">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-3 h-3 ${i < rating.stars ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          {rating.comment && <p className="text-xs text-gray-600">{rating.comment}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {!isOwner && user && userBooking && !userBooking.hasRated?.passenger && (
+                    <Button 
+                      size="sm" 
+                      className="w-full mt-3" 
+                      onClick={() => setRatingModal({ open: true, rating: 0, comment: '' })}
+                    >
+                      Rate this driver
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
+
+      <Dialog open={ratingModal.open} onOpenChange={(open) => !open && setRatingModal({ open: false, rating: 0, comment: '' })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rate Driver</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex gap-2 justify-center">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className={`w-8 h-8 cursor-pointer ${star <= ratingModal.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                  onClick={() => setRatingModal({ ...ratingModal, rating: star })}
+                />
+              ))}
+            </div>
+            <Textarea
+              placeholder="Add a comment (optional)"
+              value={ratingModal.comment}
+              onChange={(e) => setRatingModal({ ...ratingModal, comment: e.target.value })}
+            />
+            <Button className="w-full" onClick={handleRatingSubmit}>
+              Submit Rating
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

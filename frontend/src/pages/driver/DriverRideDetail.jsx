@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getRideById, getMyBookings, startRide, completeRide, cancelRide, acceptBooking, rejectBooking } from '../../api';
+import { getRideById, getMyBookings, startRide, completeRide, cancelRide, acceptBooking, rejectBooking, submitRating } from '../../api';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../../components/ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { Textarea } from '../../components/ui/textarea';
+import { Star } from 'lucide-react';
 
 export default function DriverRideDetail() {
   const { id } = useParams();
@@ -13,6 +16,7 @@ export default function DriverRideDetail() {
   const [ride, setRide] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ratingModal, setRatingModal] = useState({ open: false, booking: null, rating: 0, comment: '' });
 
   useEffect(() => {
     fetchData();
@@ -81,6 +85,26 @@ export default function DriverRideDetail() {
       toast.success('Booking rejected');
     } catch (error) {
       toast.error('Failed to reject booking');
+    }
+  };
+
+  const handleRatingSubmit = async () => {
+    if (ratingModal.rating === 0) {
+      toast.error('Please select a rating');
+      return;
+    }
+    try {
+      await submitRating({
+        bookingId: ratingModal.booking._id,
+        ratedUserId: ratingModal.booking.passengerId._id,
+        stars: ratingModal.rating,
+        comment: ratingModal.comment
+      });
+      setRatingModal({ open: false, booking: null, rating: 0, comment: '' });
+      toast.success('Rating submitted');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to submit rating');
     }
   };
 
@@ -214,6 +238,12 @@ export default function DriverRideDetail() {
                           Message
                         </Button>
                       )}
+                      
+                      {ride.status === 'completed' && booking.status === 'completed' && !booking.hasRated?.driver && (
+                        <Button size="sm" onClick={() => setRatingModal({ open: true, booking, rating: 0, comment: '' })}>
+                          Rate Passenger
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -222,6 +252,33 @@ export default function DriverRideDetail() {
           </Card>
         </div>
       </div>
+
+      <Dialog open={ratingModal.open} onOpenChange={(open) => !open && setRatingModal({ open: false, booking: null, rating: 0, comment: '' })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rate Passenger</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex gap-2 justify-center">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className={`w-8 h-8 cursor-pointer ${star <= ratingModal.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                  onClick={() => setRatingModal({ ...ratingModal, rating: star })}
+                />
+              ))}
+            </div>
+            <Textarea
+              placeholder="Add a comment (optional)"
+              value={ratingModal.comment}
+              onChange={(e) => setRatingModal({ ...ratingModal, comment: e.target.value })}
+            />
+            <Button className="w-full" onClick={handleRatingSubmit}>
+              Submit Rating
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

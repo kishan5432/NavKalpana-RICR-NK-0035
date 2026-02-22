@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const Ride = require('../models/Ride');
+const { createNotification } = require('../utils/notification');
 
 const createBooking = async (req, res) => {
   try {
@@ -41,6 +42,13 @@ const createBooking = async (req, res) => {
 
     await booking.populate('rideId', 'from to date departureTime');
     await booking.populate('passengerId', 'name profilePhoto rating');
+
+    await createNotification(
+      ride.driverId,
+      'booking_requested',
+      `New booking request from ${req.user.name}`,
+      `/driver/bookings`
+    );
 
     res.status(201).json({ success: true, booking });
   } catch (error) {
@@ -118,6 +126,13 @@ const acceptBooking = async (req, res) => {
     booking.status = 'accepted';
     await booking.save();
 
+    await createNotification(
+      booking.passengerId,
+      'booking_accepted',
+      'Your booking was accepted',
+      `/passenger/bookings`
+    );
+
     res.status(200).json({ success: true, booking });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -141,6 +156,13 @@ const rejectBooking = async (req, res) => {
 
     booking.status = 'rejected';
     await booking.save();
+
+    await createNotification(
+      booking.passengerId,
+      'booking_rejected',
+      'Your booking was rejected',
+      `/passenger/bookings`
+    );
 
     res.status(200).json({ success: true, booking });
   } catch (error) {
@@ -172,6 +194,17 @@ const cancelBooking = async (req, res) => {
     booking.status = 'cancelled';
     booking.cancelledBy = req.user._id.toString() === booking.driverId.toString() ? 'driver' : 'passenger';
     await booking.save();
+
+    const notifyUserId = req.user._id.toString() === booking.driverId.toString() 
+      ? booking.passengerId 
+      : booking.driverId;
+    
+    await createNotification(
+      notifyUserId,
+      'booking_cancelled',
+      'A booking was cancelled',
+      req.user._id.toString() === booking.driverId.toString() ? `/passenger/bookings` : `/driver/bookings`
+    );
 
     res.status(200).json({ success: true, message: 'Booking cancelled', booking });
   } catch (error) {

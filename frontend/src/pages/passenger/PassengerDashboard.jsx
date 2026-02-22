@@ -118,7 +118,7 @@ export default function PassengerDashboard() {
           <h2 className="text-xl font-semibold mb-3">Upcoming Trips</h2>
           <div className="space-y-3">
             {upcomingBookings.map((booking) => (
-              <Card key={booking._id}>
+              <Card key={booking._id} className="cursor-pointer hover:shadow-md transition" onClick={() => navigate(`/rides/${booking.rideId?._id}`)}>
                 <CardContent className="p-4">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export default function PassengerDashboard() {
                         <p className="text-sm text-gray-600">Driver: {booking.driverId?.name}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
                       {booking.status === 'accepted' && (
                         <Button size="sm" onClick={() => navigate(`/chat/${booking._id}`)}>
@@ -164,7 +164,7 @@ export default function PassengerDashboard() {
         ) : (
           <div className="space-y-2">
             {recentBookings.map((booking) => (
-              <Card key={booking._id}>
+              <Card key={booking._id} className="cursor-pointer hover:shadow-md transition" onClick={() => navigate(`/rides/${booking.rideId?._id}`)}>
                 <CardContent className="p-3">
                   <div className="flex justify-between items-center">
                     <div>

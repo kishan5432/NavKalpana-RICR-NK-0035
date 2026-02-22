@@ -1,5 +1,6 @@
 const Ride = require('../models/Ride');
 const Booking = require('../models/Booking');
+const { createNotification } = require('../utils/notification');
 
 const createRide = async (req, res) => {
   try {
@@ -24,7 +25,7 @@ const createRide = async (req, res) => {
       preferences
     });
 
-    await ride.populate('driverId', 'name profilePhoto rating isPhoneVerified');
+    await ride.populate('driverId', 'name profilePicture rating isPhoneVerified');
 
     res.status(201).json({ success: true, ride });
   } catch (error) {
@@ -36,7 +37,7 @@ const getRides = async (req, res) => {
   try {
     const { from, to, date, seats, minPrice, maxPrice, sort, page = 1, limit = 10 } = req.query;
 
-    const filter = { status: 'active' };
+    const filter = { status: { $in: ['active', 'fully_booked'] } };
 
     if (from) filter.from = { $regex: from, $options: 'i' };
     if (to) filter.to = { $regex: to, $options: 'i' };
@@ -65,7 +66,7 @@ const getRides = async (req, res) => {
       .sort(sortObj)
       .skip(skip)
       .limit(Number(limit))
-      .populate('driverId', 'name profilePhoto rating vehicle');
+      .populate('driverId', 'name profilePicture rating vehicle isPhoneVerified');
 
     res.status(200).json({ success: true, count: rides.length, total, page: Number(page), rides });
   } catch (error) {
@@ -85,7 +86,7 @@ const getMyPostedRides = async (req, res) => {
 
 const getRideById = async (req, res) => {
   try {
-    const ride = await Ride.findById(req.params.id).populate('driverId', 'name profilePhoto rating vehicle bio isPhoneVerified');
+    const ride = await Ride.findById(req.params.id).populate('driverId', 'name profilePicture rating vehicle bio isPhoneVerified createdAt');
     if (!ride) {
       return res.status(404).json({ success: false, message: 'Ride not found' });
     }
@@ -142,12 +143,23 @@ const cancelRide = async (req, res) => {
     ride.status = 'cancelled';
     await ride.save();
 
-    const result = await Booking.updateMany(
+    const bookings = await Booking.find({ rideId: ride._id, status: 'accepted' });
+    
+    await Booking.updateMany(
       { rideId: ride._id, status: 'accepted' },
       { status: 'cancelled' }
     );
 
-    res.status(200).json({ success: true, message: 'Ride cancelled', cancelledBookings: result.modifiedCount });
+    for (const booking of bookings) {
+      await createNotification(
+        booking.passengerId,
+        'ride_cancelled',
+        'A ride you booked was cancelled',
+        `/passenger/bookings`
+      );
+    }
+
+    res.status(200).json({ success: true, message: 'Ride cancelled', cancelledBookings: bookings.length });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -195,10 +207,21 @@ const completeRide = async (req, res) => {
     ride.status = 'completed';
     await ride.save();
 
+    const bookings = await Booking.find({ rideId: ride._id, status: 'accepted' });
+    
     await Booking.updateMany(
       { rideId: ride._id, status: 'accepted' },
       { status: 'completed' }
     );
+
+    for (const booking of bookings) {
+      await createNotification(
+        booking.passengerId,
+        'trip_completed',
+        'Rate your recent trip',
+        `/passenger/bookings`
+      );
+    }
 
     res.status(200).json({ success: true, message: 'Ride completed' });
   } catch (error) {

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, User, LogOut, Settings } from 'lucide-react';
+import { User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,10 +9,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/context/AuthContext';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const authContext = useAuth();
   const navigate = useNavigate();
+
+  if (!authContext) {
+    return null;
+  }
+
+  const { user, logout } = authContext;
 
   const handleLogout = () => {
     logout();
@@ -42,12 +49,7 @@ export default function Navbar() {
                 )}
 
                 {/* Notification bell */}
-                <div className="relative">
-                  <Bell className="h-6 w-6 text-gray-600 cursor-pointer hover:text-gray-800" />
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    3
-                  </span>
-                </div>
+                <NotificationBell />
 
                 {/* User dropdown */}
                 <DropdownMenu>
@@ -59,7 +61,7 @@ export default function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem asChild>
-                      <Link to="/profile" className="flex items-center">
+                      <Link to="/profile/me" className="flex items-center">
                         <Settings className="mr-2 h-4 w-4" />
                         Profile
                       </Link>

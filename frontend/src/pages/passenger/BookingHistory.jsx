@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Textarea } from '../../components/ui/textarea';
 import { Star } from 'lucide-react';
+import StarRating from '../../components/StarRating';
 
 export default function BookingHistory() {
   const navigate = useNavigate();
@@ -112,7 +113,7 @@ export default function BookingHistory() {
       ) : (
         <div className="space-y-4">
           {filteredBookings.map((booking) => (
-            <Card key={booking._id}>
+            <Card key={booking._id} className="cursor-pointer hover:shadow-lg transition" onClick={() => navigate(`/rides/${booking.rideId?._id}`)}>
               <CardContent className="p-4">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -123,7 +124,7 @@ export default function BookingHistory() {
                       </Avatar>
                       <div>
                         <p className="font-semibold">{booking.driverId?.name}</p>
-                        <p className="text-sm text-gray-600">⭐ {typeof booking.driverId?.rating === 'object' ? booking.driverId.rating.average || 'N/A' : booking.driverId?.rating || 'N/A'}</p>
+                        <StarRating value={booking.driverId?.rating?.average || 0} count={booking.driverId?.rating?.count || 0} readonly />
                       </div>
                     </div>
                     <div className="mb-2">
@@ -140,7 +141,7 @@ export default function BookingHistory() {
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                       {booking.status === 'requested' && (
                         <Button size="sm" variant="destructive" onClick={() => handleCancel(booking._id)}>
                           Cancel Booking

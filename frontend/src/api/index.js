@@ -9,6 +9,9 @@ export const verifyOTP = (data) => axios.post('/auth/verify-otp', data).then(res
 // USERS
 export const getMe = () => axios.get('/users/me').then(res => res.data);
 export const updateMe = (data) => axios.put('/users/me', data).then(res => res.data);
+export const uploadProfilePhoto = (formData) => axios.post('/users/me/upload-photo', formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+}).then(res => res.data);
 export const getUserById = (id) => axios.get(`/users/${id}`).then(res => res.data);
 
 // RIDES
@@ -38,3 +41,8 @@ export const markMessagesRead = (bookingId) => axios.put(`/messages/booking/${bo
 // RATINGS
 export const submitRating = (data) => axios.post('/ratings', data).then(res => res.data);
 export const getUserRatings = (userId) => axios.get(`/ratings/user/${userId}`).then(res => res.data);
+
+// NOTIFICATIONS
+export const getNotifications = () => axios.get('/users/me/notifications').then(res => res.data);
+export const markNotificationRead = (id) => axios.patch(`/users/me/notifications/${id}/read`).then(res => res.data);
+export const markAllNotificationsRead = () => axios.patch('/users/me/notifications/read-all').then(res => res.data);
