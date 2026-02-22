@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { login as loginAPI, getMe } from '../api';
 
 const AuthContext = createContext();
@@ -28,15 +29,22 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (data) => {
     const response = await loginAPI(data);
-    localStorage.setItem('token', response.token);
-    setToken(response.token);
-    setUser(response.user);
+    
+    // Only store token/user if email is verified (handle undefined as verified for backward compatibility)
+    if (response.user.isEmailVerified !== false) {
+      localStorage.setItem('token', response.token);
+      setToken(response.token);
+      setUser(response.user);
+    }
+    
+    return response;
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
     setToken(null);
+    toast.success('Logged out successfully!');
     navigate('/login');
   };
 
