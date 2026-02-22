@@ -6,7 +6,7 @@ const { verifyJWT } = require('../middleware/auth.middleware');
 router.post('/register', register);
 router.post('/login', login);
 router.post('/send-otp', sendOtp);
-router.post('/verify-otp', verifyJWT, verifyOtp);
+router.post('/verify-otp', verifyOtp);
 router.post('/logout', verifyJWT, logout);
 
 module.exports = router;
