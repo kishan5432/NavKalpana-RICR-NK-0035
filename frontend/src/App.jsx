@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { SocketProvider } from './context/SocketContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
@@ -15,11 +16,11 @@ import BookingRequests from './pages/driver/BookingRequests';
 import PassengerDashboard from './pages/passenger/PassengerDashboard';
 import BookingHistory from './pages/passenger/BookingHistory';
 import DriverRideDetail from './pages/driver/DriverRideDetail';
+import Chat from './pages/shared/Chat';
 
 // Placeholder components - replace with actual components later
 const Profile = () => <div className="p-4">Profile Page</div>;
 const ProfileEdit = () => <div className="p-4">Profile Edit Page</div>;
-const Chat = () => <div className="p-4">Chat Page</div>;
 const Notifications = () => <div className="p-4">Notifications Page</div>;
 
 const ProtectedRoute = ({ children }) => {
@@ -73,8 +74,10 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes />
-        <Toaster />
+        <SocketProvider>
+          <AppRoutes />
+          <Toaster />
+        </SocketProvider>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -4,8 +4,8 @@ const { getConversations, getMessages, sendMessage, markMessagesRead } = require
 const { verifyJWT } = require('../middleware/auth.middleware');
 
 router.get('/conversations', verifyJWT, getConversations);
-router.get('/:bookingId', verifyJWT, getMessages);
-router.post('/:bookingId', verifyJWT, sendMessage);
-router.patch('/:bookingId/read', verifyJWT, markMessagesRead);
+router.get('/booking/:bookingId', verifyJWT, getMessages);
+router.post('/', verifyJWT, sendMessage);
+router.put('/booking/:bookingId/read', verifyJWT, markMessagesRead);
 
 module.exports = router;
