@@ -78,6 +78,7 @@ const getMyPostedRides = async (req, res) => {
     const rides = await Ride.find({ driverId: req.user._id }).sort({ date: -1 });
     res.status(200).json({ success: true, count: rides.length, rides });
   } catch (error) {
+    console.error('Get my posted rides error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -152,6 +153,35 @@ const cancelRide = async (req, res) => {
   }
 };
 
+const startRide = async (req, res) => {
+  try {
+    console.log('Starting ride with ID:', req.params.id);
+    console.log('User ID:', req.user._id);
+    
+    const ride = await Ride.findById(req.params.id);
+    console.log('Found ride:', ride);
+    
+    if (!ride) {
+      return res.status(404).json({ success: false, message: 'Ride not found' });
+    }
+    if (ride.driverId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+    if (ride.status !== 'active' && ride.status !== 'fully_booked') {
+      return res.status(400).json({ success: false, message: 'Cannot start this ride' });
+    }
+
+    ride.status = 'in_progress';
+    await ride.save();
+    console.log('Ride status updated to in_progress');
+
+    res.status(200).json({ success: true, message: 'Ride started', ride });
+  } catch (error) {
+    console.error('Start ride error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const completeRide = async (req, res) => {
   try {
     const ride = await Ride.findById(req.params.id);
@@ -176,4 +206,36 @@ const completeRide = async (req, res) => {
   }
 };
 
-module.exports = { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, completeRide };
+// Get driver dashboard stats
+const getDriverStats = async (req, res) => {
+  try {
+    const rides = await Ride.find({ driverId: req.user._id });
+    
+    // Get bookings for this driver's rides
+    const rideIds = rides.map(r => r._id);
+    const bookings = await Booking.find({ rideId: { $in: rideIds } });
+    
+    const stats = {
+      totalRides: rides.length,
+      activeRides: rides.filter(r => r.status === 'active').length,
+      completedRides: rides.filter(r => r.status === 'completed').length,
+      cancelledRides: rides.filter(r => r.status === 'cancelled').length,
+      totalBookings: bookings.length,
+      acceptedBookings: bookings.filter(b => b.status === 'accepted').length,
+      totalEarnings: rides
+        .filter(r => r.status === 'completed')
+        .reduce((sum, r) => sum + (r.pricePerSeat * (r.totalSeats - r.availableSeats)), 0),
+      upcomingRides: rides
+        .filter(r => r.status === 'active' && new Date(r.date) >= new Date())
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 5)
+    };
+    
+    res.status(200).json({ success: true, stats });
+  } catch (error) {
+    console.error('Driver stats error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, startRide, completeRide, getDriverStats };

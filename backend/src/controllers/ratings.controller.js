@@ -4,19 +4,33 @@ const User = require('../models/User');
 
 const createRating = async (req, res) => {
   try {
-    const { bookingId, stars, comment } = req.body;
+    console.log('Rating request body:', req.body);
+    console.log('User ID:', req.user._id);
+    
+    const { bookingId, ratedUserId, rating, stars, comment } = req.body;
+    const starRating = stars || rating;
 
-    if (!Number.isInteger(stars) || stars < 1 || stars > 5) {
+    if (!bookingId) {
+      return res.status(400).json({ success: false, message: 'Booking ID is required' });
+    }
+
+    if (!starRating) {
+      return res.status(400).json({ success: false, message: 'Stars rating is required' });
+    }
+
+    if (!Number.isInteger(starRating) || starRating < 1 || starRating > 5) {
       return res.status(400).json({ success: false, message: 'Stars must be an integer between 1 and 5' });
     }
 
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId).populate('rideId');
+    console.log('Found booking:', booking);
+    
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
 
     if (req.user._id.toString() !== booking.passengerId.toString() && 
-        req.user._id.toString() !== booking.driverId.toString()) {
+        req.user._id.toString() !== booking.rideId.driverId.toString()) {
       return res.status(403).json({ success: false, message: 'Not authorized' });
     }
 
@@ -25,7 +39,8 @@ const createRating = async (req, res) => {
     }
 
     const isPassenger = req.user._id.toString() === booking.passengerId.toString();
-    const ratedUserId = isPassenger ? booking.driverId : booking.passengerId;
+    const ratedUserIdFromBooking = isPassenger ? booking.rideId.driverId : booking.passengerId;
+    const finalRatedUserId = ratedUserId || ratedUserIdFromBooking;
 
     if (isPassenger && booking.hasRated.passenger) {
       return res.status(400).json({ success: false, message: 'Already rated' });
@@ -34,11 +49,11 @@ const createRating = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Already rated' });
     }
 
-    const rating = await Rating.create({
+    const newRating = await Rating.create({
       bookingId,
       raterId: req.user._id,
-      ratedUserId,
-      stars,
+      ratedUserId: finalRatedUserId,
+      stars: starRating,
       comment
     });
 
@@ -50,20 +65,21 @@ const createRating = async (req, res) => {
     await booking.save();
 
     const aggregateResult = await Rating.aggregate([
-      { $match: { ratedUserId } },
+      { $match: { ratedUserId: finalRatedUserId } },
       { $group: { _id: null, avgStars: { $avg: '$stars' }, count: { $sum: 1 } } }
     ]);
 
     if (aggregateResult.length > 0) {
       const { avgStars, count } = aggregateResult[0];
-      await User.findByIdAndUpdate(ratedUserId, {
+      await User.findByIdAndUpdate(finalRatedUserId, {
         'rating.average': Math.round(avgStars * 10) / 10,
         'rating.count': count
       });
     }
 
-    res.status(201).json({ success: true, rating });
+    res.status(201).json({ success: true, rating: newRating });
   } catch (error) {
+    console.error('Rating creation error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -80,4 +96,6 @@ const getUserRatings = async (req, res) => {
   }
 };
 
-module.exports = { createRating, getUserRatings };
+const submitRating = createRating;
+
+module.exports = { createRating, submitRating, getUserRatings };

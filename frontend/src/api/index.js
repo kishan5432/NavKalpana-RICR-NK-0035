@@ -16,16 +16,18 @@ export const createRide = (data) => axios.post('/rides', data).then(res => res.d
 export const getRides = (params) => axios.get('/rides', { params }).then(res => res.data);
 export const getRideById = (id) => axios.get(`/rides/${id}`).then(res => res.data);
 export const getMyPostedRides = () => axios.get('/rides/my-rides').then(res => res.data);
-export const cancelRide = (id) => axios.put(`/rides/${id}/cancel`).then(res => res.data);
-export const completeRide = (id) => axios.put(`/rides/${id}/complete`).then(res => res.data);
+export const getDriverStats = () => axios.get('/rides/driver-stats').then(res => res.data);
+export const cancelRide = (id) => axios.patch(`/rides/${id}/cancel`).then(res => res.data);
+export const startRide = (id) => axios.patch(`/rides/${id}/start`).then(res => res.data);
+export const completeRide = (id) => axios.patch(`/rides/${id}/complete`).then(res => res.data);
 
 // BOOKINGS
 export const createBooking = (data) => axios.post('/bookings', data).then(res => res.data);
-export const getMyBookings = () => axios.get('/bookings/my-bookings').then(res => res.data);
+export const getMyBookings = () => axios.get('/bookings/my').then(res => res.data);
 export const getBookingById = (id) => axios.get(`/bookings/${id}`).then(res => res.data);
-export const acceptBooking = (id) => axios.put(`/bookings/${id}/accept`).then(res => res.data);
-export const rejectBooking = (id) => axios.put(`/bookings/${id}/reject`).then(res => res.data);
-export const cancelBooking = (id) => axios.put(`/bookings/${id}/cancel`).then(res => res.data);
+export const acceptBooking = (id) => axios.patch(`/bookings/${id}/accept`).then(res => res.data);
+export const rejectBooking = (id) => axios.patch(`/bookings/${id}/reject`).then(res => res.data);
+export const cancelBooking = (id) => axios.patch(`/bookings/${id}/cancel`).then(res => res.data);
 
 // MESSAGES
 export const getConversations = () => axios.get('/messages/conversations').then(res => res.data);

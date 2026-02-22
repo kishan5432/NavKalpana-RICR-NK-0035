@@ -53,12 +53,16 @@ const getMyBookings = async (req, res) => {
     const bookings = await Booking.find({
       $or: [{ passengerId: req.user._id }, { driverId: req.user._id }]
     })
-      .populate('rideId', 'from to date departureTime')
+      .populate('rideId')
       .populate('passengerId', 'name profilePhoto rating')
+      .populate('driverId', 'name profilePhoto rating')
       .sort({ createdAt: -1 });
 
-    res.status(200).json({ success: true, count: bookings.length, bookings });
+    const validBookings = bookings.filter(b => b.rideId);
+
+    res.status(200).json({ success: true, count: validBookings.length, bookings: validBookings });
   } catch (error) {
+    console.error('Get my bookings error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
