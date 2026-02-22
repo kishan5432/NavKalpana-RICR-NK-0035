@@ -17,7 +17,24 @@ const ChatWindow = ({ bookingId, otherUser }) => {
   useEffect(() => {
     if (!socket) return;
 
+    const handleNewMessage = (message) => {
+      setMessages(prev => {
+        if (message._id && prev.some(m => m._id === message._id)) {
+          return prev;
+        }
+        if (!message._id && prev.some(m => 
+          m.content === message.content && 
+          Math.abs(new Date(m.createdAt) - new Date(message.createdAt)) < 1000
+        )) {
+          return prev;
+        }
+        return [...prev, message];
+      });
+      markMessagesRead(bookingId).catch(() => {});
+    };
+
     socket.emit('join-room', bookingId);
+    socket.on('new-message', handleNewMessage);
 
     getMessagesByBooking(bookingId)
       .then(data => {
@@ -28,17 +45,6 @@ const ChatWindow = ({ bookingId, otherUser }) => {
         console.error(err);
         setMessages([]);
       });
-
-    const handleNewMessage = (message) => {
-      setMessages(prev => {
-        const exists = prev.some(m => m._id === message._id);
-        if (exists) return prev;
-        return [...prev, message];
-      });
-      markMessagesRead(bookingId).catch(() => {});
-    };
-
-    socket.on('new-message', handleNewMessage);
 
     return () => {
       socket.emit('leave-room', bookingId);
@@ -79,7 +85,7 @@ const ChatWindow = ({ bookingId, otherUser }) => {
           const isMine = msg.senderId?._id === user._id || msg.sender === user._id;
           const sender = msg.senderId || { name: isMine ? user.name : otherUser.name, profilePicture: isMine ? user.profilePicture : otherUser.photo };
           return (
-            <div key={idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
+            <div key={msg._id || idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
               <div className={`flex gap-2 max-w-[70%] ${isMine ? 'flex-row-reverse' : ''}`}>
                 <Avatar className="w-8 h-8">
                   <img src={sender.profilePicture || '/default-avatar.png'} alt={sender.name} />
