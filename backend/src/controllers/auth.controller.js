@@ -6,9 +6,13 @@ const sendEmail = require('../utils/sendEmail');
 
 const register = async (req, res, next) => {
   try {
-    const { name, email, phone, password, role } = req.body;
+    console.log('Register request body:', req.body);
+    console.log('Register request headers:', req.headers);
+    
+    const { name, fullName, email, phone, password, role } = req.body;
+    const userName = name || fullName;
 
-    if (!name || !email || !phone || !password || !role) {
+    if (!userName || !email || !phone || !password || !role) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
@@ -32,7 +36,7 @@ const register = async (req, res, next) => {
 
     const passwordHash = await bcrypt.hash(password, 12);
 
-    const user = await User.create({ name, email, phone, passwordHash, role });
+    const user = await User.create({ name: userName, email, phone, passwordHash, role });
 
     const token = generateToken(user._id);
 
@@ -58,12 +62,14 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select('+passwordHash');
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    // Get password hash separately for comparison
+    const userWithPassword = await User.findById(user._id).select('+passwordHash');
+    const isMatch = await bcrypt.compare(password, userWithPassword.passwordHash);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
@@ -80,7 +86,9 @@ const login = async (req, res, next) => {
         phone: user.phone,
         role: user.role,
         rating: user.rating,
-        profilePhoto: user.profilePhoto
+        profilePhoto: user.profilePhoto,
+        isEmailVerified: user.isEmailVerified,
+        isPhoneVerified: user.isPhoneVerified
       }
     });
   } catch (err) {
@@ -131,9 +139,15 @@ const sendOtp = async (req, res, next) => {
 
 const verifyOtp = async (req, res, next) => {
   try {
-    const { otp, type } = req.body;
+    const { otp, type, email } = req.body;
 
-    const identifier = type === 'email' ? req.user.email : req.user.phone;
+    // Use email from request body if not authenticated
+    const identifier = req.user ? (type === 'email' ? req.user.email : req.user.phone) : email;
+    
+    if (!identifier) {
+      return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
     const isValid = verifyOTPUtil(identifier, otp);
 
     if (!isValid) {
@@ -142,8 +156,15 @@ const verifyOtp = async (req, res, next) => {
 
     deleteOTP(identifier);
 
+    // Update user verification status
     const updateField = type === 'email' ? { isEmailVerified: true } : { isPhoneVerified: true };
-    await User.findByIdAndUpdate(req.user._id, updateField);
+    const user = await User.findOne({ email: identifier });
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    await User.findByIdAndUpdate(user._id, updateField);
 
     res.status(200).json({ success: true, message: 'Verified successfully' });
   } catch (err) {

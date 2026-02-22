@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true },
   phone: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true, select: false },
-  role: { type: String, enum: ['driver', 'passenger', 'both'], default: 'passenger' },
+  role: { type: String, enum: ['driver', 'passenger'], default: 'passenger' },
   profilePhoto: { type: String, default: '' },
   isPhoneVerified: { type: Boolean, default: false },
   isEmailVerified: { type: Boolean, default: false },

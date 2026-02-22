@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
@@ -10,10 +11,18 @@ const bookingRoutes = require('./src/routes/bookings.routes');
 const messageRoutes = require('./src/routes/messages.routes');
 const ratingRoutes = require('./src/routes/ratings.routes');
 const errorHandler = require('./src/middleware/error.middleware');
+const setupSocket = require('./src/config/socket');
 
 const app = express();
+const server = http.createServer(app);
+const io = setupSocket(server);
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
@@ -34,4 +43,6 @@ app.use('/api/ratings', ratingRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+module.exports = { app, io };
