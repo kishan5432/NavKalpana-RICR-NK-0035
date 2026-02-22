@@ -1,6 +1,7 @@
 const Rating = require('../models/Rating');
 const Booking = require('../models/Booking');
 const User = require('../models/User');
+const { createNotification } = require('../utils/notification');
 
 const createRating = async (req, res) => {
   try {
@@ -65,7 +66,7 @@ const createRating = async (req, res) => {
     await booking.save();
 
     const aggregateResult = await Rating.aggregate([
-      { $match: { ratedUserId: finalRatedUserId } },
+      { $match: { ratedUserId: require('mongoose').Types.ObjectId(finalRatedUserId) } },
       { $group: { _id: null, avgStars: { $avg: '$stars' }, count: { $sum: 1 } } }
     ]);
 
@@ -76,6 +77,13 @@ const createRating = async (req, res) => {
         'rating.count': count
       });
     }
+
+    await createNotification(
+      finalRatedUserId,
+      'new_rating',
+      'You received a new rating',
+      `/profile/me`
+    );
 
     res.status(201).json({ success: true, rating: newRating });
   } catch (error) {

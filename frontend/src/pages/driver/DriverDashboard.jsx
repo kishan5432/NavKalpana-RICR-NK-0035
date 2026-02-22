@@ -16,7 +16,8 @@ export default function DriverDashboard() {
     completedRides: 0,
     cancelledRides: 0,
     totalEarnings: 0,
-    upcomingRides: []
+    upcomingRides: [],
+    inProgressRides: []
   });
   const [loading, setLoading] = useState(true);
 
@@ -38,9 +39,10 @@ export default function DriverDashboard() {
           .filter(r => r.status === 'completed')
           .reduce((sum, r) => sum + (r.pricePerSeat * (r.totalSeats - r.availableSeats)), 0),
         upcomingRides: rides
-          .filter(r => r.status === 'active' && new Date(r.date) >= new Date())
+          .filter(r => ['active', 'fully_booked'].includes(r.status) && new Date(r.date) >= new Date())
           .sort((a, b) => new Date(a.date) - new Date(b.date))
-          .slice(0, 5)
+          .slice(0, 5),
+        inProgressRides: rides.filter(r => r.status === 'in_progress')
       };
       
       setStats(calculatedStats);
@@ -161,7 +163,11 @@ export default function DriverDashboard() {
           ) : (
             <div className="space-y-3">
               {stats.upcomingRides.map((ride) => (
-                <div key={ride._id} className="flex justify-between items-center p-3 border rounded-lg">
+                <div 
+                  key={ride._id} 
+                  className="flex justify-between items-center p-3 border rounded-lg cursor-pointer hover:shadow-md transition"
+                  onClick={() => navigate(`/driver/rides/${ride._id}`)}
+                >
                   <div>
                     <p className="font-semibold">{ride.from} → {ride.to}</p>
                     <p className="text-sm text-gray-600">
@@ -169,17 +175,12 @@ export default function DriverDashboard() {
                     </p>
                     <p className="text-sm text-green-600">₹{ride.pricePerSeat} per seat</p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
                     <span className="text-sm">{ride.availableSeats}/{ride.totalSeats} seats</span>
                     {getStatusBadge(ride.status)}
                     {ride.status === 'active' && (
                       <Button size="sm" onClick={() => handleStartRide(ride._id)}>
                         Start Ride
-                      </Button>
-                    )}
-                    {ride.status === 'started' && (
-                      <Button size="sm" onClick={() => handleCompleteRide(ride._id)}>
-                        Complete Ride
                       </Button>
                     )}
                   </div>
@@ -189,6 +190,40 @@ export default function DriverDashboard() {
           )}
         </CardContent>
       </Card>
+
+      {stats.inProgressRides.length > 0 && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>In Progress Rides</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {stats.inProgressRides.map((ride) => (
+                <div 
+                  key={ride._id} 
+                  className="flex justify-between items-center p-3 border rounded-lg cursor-pointer hover:shadow-md transition"
+                  onClick={() => navigate(`/driver/rides/${ride._id}`)}
+                >
+                  <div>
+                    <p className="font-semibold">{ride.from} → {ride.to}</p>
+                    <p className="text-sm text-gray-600">
+                      {new Date(ride.date).toLocaleDateString()} at {ride.departureTime}
+                    </p>
+                    <p className="text-sm text-green-600">₹{ride.pricePerSeat} per seat</p>
+                  </div>
+                  <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                    <span className="text-sm">{ride.availableSeats}/{ride.totalSeats} seats</span>
+                    {getStatusBadge(ride.status)}
+                    <Button size="sm" onClick={() => handleCompleteRide(ride._id)}>
+                      Complete Ride
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

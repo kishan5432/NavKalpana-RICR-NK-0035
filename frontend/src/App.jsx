@@ -17,11 +17,11 @@ import PassengerDashboard from './pages/passenger/PassengerDashboard';
 import BookingHistory from './pages/passenger/BookingHistory';
 import DriverRideDetail from './pages/driver/DriverRideDetail';
 import Chat from './pages/shared/Chat';
+import Profile from './pages/shared/Profile';
+import EditProfile from './pages/shared/EditProfile';
+import Notifications from './pages/shared/Notifications';
 
-// Placeholder components - replace with actual components later
-const Profile = () => <div className="p-4">Profile Page</div>;
-const ProfileEdit = () => <div className="p-4">Profile Edit Page</div>;
-const Notifications = () => <div className="p-4">Notifications Page</div>;
+const NotificationsPlaceholder = () => <div className="p-4">Notifications Page</div>;
 
 const ProtectedRoute = ({ children }) => {
   const { user, isLoading } = useAuth();
@@ -50,8 +50,9 @@ function AppRoutes() {
           <Route path="/rides/:id" element={<RideDetail />} />
           
           {/* Protected Routes */}
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/profile/edit" element={<ProtectedRoute><ProfileEdit /></ProtectedRoute>} />
+          <Route path="/profile" element={<Navigate to="/profile/me" replace />} />
+          <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/profile/edit" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
           <Route path="/chat/:bookingId" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           

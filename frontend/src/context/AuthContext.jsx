@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
   const login = async (data) => {
     const response = await loginAPI(data);
     
-    // Only store token/user if email is verified (handle undefined as verified for backward compatibility)
     if (response.user.isEmailVerified !== false) {
       localStorage.setItem('token', response.token);
       setToken(response.token);
@@ -38,6 +37,10 @@ export const AuthProvider = ({ children }) => {
     }
     
     return response;
+  };
+
+  const updateUser = (userData) => {
+    setUser(userData);
   };
 
   const logout = () => {
@@ -49,10 +52,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, token, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

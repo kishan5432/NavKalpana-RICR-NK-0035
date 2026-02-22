@@ -23,18 +23,9 @@ const setupSocket = (httpServer) => {
       console.log(`Socket ${socket.id} left room ${bookingId}`);
     });
 
-    socket.on('send-message', async ({ bookingId, content }) => {
+    socket.on('send-message', async (message) => {
       try {
-        const booking = await Booking.findById(bookingId).populate('passengerId driverId', 'name profilePicture');
-        if (!booking) return;
-        
-        io.to(bookingId).emit('new-message', { 
-          bookingId, 
-          content, 
-          sender: booking.passengerId._id,
-          senderId: booking.passengerId,
-          createdAt: new Date() 
-        });
+        io.to(message.bookingId).emit('new-message', message);
       } catch (error) {
         console.error('Error sending message:', error);
       }

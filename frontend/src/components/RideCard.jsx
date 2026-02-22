@@ -7,15 +7,27 @@ import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 export default function RideCard({ ride, onBook }) {
   const navigate = useNavigate();
   
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-IN', {
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return 'Invalid Date';
+    return date.toLocaleDateString('en-IN', {
       day: 'numeric',
-      month: 'short'
+      month: 'short',
+      year: 'numeric'
     });
   };
   
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString('en-IN', {
+  const formatTime = (timeStr) => {
+    if (!timeStr) return 'N/A';
+    // If it's already a time string like "14:30", return it
+    if (typeof timeStr === 'string' && timeStr.match(/^\d{2}:\d{2}/)) {
+      return timeStr;
+    }
+    // Otherwise try to parse as date
+    const date = new Date(timeStr);
+    if (isNaN(date.getTime())) return 'Invalid Time';
+    return date.toLocaleTimeString('en-IN', {
       hour: '2-digit',
       minute: '2-digit'
     });
@@ -34,7 +46,7 @@ export default function RideCard({ ride, onBook }) {
             </h3>
           </div>
           <div className="text-right text-sm text-gray-600">
-            <div>{formatDate(ride.departureTime)}</div>
+            <div>{formatDate(ride.date)}</div>
             <div>{formatTime(ride.departureTime)}</div>
           </div>
         </div>
@@ -42,13 +54,13 @@ export default function RideCard({ ride, onBook }) {
         {/* Driver Info */}
         <div className="flex items-center gap-3 mb-3">
           <Avatar size="sm">
-            <AvatarImage src={ride.driver?.profilePicture} />
-            <AvatarFallback>{ride.driver?.name?.charAt(0)}</AvatarFallback>
+            <AvatarImage src={ride.driverId?.profilePicture} />
+            <AvatarFallback>{ride.driverId?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex items-center gap-2">
-            <span className="font-medium">{ride.driver?.name}</span>
-            <span className="text-yellow-500">★ {typeof ride.driver?.rating === 'object' ? ride.driver.rating.average || 'New' : ride.driver?.rating || 'New'}</span>
-            {ride.driver?.isPhoneVerified && (
+            <span className="font-medium">{ride.driverId?.name}</span>
+            <span className="text-yellow-500">★ {ride.driverId?.rating?.average || 'New'}</span>
+            {ride.driverId?.isPhoneVerified && (
               <Badge variant="secondary" className="text-xs">✓ Verified</Badge>
             )}
           </div>

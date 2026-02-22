@@ -35,8 +35,8 @@ const Chat = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="border-b p-4 flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+      <div className="border-b p-4 flex items-center gap-4 bg-white">
+        <Button variant="outline" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <Avatar className="w-10 h-10">

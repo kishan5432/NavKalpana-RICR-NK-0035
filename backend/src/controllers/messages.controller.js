@@ -1,6 +1,7 @@
 const Message = require('../models/Message');
 const Booking = require('../models/Booking');
 const User = require('../models/User');
+const { createNotification } = require('../utils/notification');
 
 const getConversations = async (req, res) => {
   try {
@@ -91,6 +92,13 @@ const sendMessage = async (req, res) => {
     });
 
     const populatedMessage = await Message.findById(message._id).populate('senderId', 'name profilePicture');
+
+    await createNotification(
+      receiverId,
+      'new_message',
+      `New message from ${req.user.name}`,
+      `/chat/${bookingId}`
+    );
 
     res.status(201).json({ success: true, message: populatedMessage });
   } catch (error) {
