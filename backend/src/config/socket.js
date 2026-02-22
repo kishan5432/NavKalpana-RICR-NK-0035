@@ -1,10 +1,11 @@
 const { Server } = require('socket.io');
 const Message = require('../models/Message');
+const Booking = require('../models/Booking');
 
 const setupSocket = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: process.env.CLIENT_URL,
+      origin: process.env.CLIENT_URL || 'http://localhost:5173',
       methods: ['GET', 'POST']
     }
   });
@@ -19,17 +20,21 @@ const setupSocket = (httpServer) => {
 
     socket.on('leave-room', (bookingId) => {
       socket.leave(bookingId);
+      console.log(`Socket ${socket.id} left room ${bookingId}`);
     });
 
-    socket.on('send-message', async ({ bookingId, content, senderId, receiverId }) => {
+    socket.on('send-message', async ({ bookingId, content }) => {
       try {
-        const message = await Message.create({
-          bookingId,
-          senderId,
-          receiverId,
-          content
+        const booking = await Booking.findById(bookingId).populate('passengerId driverId', 'name profilePicture');
+        if (!booking) return;
+        
+        io.to(bookingId).emit('new-message', { 
+          bookingId, 
+          content, 
+          sender: booking.passengerId._id,
+          senderId: booking.passengerId,
+          createdAt: new Date() 
         });
-        io.to(bookingId).emit('new-message', message);
       } catch (error) {
         console.error('Error sending message:', error);
       }

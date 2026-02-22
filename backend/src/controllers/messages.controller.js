@@ -53,7 +53,7 @@ const getMessages = async (req, res) => {
 
     const messages = await Message.find({ bookingId: req.params.bookingId })
       .sort({ createdAt: 1 })
-      .populate('senderId', 'name profilePhoto');
+      .populate('senderId', 'name profilePicture');
 
     res.status(200).json({ success: true, messages });
   } catch (error) {
@@ -63,13 +63,13 @@ const getMessages = async (req, res) => {
 
 const sendMessage = async (req, res) => {
   try {
-    const { content } = req.body;
+    const { bookingId, content } = req.body;
 
     if (!content || content.trim() === '') {
       return res.status(400).json({ success: false, message: 'Message content is required' });
     }
 
-    const booking = await Booking.findById(req.params.bookingId);
+    const booking = await Booking.findById(bookingId);
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
@@ -79,22 +79,20 @@ const sendMessage = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Not authorized' });
     }
 
-    if (booking.status !== 'requested' && booking.status !== 'accepted') {
-      return res.status(400).json({ success: false, message: 'Cannot message on this booking' });
-    }
-
     const receiverId = req.user._id.toString() === booking.passengerId.toString()
       ? booking.driverId
       : booking.passengerId;
 
     const message = await Message.create({
-      bookingId: req.params.bookingId,
+      bookingId,
       senderId: req.user._id,
       receiverId,
       content
     });
 
-    res.status(201).json({ success: true, message });
+    const populatedMessage = await Message.findById(message._id).populate('senderId', 'name profilePicture');
+
+    res.status(201).json({ success: true, message: populatedMessage });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
