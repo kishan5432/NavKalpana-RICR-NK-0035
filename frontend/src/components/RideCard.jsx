@@ -54,12 +54,12 @@ export default function RideCard({ ride, onBook }) {
         {/* Driver Info */}
         <div className="flex items-center gap-3 mb-3">
           <Avatar size="sm">
-            <AvatarImage src={ride.driverId?.profilePicture} />
+            <AvatarImage src={ride.driverId?.profilePhoto} />
             <AvatarFallback>{ride.driverId?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex items-center gap-2">
             <span className="font-medium">{ride.driverId?.name}</span>
-            <span className="text-yellow-500">★ {ride.driverId?.rating?.average || 'New'}</span>
+            <span className="text-yellow-500">★ {ride.driverId?.rating?.average?.toFixed(1) || 'New'}</span>
             {ride.driverId?.isPhoneVerified && (
               <Badge variant="secondary" className="text-xs">✓ Verified</Badge>
             )}

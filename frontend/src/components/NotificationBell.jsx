@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getNotifications, markNotificationRead, markAllNotificationsRead } from '../api';
 import { Button } from './ui/button';
@@ -9,10 +9,27 @@ const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchNotifications();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
 
   const fetchNotifications = () => {
     getNotifications()
@@ -56,10 +73,18 @@ const NotificationBell = () => {
     return `${Math.floor(seconds / 86400)}d ago`;
   };
 
+  const handleBellClick = async () => {
+    setShowDropdown(!showDropdown);
+    if (!showDropdown && unreadCount > 0) {
+      await markAllNotificationsRead().catch(err => console.error(err));
+      fetchNotifications();
+    }
+  };
+
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => setShowDropdown(!showDropdown)}
+        onClick={handleBellClick}
         className="relative p-2 hover:bg-gray-100 rounded-full"
       >
         <Bell className="h-6 w-6" />

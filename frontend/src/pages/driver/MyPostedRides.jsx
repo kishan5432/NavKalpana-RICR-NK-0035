@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Input } from '../../components/ui/input';
+import { ArrowLeft } from 'lucide-react';
 
 export default function MyPostedRides() {
   const navigate = useNavigate();
@@ -93,7 +94,12 @@ export default function MyPostedRides() {
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">My Posted Rides</h1>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/driver/dashboard')}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold">My Posted Rides</h1>
+        </div>
         <Button onClick={() => navigate('/post-ride')}>Post New Ride</Button>
       </div>
 

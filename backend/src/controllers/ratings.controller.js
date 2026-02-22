@@ -66,7 +66,7 @@ const createRating = async (req, res) => {
     await booking.save();
 
     const aggregateResult = await Rating.aggregate([
-      { $match: { ratedUserId: require('mongoose').Types.ObjectId(finalRatedUserId) } },
+      { $match: { ratedUserId: require('mongoose').Types.ObjectId.createFromHexString(finalRatedUserId.toString()) } },
       { $group: { _id: null, avgStars: { $avg: '$stars' }, count: { $sum: 1 } } }
     ]);
 
@@ -76,6 +76,7 @@ const createRating = async (req, res) => {
         'rating.average': Math.round(avgStars * 10) / 10,
         'rating.count': count
       });
+      console.log(`Updated user ${finalRatedUserId} rating to ${Math.round(avgStars * 10) / 10} (${count} ratings)`);
     }
 
     await createNotification(

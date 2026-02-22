@@ -54,7 +54,7 @@ const getMessages = async (req, res) => {
 
     const messages = await Message.find({ bookingId: req.params.bookingId })
       .sort({ createdAt: 1 })
-      .populate('senderId', 'name profilePicture');
+      .populate('senderId', 'name profilePhoto');
 
     res.status(200).json({ success: true, messages });
   } catch (error) {
@@ -91,7 +91,7 @@ const sendMessage = async (req, res) => {
       content
     });
 
-    const populatedMessage = await Message.findById(message._id).populate('senderId', 'name profilePicture');
+    const populatedMessage = await Message.findById(message._id).populate('senderId', 'name profilePhoto');
 
     await createNotification(
       receiverId,

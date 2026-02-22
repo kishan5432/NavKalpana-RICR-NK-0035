@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
+import { ArrowLeft } from 'lucide-react';
 
 export default function CreateRide() {
   const navigate = useNavigate();
@@ -88,6 +89,12 @@ export default function CreateRide() {
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
+      <div className="flex items-center gap-4 mb-4">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/driver/dashboard')}>
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-2xl font-bold">Create New Ride</h1>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>Create New Ride</CardTitle>

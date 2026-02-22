@@ -17,7 +17,28 @@ const ChatWindow = ({ bookingId, otherUser }) => {
   useEffect(() => {
     if (!socket) return;
 
+    socket.emit('join-room', bookingId);
+
+    getMessagesByBooking(bookingId)
+      .then(data => {
+        setMessages(data.messages || []);
+        markMessagesRead(bookingId).catch(() => {});
+      })
+      .catch(err => {
+        console.error(err);
+        setMessages([]);
+      });
+
+    return () => {
+      socket.emit('leave-room', bookingId);
+    };
+  }, [socket, bookingId]);
+
+  useEffect(() => {
+    if (!socket) return;
+
     const handleNewMessage = (message) => {
+      console.log('Received new message:', message);
       setMessages(prev => {
         if (message._id && prev.some(m => m._id === message._id)) {
           return prev;
@@ -33,21 +54,9 @@ const ChatWindow = ({ bookingId, otherUser }) => {
       markMessagesRead(bookingId).catch(() => {});
     };
 
-    socket.emit('join-room', bookingId);
     socket.on('new-message', handleNewMessage);
 
-    getMessagesByBooking(bookingId)
-      .then(data => {
-        setMessages(data.messages || []);
-        markMessagesRead(bookingId).catch(() => {});
-      })
-      .catch(err => {
-        console.error(err);
-        setMessages([]);
-      });
-
     return () => {
-      socket.emit('leave-room', bookingId);
       socket.off('new-message', handleNewMessage);
     };
   }, [socket, bookingId]);
@@ -83,12 +92,12 @@ const ChatWindow = ({ bookingId, otherUser }) => {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, idx) => {
           const isMine = msg.senderId?._id === user._id || msg.sender === user._id;
-          const sender = msg.senderId || { name: isMine ? user.name : otherUser.name, profilePicture: isMine ? user.profilePicture : otherUser.photo };
+          const sender = msg.senderId || { name: isMine ? user.name : otherUser.name, profilePhoto: isMine ? user.profilePhoto : otherUser.photo };
           return (
             <div key={msg._id || idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
               <div className={`flex gap-2 max-w-[70%] ${isMine ? 'flex-row-reverse' : ''}`}>
                 <Avatar className="w-8 h-8">
-                  <img src={sender.profilePicture || '/default-avatar.png'} alt={sender.name} />
+                  <img src={sender.profilePhoto || '/default-avatar.png'} alt={sender.name} />
                 </Avatar>
                 <div>
                   <div className="text-xs text-gray-600 mb-1">{sender.name}</div>
