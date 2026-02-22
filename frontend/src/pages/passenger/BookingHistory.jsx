@@ -9,7 +9,7 @@ import { Badge } from '../../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Textarea } from '../../components/ui/textarea';
-import { Star } from 'lucide-react';
+import { Star, ArrowLeft } from 'lucide-react';
 import StarRating from '../../components/StarRating';
 
 export default function BookingHistory() {
@@ -94,7 +94,12 @@ export default function BookingHistory() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Booking History</h1>
+      <div className="flex items-center gap-4 mb-6">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/passenger/dashboard')}>
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-2xl font-bold">Booking History</h1>
+      </div>
 
       <div className="flex gap-2 mb-6 border-b">
         {['all', 'upcoming', 'completed', 'cancelled'].map(tab => (

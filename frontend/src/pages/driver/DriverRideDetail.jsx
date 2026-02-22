@@ -250,6 +250,20 @@ export default function DriverRideDetail() {
               )}
             </CardContent>
           </Card>
+
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button variant="outline" className="w-full" onClick={() => navigate('/driver/dashboard')}>
+                Go to Dashboard
+              </Button>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/driver/rides')}>
+                My Posted Rides
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
 

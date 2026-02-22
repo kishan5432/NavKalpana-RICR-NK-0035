@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -55,7 +56,10 @@ export default function Navbar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center space-x-2">
-                      <User className="h-5 w-5" />
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.profilePhoto} />
+                        <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+                      </Avatar>
                       <span className="hidden sm:block">{user.name}</span>
                     </Button>
                   </DropdownMenuTrigger>

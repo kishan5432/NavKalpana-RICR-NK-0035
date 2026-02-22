@@ -377,6 +377,12 @@ export default function RideDetail() {
                   >
                     Cancel Booking
                   </Button>
+                  <Button 
+                    className="w-full bg-black hover:bg-gray-800" 
+                    onClick={() => navigate('/passenger/bookings')}
+                  >
+                    View Booking History
+                  </Button>
                 </CardContent>
               </Card>
             )}
@@ -403,9 +409,28 @@ export default function RideDetail() {
               <Card>
                 <CardContent className="text-center py-6">
                   <p className="mb-4">Login to book this ride</p>
-                  <Button onClick={() => navigate('/login')}>
+                  <Button onClick={() => navigate(`/login?redirect=/rides/${id}`)}>
                     Login
                   </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Dashboard Button for Cancelled/Completed Rides */}
+            {user && !isOwner && (ride.status === 'cancelled' || ride.status === 'completed') && (
+              <Card>
+                <CardContent className="text-center py-6">
+                  <p className="mb-4 text-gray-600">
+                    This ride is {ride.status}
+                  </p>
+                  <div className="flex gap-2">
+                    <Button className="flex-1" onClick={() => navigate('/passenger/dashboard')}>
+                      Go to Dashboard
+                    </Button>
+                    <Button className="flex-1" variant="outline" onClick={() => navigate('/passenger/bookings')}>
+                      Booking History
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             )}

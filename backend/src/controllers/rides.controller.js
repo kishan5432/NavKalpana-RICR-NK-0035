@@ -25,7 +25,7 @@ const createRide = async (req, res) => {
       preferences
     });
 
-    await ride.populate('driverId', 'name profilePicture rating isPhoneVerified');
+    await ride.populate('driverId', 'name profilePhoto rating isPhoneVerified');
 
     res.status(201).json({ success: true, ride });
   } catch (error) {
@@ -66,7 +66,7 @@ const getRides = async (req, res) => {
       .sort(sortObj)
       .skip(skip)
       .limit(Number(limit))
-      .populate('driverId', 'name profilePicture rating vehicle isPhoneVerified');
+      .populate('driverId', 'name profilePhoto rating vehicle isPhoneVerified');
 
     res.status(200).json({ success: true, count: rides.length, total, page: Number(page), rides });
   } catch (error) {
@@ -86,7 +86,7 @@ const getMyPostedRides = async (req, res) => {
 
 const getRideById = async (req, res) => {
   try {
-    const ride = await Ride.findById(req.params.id).populate('driverId', 'name profilePicture rating vehicle bio isPhoneVerified createdAt');
+    const ride = await Ride.findById(req.params.id).populate('driverId', 'name profilePhoto rating vehicle bio isPhoneVerified createdAt');
     if (!ride) {
       return res.status(404).json({ success: false, message: 'Ride not found' });
     }

@@ -7,6 +7,7 @@ import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { ArrowLeft } from 'lucide-react';
 
 export default function BookingRequests() {
   const navigate = useNavigate();
@@ -63,7 +64,12 @@ export default function BookingRequests() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Booking Requests</h1>
+      <div className="flex items-center gap-4 mb-6">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/driver/dashboard')}>
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-2xl font-bold">Booking Requests</h1>
+      </div>
 
       {Object.keys(groupedBookings).length === 0 ? (
         <p className="text-gray-500">No booking requests</p>
