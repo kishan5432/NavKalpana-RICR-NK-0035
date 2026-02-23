@@ -5,6 +5,8 @@ export const register = (data) => axios.post('/auth/register', data).then(res =>
 export const login = (data) => axios.post('/auth/login', data).then(res => res.data);
 export const sendOTP = (data) => axios.post('/auth/send-otp', data).then(res => res.data);
 export const verifyOTP = (data) => axios.post('/auth/verify-otp', data).then(res => res.data);
+export const forgotPassword = (data) => axios.post('/auth/forgot-password', data).then(res => res.data);
+export const resetPassword = (data) => axios.post('/auth/reset-password', data).then(res => res.data);
 
 // USERS
 export const getMe = () => axios.get('/users/me').then(res => res.data);

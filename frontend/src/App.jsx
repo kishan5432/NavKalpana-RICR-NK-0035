@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Verify from './pages/auth/Verify';
+import ForgotPassword from './pages/auth/ForgotPassword';
 import SearchRides from './pages/passenger/SearchRides';
 import RideDetail from './pages/shared/RideDetail';
 import DriverDashboard from './pages/driver/DriverDashboard';
@@ -46,6 +47,7 @@ function AppRoutes() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify" element={<Verify />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/search" element={<SearchRides />} />
           <Route path="/rides/:id" element={<RideDetail />} />
           

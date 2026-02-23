@@ -176,4 +176,78 @@ const logout = (req, res) => {
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 };
 
-module.exports = { register, login, sendOtp, verifyOtp, logout };
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    setOTP(email, otp);
+
+    await sendEmail({
+      to: email,
+      subject: 'Reset Your Password - RideShareX',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">Reset Your Password</h2>
+          <p style="font-size: 16px; color: #555;">Your password reset code is:</p>
+          <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #333; margin: 20px 0;">
+            ${otp}
+          </div>
+          <p style="font-size: 14px; color: #777;">This code is valid for 10 minutes.</p>
+        </div>
+      `
+    });
+
+    res.status(200).json({ success: true, message: 'OTP sent to your email' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { email, otp, newPassword, confirmPassword } = req.body;
+
+    if (!email || !otp || !newPassword || !confirmPassword) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    }
+
+    const isValid = verifyOTPUtil(email, otp);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await User.findByIdAndUpdate(user._id, { passwordHash });
+
+    deleteOTP(email);
+
+    res.status(200).json({ success: true, message: 'Password reset successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { register, login, sendOtp, verifyOtp, logout, forgotPassword, resetPassword };
