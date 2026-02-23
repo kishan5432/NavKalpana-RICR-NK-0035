@@ -11,7 +11,8 @@ const sendEmail = async ({ to, subject, html }) => {
     },
     tls: {
       rejectUnauthorized: false
-    }
+    },
+    family: 4 // Force IPv4
   });
 
   const info = await transporter.sendMail({
