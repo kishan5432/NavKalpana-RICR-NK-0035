@@ -2,9 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
 import { getMessagesByBooking, sendMessage as sendMessageAPI, markMessagesRead } from '../api';
-import { Avatar } from './ui/avatar';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
 import { Send } from 'lucide-react';
 
 const ChatWindow = ({ bookingId, otherUser }) => {
@@ -88,25 +85,17 @@ const ChatWindow = ({ bookingId, otherUser }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex flex-col h-full bg-white">
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.map((msg, idx) => {
           const isMine = msg.senderId?._id === user._id || msg.sender === user._id;
-          const sender = msg.senderId || { name: isMine ? user.name : otherUser.name, profilePhoto: isMine ? user.profilePhoto : otherUser.photo };
           return (
             <div key={msg._id || idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-              <div className={`flex gap-2 max-w-[70%] ${isMine ? 'flex-row-reverse' : ''}`}>
-                <Avatar className="w-8 h-8">
-                  <img src={sender.profilePhoto || '/default-avatar.png'} alt={sender.name} />
-                </Avatar>
-                <div>
-                  <div className="text-xs text-gray-600 mb-1">{sender.name}</div>
-                  <div className={`rounded-lg px-4 py-2 ${isMine ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900'}`}>
-                    {msg.content}
-                  </div>
-                  <div className={`text-xs text-gray-500 mt-1 ${isMine ? 'text-right' : ''}`}>
-                    {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </div>
+              <div className={`max-w-[70%] ${isMine ? 'bg-[#E63399] text-white' : 'bg-gray-100 text-gray-900'} rounded-2xl px-4 py-3`}>
+                <p className="text-sm">{msg.content}</p>
+                <div className={`text-xs mt-1 ${isMine ? 'text-pink-100' : 'text-gray-500'}`}>
+                  {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
               </div>
             </div>
@@ -115,19 +104,23 @@ const ChatWindow = ({ bookingId, otherUser }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t p-4">
-        <div className="flex gap-2">
-          <Textarea
+      {/* Input Area */}
+      <div className="border-t border-gray-200 p-4">
+        <div className="flex gap-3">
+          <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
-            className="resize-none"
-            rows={2}
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-[#3A3A6A] transition-colors"
           />
-          <Button onClick={handleSend} size="icon">
-            <Send className="h-4 w-4" />
-          </Button>
+          <button
+            onClick={handleSend}
+            disabled={!input.trim()}
+            className="bg-[#3A3A6A] text-white p-3 rounded-full hover:bg-[#2d2d52] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Send className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;600;700;800&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -120,5 +121,221 @@
     }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Merriweather Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
+}
+
+@layer utilities {
+  /* Hero curve styling */
+  .hero-curve {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .hero-curve svg {
+    height: 100%;
+    width: 100%;
+  }
+
+  /* Chat-specific animations */
+  @keyframes message-slide-in {
+    0% {
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes typing-bounce {
+    0%, 60%, 100% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .message-enter {
+    animation: message-slide-in 0.3s ease-out;
+  }
+
+  .typing-indicator {
+    animation: typing-bounce 1.4s infinite;
+  }
+
+  /* Smooth scrollbar for chat */
+  .chat-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chat-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+
+  .chat-scroll::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Message bubble improvements */
+  .message-bubble {
+    position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .message-bubble::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  /* Auto-resize textarea */
+  .auto-resize {
+    field-sizing: content;
+    min-height: 44px;
+    max-height: 120px;
+  }
+
+  @keyframes fade-in-down {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-down {
+    animation: fade-in-down 0.8s ease-out;
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out 0.2s both;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 1s ease-out 0.4s both;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+
+  /* Mobile-first responsive utilities */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .mobile-text {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .mobile-spacing {
+    padding: 16px;
+  }
+
+  .mobile-card-stack {
+    @apply flex flex-col gap-4;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-card-stack {
+      @apply grid grid-cols-2 gap-6;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-card-stack {
+      @apply grid-cols-3;
+    }
+  }
+
+  /* Bottom sheet styles */
+  .bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .bottom-sheet-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+  }
+
+  /* Ensure text is readable on mobile */
+  @media (max-width: 767px) {
+    body {
+      font-size: 16px;
+    }
+    
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+    h4 { font-size: 1.125rem; }
+    
+    button, .btn {
+      min-height: 44px;
+      font-size: 16px;
+    }
+    
+    input, select, textarea {
+      min-height: 44px;
+      font-size: 16px;
+    }
+  }
 }

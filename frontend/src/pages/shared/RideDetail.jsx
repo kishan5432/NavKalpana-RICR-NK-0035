@@ -9,7 +9,22 @@ import { Button } from '../../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../../components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Textarea } from '../../components/ui/textarea';
-import { Star } from 'lucide-react';
+import { 
+  Star, 
+  MapPin, 
+  Clock, 
+  Users, 
+  Car, 
+  Shield, 
+  Phone, 
+  ChevronRight,
+  Home,
+  Calendar,
+  DollarSign,
+  Route,
+  CheckCircle
+} from 'lucide-react';
+import BookingFlow from '../../components/BookingFlow';
 
 export default function RideDetail() {
   const { id } = useParams();
@@ -21,17 +36,45 @@ export default function RideDetail() {
   const [selectedSeats, setSelectedSeats] = useState(1);
   const [ratings, setRatings] = useState([]);
   const [ratingModal, setRatingModal] = useState({ open: false, rating: 0, comment: '' });
+  const [userRating, setUserRating] = useState(null);
   const [userBooking, setUserBooking] = useState(null);
 
   useEffect(() => {
     fetchRide();
-  }, [id]);
+    if (ride?.driverId?._id) {
+      getUserRatings(ride.driverId._id)
+        .then(ratingsData => {
+          setRatings(ratingsData.ratings || []);
+          // Check if current user has already rated this driver for this ride
+          const existingRating = ratingsData.ratings?.find(
+            rating => rating.raterId?._id === user?._id && rating.bookingId === userBooking?._id
+          );
+          setUserRating(existingRating);
+        })
+        .catch(err => console.error('Error fetching ratings:', err));
+    }
+  }, [id, ride?.driverId?._id, user?._id, userBooking?._id]);
 
   useEffect(() => {
     if (user && ride) {
       fetchUserBooking();
     }
   }, [user, ride]);
+
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setStickyBooking(window.scrollY > 300);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const fetchUserBooking = async () => {
     try {
@@ -49,17 +92,13 @@ export default function RideDetail() {
     try {
       const response = await getRideById(id);
       setRide(response.ride);
-      if (response.ride.status === 'completed') {
-        const ratingsData = await getUserRatings(response.ride.driverId._id);
-        setRatings(ratingsData.ratings || []);
-        
-        if (user) {
-          const bookingsData = await getMyBookings();
-          const booking = bookingsData.bookings?.find(
-            b => b.rideId?._id === id && b.passengerId?._id === user._id && b.status === 'completed'
-          );
-          setUserBooking(booking);
-        }
+      
+      if (user) {
+        const bookingsData = await getMyBookings();
+        const booking = bookingsData.bookings?.find(
+          b => b.rideId?._id === id && b.passengerId?._id === user._id && ['requested', 'accepted', 'completed'].includes(b.status)
+        );
+        setUserBooking(booking);
       }
     } catch (error) {
       console.error('Error fetching ride:', error);
@@ -105,7 +144,7 @@ export default function RideDetail() {
     }
   };
 
-  const handleBooking = async () => {
+  const handleBooking = async (bookingData) => {
     if (!user) {
       navigate('/login');
       return;
@@ -115,10 +154,10 @@ export default function RideDetail() {
     try {
       await createBooking({
         rideId: ride._id,
-        seatsBooked: selectedSeats
+        seatsBooked: bookingData.seatsBooked
       });
       toast.success('Booking successful!');
-      navigate('/passenger/bookings');
+      fetchUserBooking();
     } catch (error) {
       console.error('Booking error:', error);
       toast.error(error.response?.data?.message || 'Booking failed');
@@ -155,7 +194,7 @@ export default function RideDetail() {
   };
 
   const isOwner = user && ride && ride.driverId && user._id === ride.driverId._id;
-  const canBook = user && !isOwner && ride?.status === 'active' && ride?.availableSeats > 0;
+  const canBook = user && !isOwner && ride?.status === 'active' && ride?.availableSeats > 0 && !userBooking;
 
   if (loading) {
     return (
@@ -181,328 +220,376 @@ export default function RideDetail() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Ride Details */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl">
-                  {ride.from} → {ride.to}
-                </CardTitle>
-                <div className="flex items-center gap-4">
-                  <Badge variant={ride.status === 'active' ? 'default' : 'secondary'}>
-                    {ride.status}
-                  </Badge>
-                  {ride.status === 'fully_booked' && (
-                    <Badge variant="secondary">Fully Booked</Badge>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-2">Journey Details</h3>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-600">Departure:</span>
-                      <p className="font-medium">{formatDateTime(ride.date, ride.departureTime)}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Price per seat:</span>
-                      <p className="font-medium text-green-600">₹{ride.pricePerSeat}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Available seats:</span>
-                      <p className="font-medium">{ride.availableSeats} of {ride.totalSeats}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Distance:</span>
-                      <p className="font-medium">{ride.distance || 'N/A'} km</p>
-                    </div>
-                  </div>
-                </div>
-
-                {ride.stops && ride.stops.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold mb-2">Stops</h3>
-                    <div className="space-y-1">
-                      {ride.stops.map((stop, index) => (
-                        <div key={index} className="text-sm text-gray-600">
-                          • {stop}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <h3 className="font-semibold mb-2">Vehicle & Preferences</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {ride.vehicle && (
-                      <Badge variant="outline">
-                        🚗 {ride.vehicle.make} {ride.vehicle.model}
-                      </Badge>
-                    )}
-                    {ride.preferences?.noSmoking && (
-                      <Badge variant="outline">🚭 No Smoking</Badge>
-                    )}
-                    {ride.preferences?.petsAllowed && (
-                      <Badge variant="outline">🐾 Pets Allowed</Badge>
-                    )}
-                    {ride.preferences?.musicAllowed && (
-                      <Badge variant="outline">🎵 Music OK</Badge>
-                    )}
-                    <Badge variant="outline">🧳 Luggage Space</Badge>
-                  </div>
-                </div>
-
-                {ride.description && (
-                  <div>
-                    <h3 className="font-semibold mb-2">Additional Info</h3>
-                    <p className="text-gray-700">{ride.description}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+      {/* Header */}
+      <div className="bg-[#3A3A6A] text-white">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center gap-4 mb-4">
+            <button 
+              onClick={() => navigate(-1)} 
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            >
+              <Home className="h-5 w-5" />
+            </button>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="opacity-70">Rides</span>
+              <ChevronRight className="h-4 w-4 opacity-70" />
+              <span>Ride Details</span>
+            </div>
           </div>
+          
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">{ride.from} → {ride.to}</h1>
+              <div className="flex items-center gap-4 text-sm opacity-90">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(ride.date).toLocaleDateString()}
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  {ride.departureTime}
+                </div>
+                <div className="flex items-center gap-1">
+                  <DollarSign className="h-4 w-4" />
+                  ₹{ride.pricePerSeat}
+                </div>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
+                ride.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+              }`}>
+                {ride.status}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          {/* Driver & Booking */}
-          <div className="space-y-6">
-            {/* Driver Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Driver</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-3 mb-4 cursor-pointer" onClick={() => navigate(`/profile/${ride.driverId?._id}`)}>
-                  <Avatar size="lg">
-                    <AvatarImage src={ride.driverId?.profilePhoto} />
-                    <AvatarFallback>{ride.driverId?.name?.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-semibold hover:text-blue-600">{ride.driverId?.name}</h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <span>★ {ride.driverId?.rating?.average?.toFixed(1) || 'New'}</span>
-                      {ride.driverId?.isPhoneVerified && (
-                        <Badge variant="secondary" className="text-xs">✓ Verified</Badge>
-                      )}
-                    </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Quick Stats */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-4 bg-[#3A3A6A]/5 rounded-xl">
+                  <Users className="h-6 w-6 text-[#3A3A6A] mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Available Seats</p>
+                  <p className="text-xl font-bold text-[#3A3A6A]">{ride.availableSeats}</p>
+                </div>
+                <div className="text-center p-4 bg-[#E63399]/5 rounded-xl">
+                  <Route className="h-6 w-6 text-[#E63399] mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Distance</p>
+                  <p className="text-xl font-bold text-[#E63399]">~2.5 hrs</p>
+                </div>
+                <div className="text-center p-4 bg-green-50 rounded-xl">
+                  <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Instant Book</p>
+                  <p className="text-xl font-bold text-green-600">Yes</p>
+                </div>
+                <div className="text-center p-4 bg-yellow-50 rounded-xl">
+                  <Star className="h-6 w-6 text-yellow-600 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Rating</p>
+                  <p className="text-xl font-bold text-yellow-600">{ride.driverId?.rating?.average?.toFixed(1) || 'New'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Route Timeline */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-[#3A3A6A]" />
+                Route Details
+              </h3>
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col items-center">
+                    <div className="w-4 h-4 bg-[#3A3A6A] rounded-full" />
+                    <div className="w-0.5 h-12 bg-gray-200 mt-2" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-[#3A3A6A] text-lg">{ride.from}</p>
+                    <p className="text-gray-600">{ride.departureTime} • Starting point</p>
                   </div>
                 </div>
                 
-                {ride.driverId?.bio && (
-                  <p className="text-sm text-gray-700 mb-3">{ride.driverId.bio}</p>
-                )}
-              </CardContent>
-            </Card>
+                {ride.stops?.map((stop, index) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className="w-3 h-3 bg-gray-400 rounded-full" />
+                      {index < ride.stops.length - 1 && <div className="w-0.5 h-12 bg-gray-200 mt-2" />}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">{stop}</p>
+                      <p className="text-gray-600 text-sm">Stop {index + 1}</p>
+                    </div>
+                  </div>
+                ))}
+                
+                <div className="flex items-center gap-4">
+                  <div className="w-4 h-4 bg-[#E63399] rounded-full" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-[#E63399] text-lg">{ride.to}</p>
+                    <p className="text-gray-600">Destination</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            {/* Booking Widget */}
-            {canBook && !userBooking && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Book This Ride</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+            {/* Vehicle Info */}
+            {ride.vehicle && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Car className="h-5 w-5 text-[#3A3A6A]" />
+                  Vehicle Details
+                </h3>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-[#3A3A6A]/10 rounded-xl flex items-center justify-center">
+                    <Car className="h-8 w-8 text-[#3A3A6A]" />
+                  </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Number of seats
-                    </label>
-                    <select
-                      value={selectedSeats}
+                    <h4 className="font-semibold text-lg">{ride.vehicle.make} {ride.vehicle.model}</h4>
+                    <p className="text-gray-600">{ride.vehicle.year} • {ride.vehicle.color}</p>
+                    <p className="text-sm text-gray-500">{ride.vehicle.licensePlate}</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">🚭 No Smoking</span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">❄️ AC Available</span>
+                  <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">🎵 Music OK</span>
+                </div>
+              </div>
+            )}
+
+            {/* Reviews */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                Reviews ({ratings.length})
+              </h3>
+              {ratings.length > 0 ? (
+                <div className="space-y-4">
+                  {ratings.slice(0, 3).map((rating) => (
+                    <div key={rating._id} className="p-4 bg-gray-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 bg-[#3A3A6A] text-white rounded-full flex items-center justify-center font-semibold">
+                          {rating.raterId?.name?.[0] || 'A'}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">{rating.raterId?.name || 'Anonymous'}</p>
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} className={`w-4 h-4 ${i < rating.stars ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {rating.comment && <p className="text-gray-700 text-sm">{rating.comment}</p>}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-4">No reviews yet</p>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Driver Card */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <div className="text-center mb-6">
+                <Avatar className="w-20 h-20 mx-auto mb-3">
+                  <AvatarImage src={ride.driverId?.profilePhoto} />
+                  <AvatarFallback className="bg-[#3A3A6A] text-white text-2xl font-bold">
+                    {ride.driverId?.name?.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <h3 className="text-xl font-bold text-gray-900">{ride.driverId?.name}</h3>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="font-medium">{ride.driverId?.rating?.average?.toFixed(1) || 'New'}</span>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-gray-600">{ride.driverId?.rating?.count || 0} trips</span>
+                </div>
+              </div>
+              
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">✓ Phone Verified</span>
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">✓ ID Verified</span>
+                </div>
+              </div>
+              
+              <button 
+                onClick={() => navigate(`/profile/${ride.driverId._id}`)}
+                className="w-full py-3 border border-[#3A3A6A] text-[#3A3A6A] rounded-xl font-medium hover:bg-[#3A3A6A] hover:text-white transition-colors mb-2"
+              >
+                View Profile
+              </button>
+              
+              {userBooking && userBooking.status === 'completed' && (
+                userRating ? (
+                  <div className="w-full py-3 bg-gray-100 text-gray-600 rounded-xl font-medium text-center cursor-not-allowed">
+                    Rating Submitted
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setRatingModal({ open: true, rating: 0, comment: '' })}
+                    className="w-full py-3 bg-yellow-500 text-white rounded-xl font-medium hover:bg-yellow-600 transition-colors"
+                  >
+                    Rate Driver
+                  </button>
+                )
+              )}
+            </div>
+
+            {/* Booking Card */}
+            {canBook && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-gray-600">Price per seat</span>
+                    <span className="text-2xl font-bold text-[#3A3A6A]">₹{ride.pricePerSeat}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span>Available seats</span>
+                    <span className="font-medium">{ride.availableSeats} left</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Select seats</label>
+                    <select 
+                      value={selectedSeats} 
                       onChange={(e) => setSelectedSeats(Number(e.target.value))}
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#3A3A6A]"
                     >
-                      {[...Array(Math.min(4, ride.availableSeats))].map((_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1} seat{i > 0 ? 's' : ''}
-                        </option>
+                      {[...Array(Math.min(ride.availableSeats, 4))].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>{i + 1} seat{i > 0 ? 's' : ''}</option>
                       ))}
                     </select>
                   </div>
                   
-                  <div className="bg-gray-50 p-3 rounded-md">
-                    <div className="flex justify-between text-sm">
-                      <span>Price per seat:</span>
-                      <span>₹{ride.pricePerSeat}</span>
+                  <div className="border-t pt-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="font-medium">Total</span>
+                      <span className="text-xl font-bold text-[#3A3A6A]">₹{ride.pricePerSeat * selectedSeats}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Seats:</span>
-                      <span>{selectedSeats}</span>
-                    </div>
-                    <hr className="my-2" />
-                    <div className="flex justify-between font-semibold">
-                      <span>Total:</span>
-                      <span>₹{ride.pricePerSeat * selectedSeats}</span>
-                    </div>
+                    
+                    <button 
+                      onClick={() => handleBooking({ seatsBooked: selectedSeats })}
+                      disabled={booking}
+                      className="w-full py-4 bg-[#E63399] text-white rounded-xl font-semibold hover:bg-[#E63399]/90 disabled:opacity-50 transition-colors"
+                    >
+                      {booking ? 'Booking...' : 'Book Now'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* User Booking Status */}
+            {userBooking && (
+              <div className="bg-white rounded-2xl shadow-sm border p-6">
+                <h3 className="font-semibold text-lg mb-4">Your Booking</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Status</span>
+                    <span className={`px-2 py-1 rounded text-sm font-medium ${
+                      userBooking.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                      userBooking.status === 'requested' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {userBooking.status}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Seats</span>
+                    <span className="font-medium">{userBooking.seatsBooked}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Total</span>
+                    <span className="font-bold">₹{userBooking.totalAmount || (userBooking.seatsBooked * ride.pricePerSeat)}</span>
                   </div>
                   
-                  <Button 
-                    className="w-full" 
-                    onClick={handleBooking}
-                    disabled={booking}
-                  >
-                    {booking ? 'Booking...' : 'Book Now'}
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Booking Status for Passenger */}
-            {userBooking && ['requested', 'accepted'].includes(userBooking.status) && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Your Booking</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="bg-gray-50 p-3 rounded-md">
-                    <div className="flex justify-between text-sm mb-2">
-                      <span>Status:</span>
-                      <Badge className={userBooking.status === 'requested' ? 'bg-yellow-500' : 'bg-green-500'}>
-                        {userBooking.status}
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Seats booked:</span>
-                      <span>{userBooking.seatsBooked}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Total paid:</span>
-                      <span>₹{userBooking.totalPrice}</span>
-                    </div>
+                  <div className="pt-4 space-y-2">
+                    {userBooking.status === 'accepted' && (
+                      <button 
+                        onClick={() => navigate(`/chat/${userBooking._id}`)}
+                        className="w-full py-3 bg-[#3A3A6A] text-white rounded-xl font-medium hover:bg-[#3A3A6A]/90 transition-colors"
+                      >
+                        Message Driver
+                      </button>
+                    )}
+                    {userBooking.status === 'requested' && (
+                      <button 
+                        onClick={handleCancelBooking}
+                        className="w-full py-3 border border-red-300 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors"
+                      >
+                        Cancel Booking
+                      </button>
+                    )}
                   </div>
-                  <Button 
-                    variant="destructive" 
-                    className="w-full" 
-                    onClick={handleCancelBooking}
-                  >
-                    Cancel Booking
-                  </Button>
-                  <Button 
-                    className="w-full bg-black hover:bg-gray-800" 
-                    onClick={() => navigate('/passenger/bookings')}
-                  >
-                    View Booking History
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Owner Actions */}
-            {isOwner && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Manage Ride</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <Button variant="outline" className="w-full">
-                    Edit Ride
-                  </Button>
-                  <Button variant="destructive" className="w-full">
-                    Cancel Ride
-                  </Button>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {/* Login Prompt */}
             {!user && (
-              <Card>
-                <CardContent className="text-center py-6">
-                  <p className="mb-4">Login to book this ride</p>
-                  <Button onClick={() => navigate(`/login?redirect=/rides/${id}`)}>
-                    Login
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Dashboard Button for Cancelled/Completed Rides */}
-            {user && !isOwner && (ride.status === 'cancelled' || ride.status === 'completed') && (
-              <Card>
-                <CardContent className="text-center py-6">
-                  <p className="mb-4 text-gray-600">
-                    This ride is {ride.status}
-                  </p>
-                  <div className="flex gap-2">
-                    <Button className="flex-1" onClick={() => navigate('/passenger/dashboard')}>
-                      Go to Dashboard
-                    </Button>
-                    <Button className="flex-1" variant="outline" onClick={() => navigate('/passenger/bookings')}>
-                      Booking History
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Ratings Section for Completed Rides */}
-            {ride.status === 'completed' && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Ratings</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {ratings.length === 0 ? (
-                    <p className="text-gray-500 text-sm">No ratings yet</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {ratings.slice(0, 3).map((rating) => (
-                        <div key={rating._id} className="border-b pb-2">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="font-medium text-sm">{rating.raterId?.name || 'Anonymous'}</p>
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-3 h-3 ${i < rating.stars ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          {rating.comment && <p className="text-xs text-gray-600">{rating.comment}</p>}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {!isOwner && user && userBooking && !userBooking.hasRated?.passenger && (
-                    <Button 
-                      size="sm" 
-                      className="w-full mt-3" 
-                      onClick={() => setRatingModal({ open: true, rating: 0, comment: '' })}
-                    >
-                      Rate this driver
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
+              <div className="bg-white rounded-2xl shadow-sm border p-6 text-center">
+                <h3 className="font-semibold text-lg mb-2">Ready to book?</h3>
+                <p className="text-gray-600 mb-4">Login to secure your seat</p>
+                <button 
+                  onClick={() => navigate(`/login?redirect=/rides/${id}`)}
+                  className="w-full py-3 bg-[#E63399] text-white rounded-xl font-semibold hover:bg-[#E63399]/90 transition-colors"
+                >
+                  Login to Book
+                </button>
+              </div>
             )}
           </div>
         </div>
       </div>
 
+      {/* Rating Modal */}
       <Dialog open={ratingModal.open} onOpenChange={(open) => !open && setRatingModal({ open: false, rating: 0, comment: '' })}>
-        <DialogContent>
+        <DialogContent className="rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Rate Driver</DialogTitle>
+            <DialogTitle className="text-xl font-bold text-center">Rate Your Driver</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="flex gap-2 justify-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`w-8 h-8 cursor-pointer ${star <= ratingModal.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                  onClick={() => setRatingModal({ ...ratingModal, rating: star })}
-                />
-              ))}
+          <div className="space-y-6">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">How was your ride with {ride?.driverId?.name}?</p>
+              <div className="flex gap-2 justify-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-10 h-10 cursor-pointer transition-colors ${
+                      star <= ratingModal.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 hover:text-yellow-200'
+                    }`}
+                    onClick={() => setRatingModal({ ...ratingModal, rating: star })}
+                  />
+                ))}
+              </div>
             </div>
             <Textarea
-              placeholder="Add a comment (optional)"
+              placeholder="Share your experience (optional)"
               value={ratingModal.comment}
               onChange={(e) => setRatingModal({ ...ratingModal, comment: e.target.value })}
+              rows={3}
+              className="rounded-xl"
             />
-            <Button className="w-full" onClick={handleRatingSubmit}>
+            <button 
+              onClick={handleRatingSubmit}
+              disabled={ratingModal.rating === 0}
+              className="w-full py-3 bg-[#E63399] text-white rounded-xl font-semibold hover:bg-[#E63399]/90 disabled:opacity-50 transition-colors"
+            >
               Submit Rating
-            </Button>
+            </button>
           </div>
         </DialogContent>
       </Dialog>

@@ -76,10 +76,10 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3A2A5A] to-[#2d1f47] px-4 py-8">
+      <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-blue-600 mb-2">
+          <CardTitle className="text-2xl font-bold text-[#3A2A5A] mb-2">
             RideShareX
           </CardTitle>
           <p className="text-gray-600">Create your account</p>
@@ -166,7 +166,7 @@ export default function Register() {
                     value="passenger"
                     checked={formData.role === 'passenger'}
                     onChange={handleChange}
-                    className="text-blue-600"
+                    className="text-[#EC3399]"
                   />
                   <div>
                     <span className="font-medium">Passenger</span>
@@ -180,7 +180,7 @@ export default function Register() {
                     value="driver"
                     checked={formData.role === 'driver'}
                     onChange={handleChange}
-                    className="text-blue-600"
+                    className="text-[#EC3399]"
                   />
                   <div>
                     <span className="font-medium">Driver</span>
@@ -192,7 +192,7 @@ export default function Register() {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-[#EC3399] hover:bg-[#d62d88]"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -209,7 +209,7 @@ export default function Register() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-blue-600 hover:underline font-medium">
+              <Link to="/login" className="text-[#EC3399] hover:underline font-medium">
                 Login
               </Link>
             </p>

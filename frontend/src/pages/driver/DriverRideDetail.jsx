@@ -2,13 +2,26 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getRideById, getMyBookings, startRide, completeRide, cancelRide, acceptBooking, rejectBooking, submitRating } from '../../api';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button';
-import { Avatar, AvatarImage, AvatarFallback } from '../../components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Textarea } from '../../components/ui/textarea';
-import { Star } from 'lucide-react';
+import { 
+  Star, 
+  MapPin, 
+  Clock, 
+  Users, 
+  Car, 
+  DollarSign,
+  Calendar,
+  Route,
+  CheckCircle,
+  XCircle,
+  MessageCircle,
+  Play,
+  Square,
+  ArrowLeft,
+  Settings,
+  TrendingUp
+} from 'lucide-react';
 
 export default function DriverRideDetail() {
   const { id } = useParams();
@@ -110,186 +123,364 @@ export default function DriverRideDetail() {
 
   const getStatusColor = (status) => {
     const colors = {
-      active: 'bg-green-500',
-      in_progress: 'bg-blue-500',
-      fully_booked: 'bg-orange-500',
-      completed: 'bg-gray-500',
-      cancelled: 'bg-red-500',
-      requested: 'bg-yellow-500',
-      accepted: 'bg-green-500',
-      rejected: 'bg-red-500'
+      active: 'bg-green-100 text-green-800',
+      in_progress: 'bg-blue-100 text-blue-800',
+      fully_booked: 'bg-orange-100 text-orange-800',
+      completed: 'bg-gray-100 text-gray-800',
+      cancelled: 'bg-red-100 text-red-800',
+      requested: 'bg-yellow-100 text-yellow-800',
+      accepted: 'bg-green-100 text-green-800',
+      rejected: 'bg-red-100 text-red-800'
     };
-    return colors[status] || 'bg-gray-500';
+    return colors[status] || 'bg-gray-100 text-gray-800';
   };
 
-  if (loading) return <div className="p-4">Loading...</div>;
-  if (!ride) return <div className="p-4">Ride not found</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-[#3A3A6A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#3A3A6A]">Loading ride details...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!ride) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Ride not found</h2>
+          <button 
+            onClick={() => navigate('/driver/dashboard')}
+            className="px-4 py-2 bg-[#3A3A6A] text-white rounded-xl hover:bg-[#3A3A6A]/90 transition-colors"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Ride Details */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-2xl">{ride.from} → {ride.to}</CardTitle>
-                  <Badge className={getStatusColor(ride.status)}>{ride.status}</Badge>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-[#3A3A6A] text-white">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center gap-4 mb-4">
+            <button 
+              onClick={() => navigate('/driver/dashboard')} 
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="opacity-70">Driver Dashboard</span>
+              <span className="opacity-70">•</span>
+              <span>Ride Management</span>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">{ride.from} → {ride.to}</h1>
+              <div className="flex items-center gap-4 text-sm opacity-90">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(ride.departureTime).toLocaleDateString()}
                 </div>
-                <div className="flex gap-2">
-                  {(ride.status === 'active' || ride.status === 'fully_booked') && (
-                    <>
-                      <Button onClick={handleStartRide}>Start Ride</Button>
-                      <Button variant="destructive" onClick={handleCancelRide}>Cancel Ride</Button>
-                    </>
-                  )}
-                  {(ride.status === 'started' || ride.status === 'in_progress') && (
-                    <Button onClick={handleCompleteRide}>Complete Ride</Button>
-                  )}
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  {new Date(ride.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-gray-600">Date & Time:</span>
-                  <p className="font-medium">{new Date(ride.departureTime).toLocaleString()}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Price per seat:</span>
-                  <p className="font-medium text-green-600">₹{ride.pricePerSeat}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Available seats:</span>
-                  <p className="font-medium">{ride.availableSeats} of {ride.totalSeats}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Distance:</span>
-                  <p className="font-medium">{ride.distance || 'N/A'} km</p>
+                <div className="flex items-center gap-1">
+                  <DollarSign className="h-4 w-4" />
+                  ₹{ride.pricePerSeat} per seat
                 </div>
               </div>
-
-              {ride.stops && ride.stops.length > 0 && (
-                <div>
-                  <h3 className="font-semibold mb-2">Stops</h3>
-                  <div className="space-y-1">
-                    {ride.stops.map((stop, index) => (
-                      <div key={index} className="text-sm text-gray-600">• {stop}</div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {ride.preferences && (
-                <div>
-                  <h3 className="font-semibold mb-2">Preferences</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {ride.preferences.noSmoking && <Badge variant="outline">🚭 No Smoking</Badge>}
-                    {ride.preferences.petsAllowed && <Badge variant="outline">🐾 Pets Allowed</Badge>}
-                    {ride.preferences.musicAllowed && <Badge variant="outline">🎵 Music OK</Badge>}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            </div>
+            <div className="text-right">
+              <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(ride.status)}`}>
+                {ride.status.replace('_', ' ')}
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Booking Requests */}
-        <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Booking Requests ({bookings.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Quick Stats */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-4 bg-[#3A3A6A]/5 rounded-xl">
+                  <Users className="h-6 w-6 text-[#3A3A6A] mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Booked Seats</p>
+                  <p className="text-xl font-bold text-[#3A3A6A]">{ride.totalSeats - ride.availableSeats}</p>
+                </div>
+                <div className="text-center p-4 bg-[#E63399]/5 rounded-xl">
+                  <DollarSign className="h-6 w-6 text-[#E63399] mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Total Earnings</p>
+                  <p className="text-xl font-bold text-[#E63399]">₹{(ride.totalSeats - ride.availableSeats) * ride.pricePerSeat}</p>
+                </div>
+                <div className="text-center p-4 bg-green-50 rounded-xl">
+                  <TrendingUp className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Available</p>
+                  <p className="text-xl font-bold text-green-600">{ride.availableSeats}</p>
+                </div>
+                <div className="text-center p-4 bg-yellow-50 rounded-xl">
+                  <MessageCircle className="h-6 w-6 text-yellow-600 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Requests</p>
+                  <p className="text-xl font-bold text-yellow-600">{bookings.filter(b => b.status === 'requested').length}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Ride Actions */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Settings className="h-5 w-5 text-[#3A3A6A]" />
+                Ride Controls
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {(ride.status === 'active' || ride.status === 'fully_booked') && (
+                  <>
+                    <button 
+                      onClick={handleStartRide}
+                      className="flex items-center gap-2 px-6 py-3 bg-[#E63399] text-white rounded-xl font-medium hover:bg-[#E63399]/90 transition-colors"
+                    >
+                      <Play className="h-4 w-4" />
+                      Start Ride
+                    </button>
+                    <button 
+                      onClick={handleCancelRide}
+                      className="flex items-center gap-2 px-6 py-3 border border-red-300 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors"
+                    >
+                      <XCircle className="h-4 w-4" />
+                      Cancel Ride
+                    </button>
+                  </>
+                )}
+                {(ride.status === 'started' || ride.status === 'in_progress') && (
+                  <button 
+                    onClick={handleCompleteRide}
+                    className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition-colors"
+                  >
+                    <Square className="h-4 w-4" />
+                    Complete Ride
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Route Details */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <Route className="h-5 w-5 text-[#3A3A6A]" />
+                Route Information
+              </h3>
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col items-center">
+                    <div className="w-4 h-4 bg-[#3A3A6A] rounded-full" />
+                    <div className="w-0.5 h-12 bg-gray-200 mt-2" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-[#3A3A6A] text-lg">{ride.from}</p>
+                    <p className="text-gray-600">{new Date(ride.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Starting point</p>
+                  </div>
+                </div>
+                
+                {ride.stops?.map((stop, index) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className="w-3 h-3 bg-gray-400 rounded-full" />
+                      {index < ride.stops.length - 1 && <div className="w-0.5 h-12 bg-gray-200 mt-2" />}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">{stop}</p>
+                      <p className="text-gray-600 text-sm">Stop {index + 1}</p>
+                    </div>
+                  </div>
+                ))}
+                
+                <div className="flex items-center gap-4">
+                  <div className="w-4 h-4 bg-[#E63399] rounded-full" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-[#E63399] text-lg">{ride.to}</p>
+                    <p className="text-gray-600">Destination</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Vehicle & Preferences */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Car className="h-5 w-5 text-[#3A3A6A]" />
+                Vehicle & Preferences
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-semibold mb-2">Vehicle Details</h4>
+                  <div className="space-y-1 text-sm text-gray-600">
+                    <p>Total Seats: {ride.totalSeats}</p>
+                    <p>Distance: {ride.distance || 'N/A'} km</p>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">Ride Preferences</h4>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">🚭 No Smoking</span>
+                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">❄️ AC Available</span>
+                    <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">🎵 Music OK</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Booking Requests */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Booking Requests ({bookings.length})</h3>
               {bookings.length === 0 ? (
-                <p className="text-gray-500">No booking requests</p>
+                <div className="text-center py-8">
+                  <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500">No booking requests yet</p>
+                  <p className="text-sm text-gray-400">Passengers will appear here when they book</p>
+                </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {bookings.map((booking) => (
-                    <div key={booking._id} className="border rounded-lg p-3">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Avatar size="sm">
-                          <AvatarImage src={booking.passengerId?.profilePhoto} />
-                          <AvatarFallback>{booking.passengerId?.name?.[0]}</AvatarFallback>
-                        </Avatar>
+                    <div key={booking._id} className="border border-gray-200 rounded-xl p-4 hover:border-[#3A3A6A]/30 transition-colors">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-[#3A3A6A] text-white rounded-full flex items-center justify-center font-semibold">
+                          {booking.passengerId?.name?.[0] || 'P'}
+                        </div>
                         <div className="flex-1">
-                          <p className="font-medium">{booking.passengerId?.name}</p>
+                          <p className="font-semibold">{booking.passengerId?.name}</p>
                           <p className="text-sm text-gray-600">
-                            {booking.seatsBooked} seat(s) • ₹{booking.totalPrice}
+                            {booking.seatsBooked} seat{booking.seatsBooked > 1 ? 's' : ''} • ₹{booking.totalPrice}
                           </p>
                         </div>
-                        <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
+                        <div className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                          {booking.status}
+                        </div>
                       </div>
                       
-                      {booking.status === 'requested' && (
-                        <div className="flex gap-2">
-                          <Button size="sm" onClick={() => handleAcceptBooking(booking._id)}>
-                            Accept
-                          </Button>
-                          <Button size="sm" variant="destructive" onClick={() => handleRejectBooking(booking._id)}>
-                            Reject
-                          </Button>
-                        </div>
-                      )}
-                      
-                      {booking.status === 'accepted' && (
-                        <Button size="sm" onClick={() => navigate(`/chat/${booking._id}`)}>
-                          Message
-                        </Button>
-                      )}
-                      
-                      {ride.status === 'completed' && booking.status === 'completed' && !booking.hasRated?.driver && (
-                        <Button size="sm" onClick={() => setRatingModal({ open: true, booking, rating: 0, comment: '' })}>
-                          Rate Passenger
-                        </Button>
-                      )}
+                      <div className="flex gap-2">
+                        {booking.status === 'requested' && (
+                          <>
+                            <button 
+                              onClick={() => handleAcceptBooking(booking._id)}
+                              className="flex-1 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-1"
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                              Accept
+                            </button>
+                            <button 
+                              onClick={() => handleRejectBooking(booking._id)}
+                              className="flex-1 py-2 border border-red-300 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center justify-center gap-1"
+                            >
+                              <XCircle className="h-4 w-4" />
+                              Reject
+                            </button>
+                          </>
+                        )}
+                        
+                        {booking.status === 'accepted' && (
+                          <button 
+                            onClick={() => navigate(`/chat/${booking._id}`)}
+                            className="w-full py-2 bg-[#3A3A6A] text-white rounded-lg text-sm font-medium hover:bg-[#3A3A6A]/90 transition-colors flex items-center justify-center gap-1"
+                          >
+                            <MessageCircle className="h-4 w-4" />
+                            Message
+                          </button>
+                        )}
+                        
+                        {ride.status === 'completed' && booking.status === 'completed' && !booking.hasRated?.driver && (
+                          <button 
+                            onClick={() => setRatingModal({ open: true, booking, rating: 0, comment: '' })}
+                            className="w-full py-2 bg-[#E63399] text-white rounded-lg text-sm font-medium hover:bg-[#E63399]/90 transition-colors flex items-center justify-center gap-1"
+                          >
+                            <Star className="h-4 w-4" />
+                            Rate Passenger
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card className="mt-4">
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full" onClick={() => navigate('/driver/dashboard')}>
-                Go to Dashboard
-              </Button>
-              <Button variant="outline" className="w-full" onClick={() => navigate('/driver/rides')}>
-                My Posted Rides
-              </Button>
-            </CardContent>
-          </Card>
+            {/* Quick Actions */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => navigate('/driver/dashboard')}
+                  className="w-full py-3 border border-[#3A3A6A] text-[#3A3A6A] rounded-xl font-medium hover:bg-[#3A3A6A] hover:text-white transition-colors"
+                >
+                  Dashboard
+                </button>
+                <button 
+                  onClick={() => navigate('/driver/rides')}
+                  className="w-full py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+                >
+                  My Rides
+                </button>
+                <button 
+                  onClick={() => navigate(`/driver/edit-ride/${ride._id}`)}
+                  className="w-full py-3 bg-[#E63399] text-white rounded-xl font-medium hover:bg-[#E63399]/90 transition-colors"
+                >
+                  Edit This Ride
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* Rating Modal */}
       <Dialog open={ratingModal.open} onOpenChange={(open) => !open && setRatingModal({ open: false, booking: null, rating: 0, comment: '' })}>
-        <DialogContent>
+        <DialogContent className="rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Rate Passenger</DialogTitle>
+            <DialogTitle className="text-xl font-bold text-center">Rate Passenger</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="flex gap-2 justify-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`w-8 h-8 cursor-pointer ${star <= ratingModal.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                  onClick={() => setRatingModal({ ...ratingModal, rating: star })}
-                />
-              ))}
+          <div className="space-y-6">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">How was your experience with {ratingModal.booking?.passengerId?.name}?</p>
+              <div className="flex gap-2 justify-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-10 h-10 cursor-pointer transition-colors ${
+                      star <= ratingModal.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 hover:text-yellow-200'
+                    }`}
+                    onClick={() => setRatingModal({ ...ratingModal, rating: star })}
+                  />
+                ))}
+              </div>
             </div>
             <Textarea
-              placeholder="Add a comment (optional)"
+              placeholder="Share your experience (optional)"
               value={ratingModal.comment}
               onChange={(e) => setRatingModal({ ...ratingModal, comment: e.target.value })}
+              rows={3}
+              className="rounded-xl"
             />
-            <Button className="w-full" onClick={handleRatingSubmit}>
+            <button 
+              onClick={handleRatingSubmit}
+              disabled={ratingModal.rating === 0}
+              className="w-full py-3 bg-[#E63399] text-white rounded-xl font-semibold hover:bg-[#E63399]/90 disabled:opacity-50 transition-colors"
+            >
               Submit Rating
-            </Button>
+            </button>
           </div>
         </DialogContent>
       </Dialog>

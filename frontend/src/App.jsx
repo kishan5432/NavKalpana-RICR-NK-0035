@@ -1,8 +1,13 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
+import { NotificationProvider } from './context/NotificationContext';
+import { PageTransition } from './components/animations/PageTransitions';
+import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import MobileBottomNav from './components/MobileBottomNav';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -17,10 +22,12 @@ import BookingRequests from './pages/driver/BookingRequests';
 import PassengerDashboard from './pages/passenger/PassengerDashboard';
 import BookingHistory from './pages/passenger/BookingHistory';
 import DriverRideDetail from './pages/driver/DriverRideDetail';
+import EditRide from './pages/driver/EditRide';
 import Chat from './pages/shared/Chat';
 import Profile from './pages/shared/Profile';
 import EditProfile from './pages/shared/EditProfile';
 import Notifications from './pages/shared/Notifications';
+import { useState, useEffect } from 'react';
 
 const NotificationsPlaceholder = () => <div className="p-4">Notifications Page</div>;
 
@@ -38,10 +45,28 @@ const RoleRoute = ({ children, role }) => {
 };
 
 function AppRoutes() {
+  const location = useLocation();
+  const { isLoading } = useAuth();
+  const [appLoading, setAppLoading] = useState(true);
+  const hideFooter = ['/login', '/register', '/verify', '/forgot-password'].includes(location.pathname);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAppLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (appLoading || isLoading) {
+    return <LoadingScreen />;
+  }
+  
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
-        <Routes>
+      <main className="pb-16 md:pb-0 flex-1">
+        <PageTransition>
+          <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -63,13 +88,18 @@ function AppRoutes() {
           <Route path="/post-ride" element={<RoleRoute role="driver"><CreateRide /></RoleRoute>} />
           <Route path="/driver/rides" element={<RoleRoute role="driver"><MyPostedRides /></RoleRoute>} />
           <Route path="/driver/rides/:id" element={<RoleRoute role="driver"><DriverRideDetail /></RoleRoute>} />
+          <Route path="/driver/edit-ride/:id" element={<RoleRoute role="driver"><EditRide /></RoleRoute>} />
           <Route path="/driver/bookings" element={<RoleRoute role="driver"><BookingRequests /></RoleRoute>} />
           
           {/* Passenger Routes */}
           <Route path="/passenger/dashboard" element={<RoleRoute role="passenger"><PassengerDashboard /></RoleRoute>} />
           <Route path="/passenger/bookings" element={<RoleRoute role="passenger"><BookingHistory /></RoleRoute>} />
-        </Routes>
-    </>
+          </Routes>
+        </PageTransition>
+      </main>
+      <Footer />
+      <MobileBottomNav />
+    </div>
   );
 }
 
@@ -78,8 +108,20 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <SocketProvider>
-          <AppRoutes />
-          <Toaster />
+          <NotificationProvider>
+            <AppRoutes />
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                style: {
+                  background: 'white',
+                  border: '1px solid #e5e7eb',
+                  fontSize: '14px'
+                },
+                duration: 5000
+              }}
+            />
+          </NotificationProvider>
         </SocketProvider>
       </AuthProvider>
     </BrowserRouter>

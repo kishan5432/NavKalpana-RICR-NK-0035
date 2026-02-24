@@ -109,13 +109,21 @@ const updateRide = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Cannot edit non-active ride' });
     }
 
-    const { from, to, stops, date, departureTime, pricePerSeat, luggageAllowance, preferences } = req.body;
+    const { from, to, stops, date, departureTime, totalSeats, pricePerSeat, luggageAllowance, preferences } = req.body;
     
     if (from) ride.from = from;
     if (to) ride.to = to;
     if (stops) ride.stops = stops;
     if (date) ride.date = date;
     if (departureTime) ride.departureTime = departureTime;
+    if (totalSeats !== undefined) {
+      const bookedSeats = ride.totalSeats - ride.availableSeats;
+      if (totalSeats < bookedSeats) {
+        return res.status(400).json({ success: false, message: 'Cannot reduce seats below booked seats' });
+      }
+      ride.availableSeats = totalSeats - bookedSeats;
+      ride.totalSeats = totalSeats;
+    }
     if (pricePerSeat !== undefined) ride.pricePerSeat = pricePerSeat;
     if (luggageAllowance) ride.luggageAllowance = luggageAllowance;
     if (preferences) ride.preferences = preferences;
