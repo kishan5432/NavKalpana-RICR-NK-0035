@@ -105,6 +105,15 @@ const Profile = () => {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-3 gap-4 lg:gap-6">
+              {/* Dashboard Button */}
+              <div className="col-span-3 mb-4">
+                <Button
+                  onClick={() => navigate(currentUser?.role === 'driver' ? '/driver/dashboard' : '/passenger/dashboard')}
+                  className="bg-gradient-to-r from-[#EC3399] to-[#d62d88] hover:from-[#d62d88] hover:to-[#c02d7a] text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full"
+                >
+                  Go to Dashboard
+                </Button>
+              </div>
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-white">{tripCount}</div>
                 <div className="text-white/80 text-sm">Trips</div>

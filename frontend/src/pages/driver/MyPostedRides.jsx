@@ -207,7 +207,7 @@ export default function MyPostedRides() {
             {rides.length === 0 && (
               <Button 
                 onClick={() => navigate('/post-ride')}
-                className="bg-[#EC3399] hover:bg-[#d62d88] text-white"
+                className="bg-[#3A2A5A] hover:bg-[#2d1f47] text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Post Your First Ride
@@ -293,7 +293,7 @@ export default function MyPostedRides() {
                     <div className="flex flex-col justify-center gap-3" onClick={(e) => e.stopPropagation()}>
                       <Button
                         onClick={() => navigate(`/driver/bookings?rideId=${ride._id}`)}
-                        className="bg-[#EC3399] hover:bg-[#d62d88] text-white font-semibold rounded-xl"
+                        className="bg-[#3A2A5A] hover:bg-[#2d1f47] text-white font-semibold rounded-xl"
                       >
                         <Users className="h-4 w-4 mr-2" />
                         View Bookings

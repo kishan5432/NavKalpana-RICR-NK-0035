@@ -223,44 +223,29 @@ export default function RideDetail() {
       {/* Header */}
       <div className="bg-[#3A3A6A] text-white">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-4 mb-4">
-            <button 
-              onClick={() => navigate(-1)} 
-              className="p-2 hover:bg-white/10 rounded-full transition-colors"
-            >
-              <Home className="h-5 w-5" />
-            </button>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="opacity-70">Rides</span>
-              <ChevronRight className="h-4 w-4 opacity-70" />
-              <span>Ride Details</span>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold">{ride.from} → {ride.to}</h1>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => navigate('/search')}
+                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+              >
+                Search Rides
+              </Button>
+              <Button
+                onClick={() => navigate(user?.role === 'driver' ? '/driver/dashboard' : '/passenger/dashboard')}
+                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+              >
+                Dashboard
+              </Button>
             </div>
           </div>
           
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">{ride.from} → {ride.to}</h1>
-              <div className="flex items-center gap-4 text-sm opacity-90">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(ride.date).toLocaleDateString()}
-                </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  {ride.departureTime}
-                </div>
-                <div className="flex items-center gap-1">
-                  <DollarSign className="h-4 w-4" />
-                  ₹{ride.pricePerSeat}
-                </div>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
-                ride.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-              }`}>
-                {ride.status}
-              </div>
+            <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
+              ride.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+            }`}>
+              {ride.status}
             </div>
           </div>
         </div>
@@ -272,26 +257,31 @@ export default function RideDetail() {
           <div className="lg:col-span-2 space-y-6">
             {/* Quick Stats */}
             <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-[#3A3A6A]/5 rounded-xl">
-                  <Users className="h-6 w-6 text-[#3A3A6A] mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Available Seats</p>
-                  <p className="text-xl font-bold text-[#3A3A6A]">{ride.availableSeats}</p>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <Calendar className="h-6 w-6 text-blue-700 mx-auto mb-2" />
+                  <p className="text-sm text-blue-800 font-medium">Date</p>
+                  <p className="text-xl font-black text-blue-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{new Date(ride.date).toLocaleDateString()}</p>
                 </div>
-                <div className="text-center p-4 bg-[#E63399]/5 rounded-xl">
-                  <Route className="h-6 w-6 text-[#E63399] mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Distance</p>
-                  <p className="text-xl font-bold text-[#E63399]">~2.5 hrs</p>
+                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <Clock className="h-6 w-6 text-purple-700 mx-auto mb-2" />
+                  <p className="text-sm text-purple-800 font-medium">Departure</p>
+                  <p className="text-xl font-black text-purple-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{ride.departureTime}</p>
                 </div>
-                <div className="text-center p-4 bg-green-50 rounded-xl">
-                  <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Instant Book</p>
-                  <p className="text-xl font-bold text-green-600">Yes</p>
+                <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <DollarSign className="h-6 w-6 text-green-700 mx-auto mb-2" />
+                  <p className="text-sm text-green-800 font-medium">Price per seat</p>
+                  <p className="text-xl font-black text-green-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">₹{ride.pricePerSeat}</p>
                 </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-xl">
-                  <Star className="h-6 w-6 text-yellow-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Rating</p>
-                  <p className="text-xl font-bold text-yellow-600">{ride.driverId?.rating?.average?.toFixed(1) || 'New'}</p>
+                <div className="text-center p-4 bg-gradient-to-br from-slate-50 to-slate-100 hover:from-slate-100 hover:to-slate-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <Users className="h-6 w-6 text-slate-700 mx-auto mb-2" />
+                  <p className="text-sm text-slate-800 font-medium">Available Seats</p>
+                  <p className="text-xl font-black text-slate-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{ride.availableSeats}</p>
+                </div>
+                <div className="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <Star className="h-6 w-6 text-yellow-700 mx-auto mb-2" />
+                  <p className="text-sm text-yellow-800 font-medium">Rating</p>
+                  <p className="text-xl font-black text-yellow-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{ride.driverId?.rating?.average?.toFixed(1) || 'New'}</p>
                 </div>
               </div>
             </div>

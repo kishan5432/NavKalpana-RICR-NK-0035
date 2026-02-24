@@ -166,13 +166,6 @@ export default function DriverDashboard() {
               <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name}!</h1>
               <p className="text-white/80">Manage your rides and earnings</p>
             </div>
-            <Button 
-              onClick={() => navigate('/post-ride')} 
-              className="bg-[#EC3399] hover:bg-[#d62d88] h-12 px-6"
-            >
-              <Plus className="h-5 w-5 mr-2" />
-              Post New Ride
-            </Button>
           </div>
 
           {/* Stats Cards */}

@@ -66,13 +66,13 @@ const NotificationBell = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className="relative p-2.5 hover:bg-gray-100 rounded-lg transition-all duration-200 touch-target group"
+        className="relative p-2.5 hover:bg-[#3A2A5A]/10 rounded-lg transition-all duration-200 touch-target group"
       >
         <Bell className={`h-5 w-5 transition-colors duration-200 ${
-          unreadCount > 0 ? 'text-blue-600' : 'text-gray-600 group-hover:text-gray-800'
+          unreadCount > 0 ? 'text-[#EC3399]' : 'text-[#3A2A5A] group-hover:text-[#EC3399]'
         }`} />
         {unreadCount > 0 && (
-          <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-semibold shadow-sm animate-pulse border-2 border-white">
+          <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-gradient-to-r from-[#EC3399] to-[#d62d88] text-white text-xs font-semibold shadow-sm animate-pulse border-2 border-white">
             {unreadCount > 99 ? '99+' : unreadCount}
           </Badge>
         )}
@@ -102,7 +102,7 @@ const NotificationBell = () => {
                   key={notif._id}
                   onClick={() => handleNotificationClick(notif)}
                   className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-all duration-200 group ${
-                    !notif.read ? 'bg-blue-50/50 border-l-4 border-l-blue-500' : ''
+                    !notif.read ? 'bg-[#EC3399]/5 border-l-4 border-l-[#EC3399]' : ''
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -114,7 +114,7 @@ const NotificationBell = () => {
                       <p className="text-xs text-gray-500 mt-1.5 font-medium">{timeAgo(notif.createdAt)}</p>
                     </div>
                     {!notif.read && (
-                      <div className="w-2.5 h-2.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mt-2 flex-shrink-0 shadow-sm" />
+                      <div className="w-2.5 h-2.5 bg-gradient-to-r from-[#EC3399] to-[#d62d88] rounded-full mt-2 flex-shrink-0 shadow-sm" />
                     )}
                   </div>
                 </div>
@@ -138,7 +138,7 @@ const NotificationBell = () => {
                   setShowDropdown(false);
                   navigate('/notifications');
                 }}
-                className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-all duration-200"
+                className="text-sm font-medium text-[#3A2A5A] hover:text-[#EC3399] hover:bg-[#EC3399]/10 transition-all duration-200"
               >
                 View all notifications
               </Button>

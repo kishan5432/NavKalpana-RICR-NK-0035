@@ -90,12 +90,11 @@ export default function CreateRide() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Header */}
-      <div className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex items-center gap-4 mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-white to-purple-50">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[#3A2A5A] to-[#EC3399]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center gap-4">
             <Button
               onClick={() => navigate('/driver/dashboard')}
               variant="ghost"
@@ -105,29 +104,35 @@ export default function CreateRide() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                <Plus className="h-6 w-6 text-white" />
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                <Plus className="h-5 w-5 text-white" />
               </div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-white">Create New Ride</h1>
+              <h1 className="text-2xl font-bold text-white">Create New Ride</h1>
             </div>
           </div>
-          
-          <p className="text-white/90 text-lg max-w-2xl">
-            Share your journey and connect with fellow travelers
-          </p>
-        </div>
-        
-        {/* Curved bottom */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
-          <svg viewBox="0 0 1440 120" className="w-full h-[60px]" preserveAspectRatio="none">
-            <path fill="#f9fafb" d="M0,60 Q360,120 720,60 T1440,60 L1440,120 L0,120 Z"></path>
-          </svg>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 pb-12">
-        <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          {/* Left Side - Sticky Image */}
+          <div className="hidden lg:flex justify-center items-center sticky top-8">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#3A2A5A]/10 to-[#EC3399]/10 rounded-3xl blur-2xl transform rotate-3"></div>
+              <img 
+                src="https://res.cloudinary.com/dse13zdp7/image/upload/v1771953356/WhatsApp_Image_2026-02-24_at_22.44.48_vuze12.jpg"
+                alt="Create Ride"
+                className="relative z-10 w-full max-w-xl h-[500px] object-cover rounded-3xl shadow-2xl border border-white/50"
+              />
+              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-[#EC3399]/20 to-[#3A2A5A]/20 rounded-full blur-xl"></div>
+              <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-br from-[#3A2A5A]/20 to-[#EC3399]/20 rounded-full blur-xl"></div>
+            </div>
+          </div>
+
+          {/* Right Side - Form */}
+          <div className="lg:max-w-2xl">
+            <form onSubmit={handleSubmit} className="space-y-6">
           {/* Route Information */}
           <Card className="bg-white shadow-lg rounded-2xl border-0">
             <CardContent className="p-8">
@@ -375,27 +380,29 @@ export default function CreateRide() {
             </CardContent>
           </Card>
 
-          {/* Submit Button */}
-          <div className="flex justify-center pt-4">
-            <Button 
-              type="submit" 
-              disabled={loading}
-              className="h-14 px-12 bg-[#EC3399] hover:bg-[#d62d88] text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                  Creating Ride...
-                </>
-              ) : (
-                <>
-                  <Route className="h-5 w-5 mr-3" />
-                  Create Ride
-                </>
-              )}
-            </Button>
+              {/* Submit Button */}
+              <div className="flex justify-center pt-6">
+                <Button 
+                  type="submit" 
+                  disabled={loading}
+                  className="h-12 px-8 bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] hover:from-[#2d1f47] hover:to-[#d62d88] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <Route className="h-4 w-4 mr-2" />
+                      Create Ride
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
