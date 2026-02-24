@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Car, Users, Star } from 'lucide-react';
+import { Search, Clock, Users, Shield, Quote, Apple, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,116 +31,178 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="bg-blue-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Travel Together, Save Together
-          </h1>
-          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-            Find shared rides or offer your empty seats
-          </p>
+      <section className="relative bg-[#3A2A5A] overflow-hidden">
+        <div className="hero-curve">
+          <svg viewBox="0 0 1440 320" className="absolute bottom-0 w-full" preserveAspectRatio="none">
+            <path fill="#3A2A5A" d="M0,160 Q360,280 720,160 T1440,160 L1440,0 L0,0 Z"></path>
+          </svg>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
+          <div className="text-center mb-12">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              Its simple, quick, and cheap way to<br />commute together.
+            </h1>
+            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+              Connect with people who need to travel with you. Grow your network.
+            </p>
+          </div>
 
-          {/* Search Bar */}
-          <Card className="max-w-4xl mx-auto">
-            <CardContent className="p-6">
-              <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <Input
-                  name="from"
-                  placeholder="From"
-                  value={searchData.from}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  name="to"
-                  placeholder="To"
-                  value={searchData.to}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  name="date"
-                  type="date"
-                  value={searchData.date}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  name="seats"
-                  type="number"
-                  min="1"
-                  max="8"
-                  placeholder="Seats"
-                  value={searchData.seats}
-                  onChange={handleChange}
-                />
-                <Button type="submit" className="flex items-center justify-center">
-                  <Search className="mr-2 h-4 w-4" />
-                  Search
-                </Button>
+          {/* Search Form */}
+          <Card className="max-w-4xl mx-auto shadow-2xl rounded-2xl">
+            <CardContent className="p-6 md:p-8">
+              <form onSubmit={handleSearch} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    name="from"
+                    placeholder="Pickup Location"
+                    value={searchData.from}
+                    onChange={handleChange}
+                    className="h-12"
+                    required
+                  />
+                  <Input
+                    name="to"
+                    placeholder="Drop-off Location"
+                    value={searchData.to}
+                    onChange={handleChange}
+                    className="h-12"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Input
+                    name="date"
+                    type="date"
+                    value={searchData.date}
+                    onChange={handleChange}
+                    className="h-12"
+                    required
+                  />
+                  <Input
+                    name="seats"
+                    type="number"
+                    min="1"
+                    max="8"
+                    placeholder="Seats"
+                    value={searchData.seats}
+                    onChange={handleChange}
+                    className="h-12"
+                  />
+                  <Button type="submit" className="h-12 font-semibold bg-[#EC3399] hover:bg-[#d62d88]">
+                    <Search className="mr-2 h-5 w-5" />
+                    Search
+                  </Button>
+                </div>
               </form>
             </CardContent>
           </Card>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-20">
+      {/* Features Section */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            How It Works
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
+            Features
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-pink-100 mb-6">
+                <Clock className="h-8 w-8 text-[#EC3399]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Save Time & Money</h3>
+              <p className="text-gray-600">
+                Save significantly on your commute cost and avoid paying our commission fees.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-pink-100 mb-6">
+                <Users className="h-8 w-8 text-[#EC3399]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Meet New People</h3>
+              <p className="text-gray-600">
+                Grow your network organically by meeting amazing new people daily.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-pink-100 mb-6">
+                <Shield className="h-8 w-8 text-[#EC3399]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Safe and Secure</h3>
+              <p className="text-gray-600">
+                We have introduced a safety feature to make sure you have a safe experience.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+            Loved <span className="text-[#EC3399]">by customers</span>
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+            <Card className="relative">
               <CardContent className="p-8">
-                <Car className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-4">Post a Ride</h3>
-                <p className="text-gray-600">
-                  Drivers list available seats for their planned trips
+                <Quote className="h-10 w-10 text-gray-300 mb-4" />
+                <p className="text-gray-700 mb-6">
+                  Made my life easy. No more waiting for cabs and buses. Great way to have company and cut costs. I'm a big need to have friends to talk to when you are doing a long journey.
                 </p>
+                <div className="flex items-center">
+                  <div className="w-12 h-12 rounded-full bg-gray-300 mr-4"></div>
+                  <div>
+                    <div className="font-bold">Nishant Sharma</div>
+                    <div className="text-sm text-gray-500">Delhi</div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="relative">
               <CardContent className="p-8">
-                <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-4">Find a Ride</h3>
-                <p className="text-gray-600">
-                  Passengers search and book rides that match their needs
+                <Quote className="h-10 w-10 text-gray-300 mb-4" />
+                <p className="text-gray-700 mb-6">
+                  Amazing experience! The platform is easy to use and I've met some wonderful people during my commutes. Highly recommended for daily travelers.
                 </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardContent className="p-8">
-                <Star className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-4">Travel & Rate</h3>
-                <p className="text-gray-600">
-                  Complete trips safely and build trust through ratings
-                </p>
+                <div className="flex items-center">
+                  <div className="w-12 h-12 rounded-full bg-gray-300 mr-4"></div>
+                  <div>
+                    <div className="font-bold">Priya Patel</div>
+                    <div className="text-sm text-gray-500">Mumbai</div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="bg-gray-50 py-16">
+      {/* App Download Section */}
+      <section className="py-20 bg-gradient-to-r from-yellow-400 to-orange-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-16">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600">10K+</div>
-              <div className="text-gray-600">Rides</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600">50K+</div>
-              <div className="text-gray-600">Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600">4.8★</div>
-              <div className="text-gray-600">Rating</div>
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Here's where you can get it from.
+            </h2>
+            <p className="text-gray-800 mb-8">
+              Now open to Carpoolers, Bikers and Supports. Grow your network.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button className="bg-black hover:bg-gray-800 text-white h-14 px-8 rounded-lg">
+                <Play className="mr-2 h-5 w-5" />
+                GET IT ON Google Play
+              </Button>
+              <Button className="bg-black hover:bg-gray-800 text-white h-14 px-8 rounded-lg">
+                <Apple className="mr-2 h-5 w-5" />
+                Download on the App Store
+              </Button>
             </div>
           </div>
         </div>

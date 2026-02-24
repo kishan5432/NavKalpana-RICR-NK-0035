@@ -1,9 +1,48 @@
 const User = require('../models/User');
+const Booking = require('../models/Booking');
+const Ride = require('../models/Ride');
 const Notification = require('../models/Notification');
 const cloudinary = require('../config/cloudinary');
 
-const getMe = (req, res) => {
-  res.status(200).json({ success: true, user: req.user });
+const getMe = async (req, res) => {
+  try {
+    // Calculate completed trips based on role
+    let completedTrips = 0;
+    if (req.user.role === 'passenger') {
+      // For passengers: count completed bookings
+      completedTrips = await Booking.countDocuments({
+        passengerId: req.user._id,
+        status: 'completed'
+      });
+    } else if (req.user.role === 'driver') {
+      // For drivers: count completed rides
+      completedTrips = await Ride.countDocuments({
+        driverId: req.user._id,
+        status: 'completed'
+      });
+    } else if (req.user.role === 'both') {
+      // For both: count completed bookings + completed rides
+      const passengerTrips = await Booking.countDocuments({
+        passengerId: req.user._id,
+        status: 'completed'
+      });
+      const driverTrips = await Ride.countDocuments({
+        driverId: req.user._id,
+        status: 'completed'
+      });
+      completedTrips = passengerTrips + driverTrips;
+    }
+
+    // Add completedTrips to user object
+    const userWithTrips = {
+      ...req.user.toObject(),
+      completedTrips
+    };
+
+    res.status(200).json({ success: true, user: userWithTrips });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 };
 
 const updateMe = async (req, res, next) => {
@@ -32,7 +71,40 @@ const getUserById = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    res.status(200).json({ success: true, user });
+    // Calculate completed trips based on role
+    let completedTrips = 0;
+    if (user.role === 'passenger') {
+      // For passengers: count completed bookings
+      completedTrips = await Booking.countDocuments({
+        passengerId: user._id,
+        status: 'completed'
+      });
+    } else if (user.role === 'driver') {
+      // For drivers: count completed rides
+      completedTrips = await Ride.countDocuments({
+        driverId: user._id,
+        status: 'completed'
+      });
+    } else if (user.role === 'both') {
+      // For both: count completed bookings + completed rides
+      const passengerTrips = await Booking.countDocuments({
+        passengerId: user._id,
+        status: 'completed'
+      });
+      const driverTrips = await Ride.countDocuments({
+        driverId: user._id,
+        status: 'completed'
+      });
+      completedTrips = passengerTrips + driverTrips;
+    }
+
+    // Add completedTrips to user object
+    const userWithTrips = {
+      ...user.toObject(),
+      completedTrips
+    };
+
+    res.status(200).json({ success: true, user: userWithTrips });
   } catch (err) {
     next(err);
   }

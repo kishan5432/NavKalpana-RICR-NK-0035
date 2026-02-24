@@ -85,10 +85,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3A2A5A] to-[#2d1f47] px-4">
+      <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-blue-600 mb-2">
+          <CardTitle className="text-2xl font-bold text-[#3A2A5A] mb-2">
             RideShareX
           </CardTitle>
           <p className="text-gray-600">Welcome back</p>
@@ -120,7 +120,7 @@ export default function Login() {
             <div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                <Link to="/forgot-password" className="text-sm text-[#EC3399] hover:underline">
                   Forgot Password?
                 </Link>
               </div>
@@ -148,7 +148,7 @@ export default function Login() {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-[#EC3399] hover:bg-[#d62d88]"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -165,7 +165,7 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/register" className="text-blue-600 hover:underline font-medium">
+              <Link to="/register" className="text-[#EC3399] hover:underline font-medium">
                 Register
               </Link>
             </p>

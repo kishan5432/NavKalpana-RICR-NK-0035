@@ -87,10 +87,10 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3A2A5A] to-[#2d1f47] px-4">
+      <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-blue-600 mb-2">
+          <CardTitle className="text-2xl font-bold text-[#3A2A5A] mb-2">
             Reset Password
           </CardTitle>
           <p className="text-gray-600">
@@ -117,7 +117,7 @@ export default function ForgotPassword() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-[#EC3399] hover:bg-[#d62d88]" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -179,7 +179,7 @@ export default function ForgotPassword() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-[#EC3399] hover:bg-[#d62d88]" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -203,7 +203,7 @@ export default function ForgotPassword() {
           )}
 
           <div className="mt-6 text-center">
-            <Link to="/login" className="text-sm text-blue-600 hover:underline">
+            <Link to="/login" className="text-sm text-[#EC3399] hover:underline">
               Back to Login
             </Link>
           </div>

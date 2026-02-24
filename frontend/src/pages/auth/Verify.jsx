@@ -72,10 +72,10 @@ export default function Verify() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3A2A5A] to-[#2d1f47] px-4">
+      <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-blue-600 mb-2">
+          <CardTitle className="text-2xl font-bold text-[#3A2A5A] mb-2">
             Verify Your Email
           </CardTitle>
           <p className="text-gray-600">
@@ -100,7 +100,7 @@ export default function Verify() {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-[#EC3399] hover:bg-[#d62d88]"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -120,7 +120,7 @@ export default function Verify() {
               <button
                 onClick={handleResend}
                 disabled={isResending}
-                className="text-blue-600 hover:underline font-medium disabled:opacity-50"
+                className="text-[#EC3399] hover:underline font-medium disabled:opacity-50"
               >
                 {isResending ? 'Sending...' : 'Resend'}
               </button>

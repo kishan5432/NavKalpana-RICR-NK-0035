@@ -1,18 +1,20 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { createRide } from '../../api';
+import { getRideById, updateRide } from '../../api';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Checkbox } from '../../components/ui/checkbox';
-import { ArrowLeft, MapPin, Calendar, Clock, Users, DollarSign, Plus, X, Car, Settings, Route } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Clock, Users, DollarSign, Plus, X, Car, Settings, Route, Edit } from 'lucide-react';
 
-export default function CreateRide() {
+export default function EditRide() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [formData, setFormData] = useState({
     from: '',
     to: '',
@@ -29,6 +31,38 @@ export default function CreateRide() {
     }
   });
   const [stopInput, setStopInput] = useState('');
+
+  useEffect(() => {
+    fetchRideData();
+  }, [id]);
+
+  const fetchRideData = async () => {
+    try {
+      const response = await getRideById(id);
+      const ride = response.ride;
+      
+      setFormData({
+        from: ride.from || '',
+        to: ride.to || '',
+        optionalStops: ride.stops || [],
+        date: ride.date ? ride.date.split('T')[0] : '',
+        departureTime: ride.departureTime || '',
+        totalSeats: ride.totalSeats || 1,
+        pricePerSeat: ride.pricePerSeat || '',
+        luggageAllowance: ride.luggageAllowance || 'none',
+        preferences: {
+          smokingAllowed: ride.preferences?.smoking || false,
+          petsAllowed: ride.preferences?.pets || false,
+          musicAllowed: ride.preferences?.music || false
+        }
+      });
+    } catch (error) {
+      toast.error('Failed to load ride data');
+      navigate('/driver/dashboard');
+    } finally {
+      setFetchLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -61,13 +95,9 @@ export default function CreateRide() {
   };
 
   const validateForm = () => {
-    const { from, to, date, departureTime, pricePerSeat } = formData;
-    if (!from || !to || !date || !departureTime || !pricePerSeat) {
+    const { date, departureTime, pricePerSeat } = formData;
+    if (!date || !departureTime || !pricePerSeat) {
       toast.error('Please fill all required fields');
-      return false;
-    }
-    if (new Date(date) < new Date().setHours(0, 0, 0, 0)) {
-      toast.error('Date cannot be in the past');
       return false;
     }
     return true;
@@ -79,15 +109,37 @@ export default function CreateRide() {
 
     setLoading(true);
     try {
-      await createRide(formData);
-      toast.success('Ride created successfully!');
-      navigate('/driver/rides');
+      const updateData = {
+        ...formData,
+        stops: formData.optionalStops,
+        preferences: {
+          smoking: formData.preferences.smokingAllowed,
+          pets: formData.preferences.petsAllowed,
+          music: formData.preferences.musicAllowed
+        }
+      };
+      delete updateData.optionalStops;
+      
+      await updateRide(id, updateData);
+      toast.success('Ride updated successfully!');
+      navigate(`/driver/rides/${id}`);
     } catch (error) {
-      toast.error('Failed to create ride');
+      toast.error('Failed to update ride');
     } finally {
       setLoading(false);
     }
   };
+
+  if (fetchLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-[#3A3A6A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#3A3A6A]">Loading ride data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -97,7 +149,7 @@ export default function CreateRide() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center gap-4 mb-6">
             <Button
-              onClick={() => navigate('/driver/dashboard')}
+              onClick={() => navigate(`/driver/rides/${id}`)}
               variant="ghost"
               size="sm"
               className="text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
@@ -106,14 +158,14 @@ export default function CreateRide() {
             </Button>
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                <Plus className="h-6 w-6 text-white" />
+                <Edit className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-white">Create New Ride</h1>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">Edit Ride</h1>
             </div>
           </div>
           
           <p className="text-white/90 text-lg max-w-2xl">
-            Share your journey and connect with fellow travelers
+            Update your ride details and preferences
           </p>
         </div>
         
@@ -141,30 +193,28 @@ export default function CreateRide() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="from" className="text-sm font-medium text-gray-700 mb-2 block">
-                    From *
+                    From (Cannot be changed)
                   </Label>
                   <Input
                     id="from"
                     name="from"
                     value={formData.from}
-                    onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 bg-gray-100 text-gray-600"
                     placeholder="Enter pickup location"
-                    required
+                    disabled
                   />
                 </div>
                 <div>
                   <Label htmlFor="to" className="text-sm font-medium text-gray-700 mb-2 block">
-                    To *
+                    To (Cannot be changed)
                   </Label>
                   <Input
                     id="to"
                     name="to"
                     value={formData.to}
-                    onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 bg-gray-100 text-gray-600"
                     placeholder="Enter destination"
-                    required
+                    disabled
                   />
                 </div>
               </div>
@@ -251,19 +301,16 @@ export default function CreateRide() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div>
                   <Label htmlFor="totalSeats" className="text-sm font-medium text-gray-700 mb-2 block">
-                    Available Seats *
+                    Total Seats (Cannot be changed)
                   </Label>
                   <Input
                     id="totalSeats"
                     name="totalSeats"
                     type="number"
-                    min="1"
-                    max="8"
                     value={formData.totalSeats}
-                    onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 bg-gray-100 text-gray-600"
                     placeholder="Number of seats"
-                    required
+                    disabled
                   />
                 </div>
                 <div>
@@ -385,12 +432,12 @@ export default function CreateRide() {
               {loading ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                  Creating Ride...
+                  Updating Ride...
                 </>
               ) : (
                 <>
-                  <Route className="h-5 w-5 mr-3" />
-                  Create Ride
+                  <Edit className="h-5 w-5 mr-3" />
+                  Update Ride
                 </>
               )}
             </Button>

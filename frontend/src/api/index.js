@@ -18,6 +18,7 @@ export const getUserById = (id) => axios.get(`/users/${id}`).then(res => res.dat
 
 // RIDES
 export const createRide = (data) => axios.post('/rides', data).then(res => res.data);
+export const updateRide = (id, data) => axios.put(`/rides/${id}`, data).then(res => res.data);
 export const getRides = (params) => axios.get('/rides', { params }).then(res => res.data);
 export const getRideById = (id) => axios.get(`/rides/${id}`).then(res => res.data);
 export const getMyPostedRides = () => axios.get('/rides/my-rides').then(res => res.data);

@@ -3,9 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getBookingById } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import ChatWindow from '../../components/ChatWindow';
-import { Avatar } from '../../components/ui/avatar';
-import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
 const Chat = () => {
@@ -31,22 +28,39 @@ const Chat = () => {
       .catch(err => console.error('Error:', err));
   }, [bookingId, user]);
 
-  if (!booking || !otherUser) return <div className="p-4">Loading...</div>;
+  if (!booking || !otherUser) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="text-[#3A3A6A]">Loading...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 64px)' }}>
-      <div className="border-b p-4 flex items-center gap-4 bg-white shadow-sm z-10">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="shrink-0">
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <Avatar className="w-10 h-10 shrink-0">
-          <img src={otherUser.photo || '/default-avatar.png'} alt={otherUser.name} />
-        </Avatar>
-        <div className="flex-1 min-w-0">
-          <h2 className="font-semibold truncate">{otherUser.name}</h2>
-          <Badge variant="secondary" className="text-xs">Booking Status: {booking.status}</Badge>
+    <div className="flex flex-col h-screen bg-white">
+      {/* Header */}
+      <div className="bg-[#3A3A6A] text-white p-4 shadow-sm">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => navigate(-1)} 
+            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-white/20">
+            <img 
+              src={otherUser.photo || '/default-avatar.png'} 
+              alt={otherUser.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          <h2 className="font-semibold text-lg">{otherUser.name}</h2>
         </div>
       </div>
+      
+      {/* Chat Window */}
       <div className="flex-1 overflow-hidden">
         <ChatWindow bookingId={bookingId} otherUser={otherUser} />
       </div>
