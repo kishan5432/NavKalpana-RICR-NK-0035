@@ -80,7 +80,7 @@ export default function BookingHistory() {
   const getStatusColor = (status) => {
     const colors = {
       requested: 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white',
-      accepted: 'bg-gradient-to-r from-green-500 to-emerald-600 text-white',
+      accepted: 'bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] text-white',
       rejected: 'bg-gradient-to-r from-red-500 to-red-600 text-white',
       cancelled: 'bg-gradient-to-r from-gray-500 to-gray-600 text-white',
       completed: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
@@ -156,7 +156,7 @@ export default function BookingHistory() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
                     activeTab === tab.key 
-                      ? 'bg-[#EC3399] text-white shadow-lg' 
+                      ? 'bg-[#3A2A5A] text-white shadow-lg' 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >

@@ -4,7 +4,7 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
-import { Star, ArrowRight, Users, Car, Shield, Phone, Clock, MapPin, Snowflake, Music, Package } from 'lucide-react';
+import { Star, ArrowRight, Users, Car, Shield, Phone, Clock, MapPin, Snowflake, Music, Package, Calendar } from 'lucide-react';
 
 export default function RideCard({ ride, onBook }) {
   const navigate = useNavigate();
@@ -40,118 +40,111 @@ export default function RideCard({ ride, onBook }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.2 } }}
       transition={{ duration: 0.3 }}
     >
-      <Card className={`transition-all duration-300 hover:shadow-lg border-0 shadow-md ${isFullyBooked ? 'opacity-60' : ''}`}>
-      <CardContent className="p-4 md:p-6">
-        <div className="flex flex-col md:flex-row gap-4">
+      <Card className={`transition-all duration-300 hover:shadow-2xl border-2 border-gray-100 hover:border-[#3A2A5A]/20 shadow-lg bg-white ${isFullyBooked ? 'opacity-60' : ''}`}>
+      <CardContent className="p-3">
+        <div className="flex gap-3">
           {/* Driver Photo */}
-          <div className="flex-shrink-0 flex md:block justify-center">
-            <Avatar className="w-16 h-16">
-              <AvatarImage src={ride.driverId?.profilePhoto} className="object-cover" />
-              <AvatarFallback className="text-lg font-semibold bg-blue-100 text-blue-600">
-                {ride.driverId?.name?.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
+          <div className="flex-shrink-0">
+            <div className="relative">
+              <Avatar className="w-10 h-10 border-2 border-white shadow-sm">
+                <AvatarImage src={ride.driverId?.profilePhoto} className="object-cover" />
+                <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-[#3A2A5A] to-[#EC3399] text-white">
+                  {ride.driverId?.name?.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              {ride.driverId?.isPhoneVerified && (
+                <div className="absolute -bottom-0.5 -right-0.5 bg-green-500 rounded-full p-0.5 border border-white">
+                  <Shield className="w-2 h-2 text-white" />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Main Content */}
           <div className="flex-1 min-w-0">
-            {/* Driver Info with Badges */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
-              <h4 className="font-semibold text-gray-900 truncate mobile-text">{ride.driverId?.name}</h4>
-              <div className="flex gap-2 flex-wrap">
-                {ride.driverId?.isPhoneVerified && (
-                  <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
-                    <Phone className="w-3 h-3 mr-1" />Verified
-                  </Badge>
-                )}
-                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700 border-blue-200">
-                  <Shield className="w-3 h-3 mr-1" />ID Verified
+            {/* Driver Info & Rating */}
+            <div className="flex items-center gap-2 mb-2">
+              <h4 className="font-bold text-base text-gray-800">{ride.driverId?.name}</h4>
+              {ride.driverId?.isPhoneVerified && (
+                <Badge className="bg-green-500 text-white font-medium px-1.5 py-0.5 text-xs">
+                  VERIFIED
                 </Badge>
-              </div>
-            </div>
-
-            {/* Rating */}
-            <div className="flex items-center gap-1 mb-3">
-              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm font-medium">{rating > 0 ? rating.toFixed(1) : 'New'}</span>
-              {reviewCount > 0 && (
-                <span className="text-xs text-gray-500">({reviewCount} reviews)</span>
               )}
+              <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 py-0.5 rounded-full shadow-sm ml-auto">
+                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                <span className="text-xs font-medium text-gray-700">{rating > 0 ? rating.toFixed(1) : 'New'}</span>
+              </div>
             </div>
 
             {/* Route */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 mb-3">
-              <MapPin className="w-4 h-4 text-gray-400 hidden md:block" />
-              <div className="flex flex-col md:flex-row md:items-center gap-2">
-                <span className="font-semibold text-lg text-gray-900 mobile-text">{ride.from}</span>
-                <ArrowRight className="w-5 h-5 text-blue-500 hidden md:block" />
-                <div className="md:hidden text-center text-gray-400">↓</div>
-                <span className="font-semibold text-lg text-gray-900 mobile-text">{ride.to}</span>
+            <div className="bg-white/70 backdrop-blur-sm rounded-lg p-2 mb-2 shadow-sm">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-3 h-3 text-gray-700" />
+                <span className="font-semibold text-sm text-gray-800">{ride.from}</span>
+                <ArrowRight className="w-3 h-3 text-gray-600" />
+                <span className="font-semibold text-sm text-gray-800">{ride.to}</span>
               </div>
             </div>
 
-            {/* Time, Duration, Price */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 mb-3">
-              <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-600 mobile-text">{formatTime(ride.departureTime)}</span>
+            {/* Details & Amenities */}
+            <div className="flex items-center gap-2 text-xs">
+              <div className="bg-white/70 backdrop-blur-sm px-2 py-1 rounded shadow-sm">
+                <Clock className="w-3 h-3 text-gray-700 inline mr-1" />
+                Departure: {formatTime(ride.departureTime)}
               </div>
-              <div className="text-sm text-gray-600 mobile-text">{formatDate(ride.date)}</div>
-              <div className="font-bold text-xl text-green-600">₹{ride.pricePerSeat}</div>
-            </div>
-
-            {/* Vehicle and Seats */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-3">
-              <div className="flex items-center gap-1">
-                <Car className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-600 capitalize mobile-text">
-                  {ride.vehicle?.type || ride.driverId?.vehicle?.type || 'Car'}
-                </span>
+              <div className="bg-white/70 backdrop-blur-sm px-2 py-1 rounded shadow-sm">
+                <Calendar className="w-3 h-3 text-gray-700 inline mr-1" />
+                Date: {formatDate(ride.date)}
               </div>
-              <div className="flex items-center gap-1">
-                <Users className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-600 mobile-text">{ride.availableSeats} seats available</span>
+              <div className="bg-white/70 backdrop-blur-sm px-2 py-1 rounded shadow-sm">
+                <Users className="w-3 h-3 text-gray-700 inline mr-1" />
+                {ride.availableSeats} seats available
               </div>
-            </div>
-
-            {/* Amenities */}
-            <div className="flex items-center gap-3 mb-4 flex-wrap">
+              <div className="bg-white/70 backdrop-blur-sm px-2 py-1 rounded shadow-sm">
+                <Car className="w-3 h-3 text-gray-700 inline mr-1" />
+                {ride.vehicle?.type || ride.driverId?.vehicle?.type || 'Car'}
+              </div>
               {ride.preferences?.airConditioning !== false && (
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <Snowflake className="w-4 h-4 text-blue-400" />
-                  <span>AC</span>
+                <div className="bg-white/70 backdrop-blur-sm px-2 py-1 rounded shadow-sm">
+                  <Snowflake className="w-3 h-3 text-gray-700 inline mr-1" />
+                  AC Available
                 </div>
               )}
               {ride.preferences?.musicAllowed && (
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <Music className="w-4 h-4 text-purple-400" />
-                  <span>Music</span>
+                <div className="bg-white/70 backdrop-blur-sm px-2 py-1 rounded shadow-sm">
+                  <Music className="w-3 h-3 text-gray-700 inline mr-1" />
+                  Music Allowed
                 </div>
               )}
               {ride.luggageAllowance && (
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <Package className="w-4 h-4 text-orange-400" />
-                  <span>Luggage</span>
+                <div className="bg-white/70 backdrop-blur-sm px-2 py-1 rounded shadow-sm">
+                  <Package className="w-3 h-3 text-gray-700 inline mr-1" />
+                  Luggage Allowed
                 </div>
               )}
             </div>
           </div>
 
-          {/* Book Now Button */}
-          <div className="flex-shrink-0 flex flex-col justify-center w-full md:w-auto">
+          {/* Price and Book Button */}
+          <div className="flex-shrink-0 flex flex-col items-end justify-between">
+            <div className="text-right">
+              <div className="font-bold text-lg text-gray-800">₹{ride.pricePerSeat}</div>
+              <div className="text-xs text-gray-600">per seat</div>
+            </div>
+            
             {isFullyBooked ? (
-              <Badge variant="secondary" className="bg-gray-200 text-gray-600 px-4 py-2 w-full md:w-auto text-center">
-                Fully Booked
+              <Badge className="bg-gray-500 text-white px-3 py-1.5 font-medium rounded text-xs">
+                BOOKED
               </Badge>
             ) : (
               <Button 
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 touch-target w-full md:w-auto mobile-text"
+                className="bg-[#3A2A5A] hover:bg-[#2d1f47] text-white font-semibold px-4 py-1.5 rounded text-xs transition-all duration-200"
                 onClick={() => navigate(`/rides/${ride._id}`)}
               >
-                Book Now
+                BOOK NOW
               </Button>
             )}
           </div>

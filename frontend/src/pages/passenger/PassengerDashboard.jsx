@@ -8,6 +8,8 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { Input } from '../../components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { Textarea } from '../../components/ui/textarea';
 import { 
   Search, 
   MapPin, 
@@ -29,6 +31,7 @@ export default function PassengerDashboard() {
   const [notifications, setNotifications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [ratingModal, setRatingModal] = useState({ open: false, booking: null, rating: 0, comment: '' });
 
   useEffect(() => {
     fetchBookings();
@@ -45,6 +48,7 @@ export default function PassengerDashboard() {
       setBookings(passengerBookings);
       setNotifications(notificationsData.notifications || []);
     } catch (error) {
+      console.error('Fetch error:', error);
       toast.error('Failed to fetch dashboard data');
     } finally {
       setLoading(false);
@@ -59,13 +63,32 @@ export default function PassengerDashboard() {
     }
   };
 
-  const handleRateTrip = async (bookingId, rating) => {
+  const handleRateTrip = async () => {
+    if (ratingModal.rating === 0) {
+      toast.error('Please select a rating');
+      return;
+    }
     try {
-      await submitRating({ bookingId, rating, type: 'driver' });
+      console.log('Submitting rating:', {
+        bookingId: ratingModal.booking._id,
+        ratedUserId: ratingModal.booking.rideId?.driverId?._id,
+        stars: ratingModal.rating,
+        comment: ratingModal.comment
+      });
+      
+      await submitRating({
+        bookingId: ratingModal.booking._id,
+        ratedUserId: ratingModal.booking.rideId?.driverId?._id,
+        stars: ratingModal.rating,
+        comment: ratingModal.comment
+      });
+      
       toast.success('Rating submitted!');
+      setRatingModal({ open: false, booking: null, rating: 0, comment: '' });
       fetchBookings();
     } catch (error) {
-      toast.error('Failed to submit rating');
+      console.error('Rating submission error:', error);
+      toast.error(error.response?.data?.message || 'Failed to submit rating');
     }
   };
 
@@ -364,27 +387,38 @@ export default function PassengerDashboard() {
                       <Badge className="bg-green-500">Completed</Badge>
                     </div>
                     
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={booking.driverId?.profilePhoto} />
-                          <AvatarFallback className="bg-[#3A2A5A] text-white">{booking.driverId?.name?.[0]}</AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm text-gray-600">{booking.driverId?.name}</span>
-                      </div>
-                      
-                      {!booking.rated && (
-                        <div className="flex gap-1">
-                          {[1, 2, 3, 4, 5].map((rating) => (
-                            <Star
-                              key={rating}
-                              className="h-4 w-4 cursor-pointer text-[#EC3399] hover:fill-current"
-                              onClick={() => handleRateTrip(booking._id, rating)}
-                            />
-                          ))}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={booking.rideId?.driverId?.profilePhoto} />
+                            <AvatarFallback className="bg-[#3A2A5A] text-white">{booking.rideId?.driverId?.name?.[0]}</AvatarFallback>
+                          </Avatar>
+                          <span className="text-sm text-gray-600">{booking.rideId?.driverId?.name}</span>
                         </div>
-                      )}
-                    </div>
+                        
+                        <div className="flex items-center gap-2">
+                          {(booking.passengerRating || booking.rating || booking.hasRated) ? (
+                            <div className="flex items-center gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  className={`h-4 w-4 ${star <= (booking.passengerRating?.stars || booking.rating || 5) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                                />
+                              ))}
+                              <span className="text-sm text-gray-600 ml-1">Rated {booking.passengerRating?.stars || booking.rating || 5}/5</span>
+                            </div>
+                          ) : (
+                            <Button
+                              size="sm"
+                              onClick={() => setRatingModal({ open: true, booking, rating: 0, comment: '' })}
+                              className="bg-[#EC3399] hover:bg-[#d62d88] text-white"
+                            >
+                              <Star className="h-3 w-3 mr-1" />
+                              Rate Driver
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                   </div>
                 ))}
                 
@@ -398,6 +432,45 @@ export default function PassengerDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Rating Modal */}
+      <Dialog open={ratingModal.open} onOpenChange={(open) => !open && setRatingModal({ open: false, booking: null, rating: 0, comment: '' })}>
+        <DialogContent className="rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-center">Rate Your Driver</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">How was your ride with {ratingModal.booking?.rideId?.driverId?.name}?</p>
+              <div className="flex gap-2 justify-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-10 h-10 cursor-pointer transition-colors ${
+                      star <= ratingModal.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 hover:text-yellow-200'
+                    }`}
+                    onClick={() => setRatingModal({ ...ratingModal, rating: star })}
+                  />
+                ))}
+              </div>
+            </div>
+            <Textarea
+              placeholder="Share your experience (optional)"
+              value={ratingModal.comment}
+              onChange={(e) => setRatingModal({ ...ratingModal, comment: e.target.value })}
+              rows={3}
+              className="rounded-xl"
+            />
+            <Button 
+              onClick={handleRateTrip}
+              disabled={ratingModal.rating === 0}
+              className="w-full py-3 bg-[#EC3399] text-white rounded-xl font-semibold hover:bg-[#d62d88] disabled:opacity-50 transition-colors"
+            >
+              Submit Rating
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -33,72 +33,85 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative bg-[#3A2A5A] overflow-hidden">
-        <div className="hero-curve">
-          <svg viewBox="0 0 1440 320" className="absolute bottom-0 w-full" preserveAspectRatio="none">
-            <path fill="#3A2A5A" d="M0,160 Q360,280 720,160 T1440,160 L1440,0 L0,0 Z"></path>
-          </svg>
+      <section className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Content */}
+            <div className="text-left">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                Its simple, quick, and cheap way to<br />commute together.
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 mb-8">
+                Connect with people who need to travel with you. Grow your network.
+              </p>
+              
+              {/* Search Form */}
+              <Card className="shadow-2xl rounded-2xl">
+                <CardContent className="p-6">
+                  <form onSubmit={handleSearch} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Input
+                        name="from"
+                        placeholder="Pickup Location"
+                        value={searchData.from}
+                        onChange={handleChange}
+                        className="h-12"
+                        required
+                      />
+                      <Input
+                        name="to"
+                        placeholder="Drop-off Location"
+                        value={searchData.to}
+                        onChange={handleChange}
+                        className="h-12"
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Input
+                        name="date"
+                        type="date"
+                        value={searchData.date}
+                        onChange={handleChange}
+                        className="h-12"
+                        required
+                      />
+                      <Input
+                        name="seats"
+                        type="number"
+                        min="1"
+                        max="8"
+                        placeholder="Seats"
+                        value={searchData.seats}
+                        onChange={handleChange}
+                        className="h-12"
+                      />
+                      <Button type="submit" className="h-12 font-semibold bg-[#EC3399] hover:bg-[#d62d88]">
+                        <Search className="mr-2 h-5 w-5" />
+                        Search
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Right Side - Image */}
+            <div className="flex justify-center lg:justify-end">
+              <img 
+                src="https://res.cloudinary.com/dse13zdp7/image/upload/v1771946796/enhance_igj9byy1f8qm6jigo2kf_myexh0.png"
+                alt="Woman creating account"
+                className="w-full max-w-lg lg:max-w-xl rounded-2xl shadow-2xl"
+              />
+            </div>
+          </div>
         </div>
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
-          <div className="text-center mb-12">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Its simple, quick, and cheap way to<br />commute together.
-            </h1>
-            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-              Connect with people who need to travel with you. Grow your network.
-            </p>
-          </div>
-
-          {/* Search Form */}
-          <Card className="max-w-4xl mx-auto shadow-2xl rounded-2xl">
-            <CardContent className="p-6 md:p-8">
-              <form onSubmit={handleSearch} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    name="from"
-                    placeholder="Pickup Location"
-                    value={searchData.from}
-                    onChange={handleChange}
-                    className="h-12"
-                    required
-                  />
-                  <Input
-                    name="to"
-                    placeholder="Drop-off Location"
-                    value={searchData.to}
-                    onChange={handleChange}
-                    className="h-12"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Input
-                    name="date"
-                    type="date"
-                    value={searchData.date}
-                    onChange={handleChange}
-                    className="h-12"
-                    required
-                  />
-                  <Input
-                    name="seats"
-                    type="number"
-                    min="1"
-                    max="8"
-                    placeholder="Seats"
-                    value={searchData.seats}
-                    onChange={handleChange}
-                    className="h-12"
-                  />
-                  <Button type="submit" className="h-12 font-semibold bg-[#EC3399] hover:bg-[#d62d88]">
-                    <Search className="mr-2 h-5 w-5" />
-                    Search
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+        {/* Curved bottom */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg viewBox="0 0 1440 120" className="w-full h-[60px]" preserveAspectRatio="none">
+            <path fill="#ffffff" d="M0,60 Q360,120 720,60 T1440,60 L1440,120 L0,120 Z"></path>
+          </svg>
         </div>
       </section>
 

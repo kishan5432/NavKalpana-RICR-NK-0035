@@ -174,30 +174,11 @@ export default function DriverRideDetail() {
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="opacity-70">Driver Dashboard</span>
-              <span className="opacity-70">•</span>
-              <span>Ride Management</span>
-            </div>
           </div>
           
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold mb-2">{ride.from} → {ride.to}</h1>
-              <div className="flex items-center gap-4 text-sm opacity-90">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(ride.departureTime).toLocaleDateString()}
-                </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  {new Date(ride.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </div>
-                <div className="flex items-center gap-1">
-                  <DollarSign className="h-4 w-4" />
-                  ₹{ride.pricePerSeat} per seat
-                </div>
-              </div>
             </div>
             <div className="text-right">
               <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(ride.status)}`}>
@@ -213,27 +194,48 @@ export default function DriverRideDetail() {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Quick Stats */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-[#3A3A6A]/5 rounded-xl">
-                  <Users className="h-6 w-6 text-[#3A3A6A] mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Booked Seats</p>
-                  <p className="text-xl font-bold text-[#3A3A6A]">{ride.totalSeats - ride.availableSeats}</p>
+            <div className="bg-white rounded-2xl shadow-sm border p-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="text-center p-3 bg-gradient-to-br from-slate-50 to-slate-100 hover:from-slate-100 hover:to-slate-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <Users className="h-5 w-5 text-slate-700 mx-auto mb-1" />
+                  <p className="text-xs text-slate-800 font-medium">Booked Seats</p>
+                  <p className="text-lg font-black text-slate-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{ride.totalSeats - ride.availableSeats}</p>
                 </div>
-                <div className="text-center p-4 bg-[#E63399]/5 rounded-xl">
-                  <DollarSign className="h-6 w-6 text-[#E63399] mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Total Earnings</p>
-                  <p className="text-xl font-bold text-[#E63399]">₹{(ride.totalSeats - ride.availableSeats) * ride.pricePerSeat}</p>
+                <div className="text-center p-3 bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <DollarSign className="h-5 w-5 text-green-700 mx-auto mb-1" />
+                  <p className="text-xs text-green-800 font-medium">Total Earnings</p>
+                  <p className="text-lg font-black text-green-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">₹{(ride.totalSeats - ride.availableSeats) * ride.pricePerSeat}</p>
                 </div>
-                <div className="text-center p-4 bg-green-50 rounded-xl">
-                  <TrendingUp className="h-6 w-6 text-green-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Available</p>
-                  <p className="text-xl font-bold text-green-600">{ride.availableSeats}</p>
+                <div className="text-center p-3 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <TrendingUp className="h-5 w-5 text-blue-700 mx-auto mb-1" />
+                  <p className="text-xs text-blue-800 font-medium">Available</p>
+                  <p className="text-lg font-black text-blue-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{ride.availableSeats}</p>
                 </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-xl">
-                  <MessageCircle className="h-6 w-6 text-yellow-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Requests</p>
-                  <p className="text-xl font-bold text-yellow-600">{bookings.filter(b => b.status === 'requested').length}</p>
+                <div className="text-center p-3 bg-gradient-to-br from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <MessageCircle className="h-5 w-5 text-yellow-700 mx-auto mb-1" />
+                  <p className="text-xs text-yellow-800 font-medium">Requests</p>
+                  <p className="text-lg font-black text-yellow-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{bookings.filter(b => b.status === 'requested').length}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Ride Details */}
+            <div className="bg-white rounded-2xl shadow-sm border p-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="text-center p-3 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <Calendar className="h-5 w-5 text-blue-700 mx-auto mb-1" />
+                  <p className="text-xs text-blue-800 font-medium">Date</p>
+                  <p className="text-lg font-black text-blue-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{new Date(ride.date).toLocaleDateString()}</p>
+                </div>
+                <div className="text-center p-3 bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <Clock className="h-5 w-5 text-purple-700 mx-auto mb-1" />
+                  <p className="text-xs text-purple-800 font-medium">Departure</p>
+                  <p className="text-lg font-black text-purple-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">{ride.departureTime}</p>
+                </div>
+                <div className="text-center p-3 bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+                  <DollarSign className="h-5 w-5 text-green-700 mx-auto mb-1" />
+                  <p className="text-xs text-green-800 font-medium">Price per seat</p>
+                  <p className="text-lg font-black text-green-900 drop-shadow-[2px_2px_4px_rgba(147,51,234,0.3)]">₹{ride.pricePerSeat}</p>
                 </div>
               </div>
             </div>
@@ -289,7 +291,7 @@ export default function DriverRideDetail() {
                   </div>
                   <div className="flex-1">
                     <p className="font-semibold text-[#3A3A6A] text-lg">{ride.from}</p>
-                    <p className="text-gray-600">{new Date(ride.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Starting point</p>
+                    <p className="text-gray-600">{ride.departureTime} • Starting point</p>
                   </div>
                 </div>
                 
@@ -411,6 +413,13 @@ export default function DriverRideDetail() {
                             Rate Passenger
                           </button>
                         )}
+                        
+                        <button 
+                          onClick={() => navigate(`/profile/${booking.passengerId?._id}`)}
+                          className="px-3 py-2 border border-[#3A3A6A] text-[#3A3A6A] rounded-lg text-sm font-medium hover:bg-[#3A3A6A] hover:text-white transition-colors"
+                        >
+                          View Profile
+                        </button>
                       </div>
                     </div>
                   ))}

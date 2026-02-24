@@ -87,128 +87,158 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3A2A5A] to-[#2d1f47] px-4">
-      <Card className="w-full max-w-md shadow-2xl">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-[#3A2A5A] mb-2">
-            Reset Password
-          </CardTitle>
-          <p className="text-gray-600">
-            {step === 1 ? 'Enter your email to receive OTP' : 'Enter OTP and new password'}
-          </p>
-        </CardHeader>
-        
-        <CardContent>
-          {step === 1 ? (
-            <form onSubmit={handleSendOTP} className="space-y-4">
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="mt-1"
-                  placeholder="Enter your email"
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                )}
-              </div>
+    <div className="min-h-screen flex">
+      {/* Left Side - Image */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] items-center justify-center p-12">
+        <img 
+          src="https://res.cloudinary.com/dse13zdp7/image/upload/v1771946793/enhance_lh0bq81mkfvfxnmjchhq_jktxrh.png"
+          alt="Forgot password illustration"
+          className="w-full max-w-lg rounded-2xl shadow-2xl"
+        />
+      </div>
 
-              <Button type="submit" className="w-full bg-[#EC3399] hover:bg-[#d62d88]" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending OTP...
-                  </>
-                ) : (
-                  'Send OTP'
-                )}
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={handleResetPassword} className="space-y-4">
-              <div>
-                <Label htmlFor="otp">OTP</Label>
-                <Input
-                  id="otp"
-                  name="otp"
-                  type="text"
-                  value={formData.otp}
-                  onChange={handleChange}
-                  className="mt-1"
-                  placeholder="Enter 6-digit OTP"
-                  maxLength={6}
-                />
-                {errors.otp && (
-                  <p className="text-red-500 text-sm mt-1">{errors.otp}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input
-                  id="newPassword"
-                  name="newPassword"
-                  type="password"
-                  value={formData.newPassword}
-                  onChange={handleChange}
-                  className="mt-1"
-                  placeholder="Enter new password"
-                />
-                {errors.newPassword && (
-                  <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="mt-1"
-                  placeholder="Confirm new password"
-                />
-                {errors.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                )}
-              </div>
-
-              <Button type="submit" className="w-full bg-[#EC3399] hover:bg-[#d62d88]" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Resetting...
-                  </>
-                ) : (
-                  'Reset Password'
-                )}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() => setStep(1)}
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Email
-              </Button>
-            </form>
-          )}
-
-          <div className="mt-6 text-center">
-            <Link to="/login" className="text-sm text-[#EC3399] hover:underline">
-              Back to Login
-            </Link>
+      {/* Right Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-[#3A2A5A] mb-2">
+              Reset Password
+            </h1>
+            <p className="text-gray-600">
+              {step === 1 ? 'Enter your email to receive OTP' : 'Enter OTP and new password'}
+            </p>
           </div>
-        </CardContent>
-      </Card>
+
+          <Card className="shadow-xl border-0">
+            <CardContent className="p-6">
+              {step === 1 ? (
+                <form onSubmit={handleSendOTP} className="space-y-4">
+                  <div>
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700 mb-2 block">
+                      Email Address
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      placeholder="Enter your email"
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                    )}
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 bg-[#EC3399] hover:bg-[#d62d88] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Sending OTP...
+                      </>
+                    ) : (
+                      'Send OTP'
+                    )}
+                  </Button>
+                </form>
+              ) : (
+                <form onSubmit={handleResetPassword} className="space-y-4">
+                  <div>
+                    <Label htmlFor="otp" className="text-sm font-medium text-gray-700 mb-2 block">
+                      OTP Code
+                    </Label>
+                    <Input
+                      id="otp"
+                      name="otp"
+                      type="text"
+                      value={formData.otp}
+                      onChange={handleChange}
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      placeholder="Enter 6-digit OTP"
+                      maxLength={6}
+                    />
+                    {errors.otp && (
+                      <p className="text-red-500 text-sm mt-1">{errors.otp}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="newPassword" className="text-sm font-medium text-gray-700 mb-2 block">
+                      New Password
+                    </Label>
+                    <Input
+                      id="newPassword"
+                      name="newPassword"
+                      type="password"
+                      value={formData.newPassword}
+                      onChange={handleChange}
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      placeholder="Enter new password"
+                    />
+                    {errors.newPassword && (
+                      <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700 mb-2 block">
+                      Confirm Password
+                    </Label>
+                    <Input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      placeholder="Confirm new password"
+                    />
+                    {errors.confirmPassword && (
+                      <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                    )}
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 bg-[#EC3399] hover:bg-[#d62d88] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Resetting...
+                      </>
+                    ) : (
+                      'Reset Password'
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full h-12 rounded-xl border-gray-200 hover:bg-gray-50"
+                    onClick={() => setStep(1)}
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Email
+                  </Button>
+                </form>
+              )}
+
+              <div className="mt-6 text-center">
+                <Link to="/login" className="text-sm text-[#EC3399] hover:underline font-semibold">
+                  Back to Login
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }

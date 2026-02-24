@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { getRides } from '../../api';
 import RideCard from '../../components/RideCard';
 import MobileFilterSheet from '../../components/MobileFilterSheet';
@@ -8,10 +8,11 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Slider } from '../../components/ui/slider';
 import { Badge } from '../../components/ui/badge';
-import { Star, X, Car, Clock, MapPin, Filter, SlidersHorizontal } from 'lucide-react';
+import { Star, X, Car, Clock, MapPin, Filter, SlidersHorizontal, ArrowLeft } from 'lucide-react';
 
 export default function SearchRides() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -130,12 +131,21 @@ export default function SearchRides() {
       {/* Hero Search Header */}
       <div className="bg-gradient-to-r from-[#3A2A5A] to-[#2d1f47] text-white">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-6">
-            {filters.from && filters.to 
-              ? `${filters.from} → ${filters.to}` 
-              : 'Find Your Perfect Ride'
-            }
-          </h1>
+          <div className="flex items-center gap-4 mb-6">
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/')}
+              className="text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-3xl font-bold">
+              {filters.from && filters.to 
+                ? `${filters.from} → ${filters.to}` 
+                : 'Find Your Perfect Ride'
+              }
+            </h1>
+          </div>
           
           {/* Quick Search Bar */}
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">

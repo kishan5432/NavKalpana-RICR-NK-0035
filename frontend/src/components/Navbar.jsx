@@ -41,23 +41,38 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="p-2 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg shadow-sm group-hover:shadow-md transition-all duration-200">
-              <Car className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+            <img 
+              src="https://res.cloudinary.com/dse13zdp7/image/upload/v1771948723/WhatsApp_Image_2026-02-24_at_16.02.07-removebg-preview_o7jy9j.png"
+              alt="RideShareX Logo"
+              className="h-8 w-8 object-contain"
+            />
+            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] bg-clip-text text-transparent">
               RideShareX
             </span>
           </Link>
 
           {/* Right side navigation */}
           <div className="flex items-center space-x-2 md:space-x-3">
+            {/* Search Rides button - always visible */}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              asChild 
+              className="hidden md:flex touch-target border-[#3A2A5A] text-[#3A2A5A] hover:border-[#EC3399] hover:bg-[#EC3399]/10 transition-all duration-200"
+            >
+              <Link to="/search" className="flex items-center space-x-2">
+                <Search className="h-4 w-4" />
+                <span>Search</span>
+              </Link>
+            </Button>
+
             {user ? (
               <>
                 {/* Post a Ride button - only for drivers - hidden on mobile */}
                 {canPostRide && (
                   <Button 
                     asChild 
-                    className="hidden md:flex touch-target bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-sm hover:shadow-md transition-all duration-200"
+                    className="hidden md:flex touch-target bg-[#3A2A5A] hover:bg-[#2d1f47] shadow-sm hover:shadow-md transition-all duration-200"
                   >
                     <Link to="/post-ride" className="flex items-center space-x-2">
                       <Car className="h-4 w-4" />
@@ -65,19 +80,6 @@ export default function Navbar() {
                     </Link>
                   </Button>
                 )}
-
-                {/* Search Rides button */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  asChild 
-                  className="hidden md:flex touch-target border-gray-300 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
-                >
-                  <Link to="/search" className="flex items-center space-x-2">
-                    <Search className="h-4 w-4" />
-                    <span>Search</span>
-                  </Link>
-                </Button>
 
                 {/* Notification bell - hidden on mobile */}
                 <div className="hidden md:block">
@@ -90,53 +92,56 @@ export default function Navbar() {
                     <DropdownMenuTrigger asChild>
                       <Button 
                         variant="ghost" 
-                        className="flex items-center space-x-2 touch-target hover:bg-gray-100 transition-all duration-200 px-3 py-2 rounded-lg"
+                        className="flex items-center space-x-3 touch-target hover:bg-[#3A2A5A]/10 transition-all duration-200 px-4 py-2 rounded-xl border border-transparent hover:border-[#3A2A5A]/20"
                       >
-                        <Avatar className="h-8 w-8 ring-2 ring-gray-200">
+                        <Avatar className="h-9 w-9 ring-2 ring-[#3A2A5A]/20">
                           <AvatarImage src={user.profilePhoto} />
-                          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white font-semibold">
+                          <AvatarFallback className="bg-gradient-to-br from-[#3A2A5A] to-[#EC3399] text-white font-semibold">
                             {user.name?.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="hidden sm:block font-medium text-gray-700">{user.name}</span>
-                        <ChevronDown className="h-4 w-4 text-gray-500" />
+                        <div className="hidden sm:block text-left">
+                          <p className="font-semibold text-[#3A2A5A] text-sm">{user.name}</p>
+                          <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                        </div>
+                        <ChevronDown className="h-4 w-4 text-[#3A2A5A]" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 shadow-lg border-gray-200">
-                      <div className="px-3 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500 capitalize">{user.role} Account</p>
+                    <DropdownMenuContent align="end" className="w-56 shadow-xl border-2 border-[#3A2A5A]/20 bg-white/95 backdrop-blur-md rounded-xl">
+                      <div className="px-4 py-3 border-b border-[#3A2A5A]/20 bg-gradient-to-r from-[#3A2A5A]/5 to-[#EC3399]/5">
+                        <p className="text-sm font-bold text-[#3A2A5A]">{user.name}</p>
+                        <p className="text-xs text-[#EC3399] font-semibold capitalize">{user.role} Account</p>
                       </div>
                       <DropdownMenuItem asChild>
-                        <Link to="/profile/me" className="flex items-center px-3 py-2 hover:bg-gray-50">
-                          <Settings className="mr-3 h-4 w-4 text-gray-500" />
-                          <span>Profile Settings</span>
+                        <Link to="/profile/me" className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#3A2A5A]/10 hover:to-[#EC3399]/10 transition-all duration-200 rounded-lg mx-1 my-1">
+                          <Settings className="mr-3 h-5 w-5 text-[#3A2A5A]" />
+                          <span className="font-semibold text-[#3A2A5A]">Profile</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link 
                           to={user.role === 'driver' ? '/driver/dashboard' : '/passenger/dashboard'}
-                          className="flex items-center px-3 py-2 hover:bg-gray-50"
+                          className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#3A2A5A]/10 hover:to-[#EC3399]/10 transition-all duration-200 rounded-lg mx-1 my-1"
                         >
-                          <User className="mr-3 h-4 w-4 text-gray-500" />
-                          <span>Dashboard</span>
+                          <User className="mr-3 h-5 w-5 text-[#3A2A5A]" />
+                          <span className="font-semibold text-[#3A2A5A]">Dashboard</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link 
                           to={user.role === 'driver' ? '/driver/rides' : '/passenger/bookings'}
-                          className="flex items-center px-3 py-2 hover:bg-gray-50"
+                          className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#3A2A5A]/10 hover:to-[#EC3399]/10 transition-all duration-200 rounded-lg mx-1 my-1"
                         >
-                          <BookOpen className="mr-3 h-4 w-4 text-gray-500" />
-                          <span>My {user.role === 'driver' ? 'Rides' : 'Bookings'}</span>
+                          <BookOpen className="mr-3 h-5 w-5 text-[#3A2A5A]" />
+                          <span className="font-semibold text-[#3A2A5A]">My {user.role === 'driver' ? 'Rides' : 'Bookings'}</span>
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator className="my-1" />
+                      <DropdownMenuSeparator className="my-2 bg-gradient-to-r from-[#3A2A5A]/20 to-[#EC3399]/20 h-0.5" />
                       <DropdownMenuItem 
                         onClick={handleLogout} 
-                        className="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 hover:text-red-700"
+                        className="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 rounded-lg mx-1 my-1 font-semibold"
                       >
-                        <LogOut className="mr-3 h-4 w-4" />
+                        <LogOut className="mr-3 h-5 w-5" />
                         <span>Sign Out</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -154,7 +159,7 @@ export default function Navbar() {
                 </Button>
                 <Button 
                   asChild 
-                  className="touch-target bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-sm hover:shadow-md transition-all duration-200"
+                  className="touch-target bg-[#3A2A5A] hover:bg-[#2d1f47] shadow-sm hover:shadow-md transition-all duration-200"
                 >
                   <Link to="/register">Get Started</Link>
                 </Button>
