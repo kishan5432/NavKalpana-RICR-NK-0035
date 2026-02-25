@@ -53,3 +53,7 @@ export const markAllNotificationsRead = () => axios.patch('/users/me/notificatio
 
 // RECOMMENDATIONS
 export const getRecommendations = (userId) => axios.get(`/recommendations/${userId}`).then(res => res.data);
+
+// SAVED ROUTES
+export const saveRoute = (data) => axios.post('/saved-routes', data).then(res => res.data);
+export const getSavedRoutes = () => axios.get('/saved-routes').then(res => res.data);

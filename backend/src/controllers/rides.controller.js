@@ -1,6 +1,8 @@
 const Ride = require('../models/Ride');
 const Booking = require('../models/Booking');
+const User = require('../models/User');
 const UserActivity = require('../models/UserActivity');
+const SavedRoute = require('../models/SavedRoute');
 const { createNotification } = require('../utils/notification');
 const { calculateReliabilityScore } = require('../utils/calculateReliability');
 
@@ -28,6 +30,21 @@ const createRide = async (req, res) => {
     });
 
     await ride.populate('driverId', 'name profilePhoto rating isPhoneVerified reliabilityScore reliabilityLabel');
+
+    // Notify passengers with matching saved routes
+    const matchingSavedRoutes = await SavedRoute.find({
+      fromLocation: from,
+      toLocation: to
+    });
+
+    for (const savedRoute of matchingSavedRoutes) {
+      await createNotification(
+        savedRoute.userId,
+        'new_ride_match',
+        `A new ride matching your saved route ${from} → ${to} is now available.`,
+        `/rides/${ride._id}`
+      );
+    }
 
     res.status(201).json({ success: true, ride });
   } catch (error) {
@@ -247,6 +264,21 @@ const completeRide = async (req, res) => {
         fromLocation: ride.from,
         toLocation: ride.to
       }).catch(err => console.error('UserActivity log error:', err));
+
+      // Referral bonus: check if this is passenger's first completed trip
+      const passenger = await User.findById(booking.passengerId);
+      if (passenger && passenger.referredByUserId) {
+        const completedTripsCount = await Booking.countDocuments({
+          passengerId: passenger._id,
+          status: 'completed'
+        });
+        
+        if (completedTripsCount === 1) {
+          await User.findByIdAndUpdate(passenger.referredByUserId, {
+            $inc: { credits: 100 }
+          });
+        }
+      }
     }
 
     for (const booking of bookings) {

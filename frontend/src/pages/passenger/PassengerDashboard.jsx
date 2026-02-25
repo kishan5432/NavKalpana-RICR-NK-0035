@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getMyBookings, getRides, submitRating, getNotifications, markNotificationRead, getMe } from '../../api';
+import { getMyBookings, getRides, submitRating, getNotifications, markNotificationRead, getSavedRoutes } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
@@ -61,8 +61,8 @@ export default function PassengerDashboard() {
 
   const fetchSavedRoutes = async () => {
     try {
-      const userData = await getMe();
-      setSavedRoutes(userData.user.savedRoutes || []);
+      const data = await getSavedRoutes();
+      setSavedRoutes(data.savedRoutes || []);
     } catch (error) {
       console.error('Fetch saved routes error:', error);
     }
@@ -265,14 +265,14 @@ export default function PassengerDashboard() {
             </CardHeader>
             <CardContent className="p-6">
               <div className="flex flex-wrap gap-3">
-                {savedRoutes.map((route, index) => (
+                {savedRoutes.map((route) => (
                   <button
-                    key={index}
-                    onClick={() => navigate(`/search?from=${encodeURIComponent(route.from)}&to=${encodeURIComponent(route.to)}`)}
+                    key={route._id}
+                    onClick={() => navigate(`/search?from=${encodeURIComponent(route.fromLocation)}&to=${encodeURIComponent(route.toLocation)}`)}
                     className="px-4 py-2 bg-gradient-to-r from-[#3A2A5A] to-[#2d1f47] text-white rounded-full hover:shadow-lg transition-all duration-200 flex items-center gap-2 group"
                   >
                     <MapPin className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                    <span className="font-medium">{route.label}</span>
+                    <span className="font-medium">{route.fromLocation} → {route.toLocation}</span>
                   </button>
                 ))}
               </div>

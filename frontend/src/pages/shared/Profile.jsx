@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/ta
 import { Switch } from '../../components/ui/switch';
 import StarRating from '../../components/StarRating';
 import ReliabilityBadge from '../../components/ReliabilityBadge';
-import { CheckCircle, Mail, Phone, IdCard, Car, Calendar, Star, MapPin, Settings, Shield, Bell, Eye, Edit3, Award, TrendingUp, Users } from 'lucide-react';
+import { CheckCircle, Mail, Phone, IdCard, Car, Calendar, Star, MapPin, Settings, Shield, Bell, Eye, Edit3, Award, TrendingUp, Users, Copy, Check } from 'lucide-react';
 
 const Profile = () => {
   const { id } = useParams();
@@ -20,6 +20,7 @@ const Profile = () => {
   const [ratings, setRatings] = useState([]);
   const [tripCount, setTripCount] = useState(0);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [settings, setSettings] = useState({
     emailNotifications: true,
     pushNotifications: true,
@@ -264,6 +265,39 @@ const Profile = () => {
             </div>
           </div>
         </Card>
+
+        {/* Referral Code */}
+        {isOwnProfile && profile.referralCode && (
+          <Card className="mb-8 p-6 bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] shadow-lg rounded-2xl border-0">
+            <div className="text-center">
+              <h3 className="font-bold text-lg mb-2 text-white">Your Referral Code</h3>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 inline-block">
+                <p className="text-3xl font-bold text-white tracking-wider">{profile.referralCode}</p>
+              </div>
+              <p className="text-white/90 text-sm mt-3 mb-4">Share this code with friends to earn rewards!</p>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(profile.referralCode);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="bg-white text-[#3A2A5A] hover:bg-white/90 font-semibold"
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy Code
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
+        )}
 
         {/* Tabs Section */}
         <Card className="bg-white shadow-lg rounded-2xl border-0 overflow-hidden">

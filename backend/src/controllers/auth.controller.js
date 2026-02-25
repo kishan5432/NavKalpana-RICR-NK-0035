@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
+const generateReferralCode = require('../utils/generateReferralCode');
 const { setOTP, verifyOTP: verifyOTPUtil, deleteOTP } = require('../utils/otpStore');
 const sendEmail = require('../utils/sendEmail');
 
@@ -9,7 +10,7 @@ const register = async (req, res, next) => {
     console.log('Register request body:', req.body);
     console.log('Register request headers:', req.headers);
     
-    const { name, fullName, email, phone, password, role } = req.body;
+    const { name, fullName, email, phone, password, role, referredBy } = req.body;
     const userName = name || fullName;
 
     if (!userName || !email || !phone || !password || !role) {
@@ -34,9 +35,21 @@ const register = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Email or phone already exists' });
     }
 
+    let referredByUserId = null;
+    if (referredBy) {
+      const referrer = await User.findOne({ referralCode: referredBy });
+      if (referrer) {
+        referredByUserId = referrer._id;
+      }
+    }
+
     const passwordHash = await bcrypt.hash(password, 12);
 
-    const user = await User.create({ name: userName, email, phone, passwordHash, role });
+    const user = await User.create({ name: userName, email, phone, passwordHash, role, referredByUserId });
+
+    const referralCode = generateReferralCode(user._id);
+    user.referralCode = referralCode;
+    await user.save();
 
     const token = generateToken(user._id);
 
@@ -98,6 +111,8 @@ const login = async (req, res, next) => {
 
 const sendOtp = async (req, res, next) => {
   try {
+    console.log('=== SEND OTP CALLED ===');
+    console.log('Request body:', req.body);
     const { email, phone } = req.body;
 
     if (!email && !phone) {
@@ -107,9 +122,11 @@ const sendOtp = async (req, res, next) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const identifier = email || phone;
 
+    console.log('Generated OTP:', otp, 'for:', identifier);
     setOTP(identifier, otp);
 
     if (email) {
+      console.log('Sending email to:', email);
       await sendEmail({
         to: email,
         subject: 'Your RideShareX verification code',
@@ -124,6 +141,7 @@ const sendOtp = async (req, res, next) => {
           </div>
         `
       });
+      console.log('Email sent successfully');
     }
 
     const response = { success: true, message: 'OTP sent successfully' };
@@ -131,26 +149,37 @@ const sendOtp = async (req, res, next) => {
       response.otp = otp;
     }
 
+    console.log('=== SEND OTP COMPLETED ===');
     res.status(200).json(response);
   } catch (err) {
+    console.error('Send OTP error:', err);
     next(err);
   }
 };
 
 const verifyOtp = async (req, res, next) => {
   try {
+    console.log('Verify OTP request body:', req.body);
     const { otp, type, email } = req.body;
+
+    if (!otp) {
+      console.log('OTP missing');
+      return res.status(400).json({ success: false, message: 'OTP is required' });
+    }
 
     // Use email from request body if not authenticated
     const identifier = req.user ? (type === 'email' ? req.user.email : req.user.phone) : email;
     
     if (!identifier) {
+      console.log('Identifier missing');
       return res.status(400).json({ success: false, message: 'Email is required' });
     }
 
+    console.log('Verifying OTP:', otp, 'for identifier:', identifier);
     const isValid = verifyOTPUtil(identifier, otp);
 
     if (!isValid) {
+      console.log('OTP invalid or expired');
       return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
     }
 
@@ -161,13 +190,16 @@ const verifyOtp = async (req, res, next) => {
     const user = await User.findOne({ email: identifier });
     
     if (!user) {
+      console.log('User not found for email:', identifier);
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     await User.findByIdAndUpdate(user._id, updateField);
+    console.log('User verified successfully');
 
     res.status(200).json({ success: true, message: 'Verified successfully' });
   } catch (err) {
+    console.error('Verify OTP error:', err);
     next(err);
   }
 };
