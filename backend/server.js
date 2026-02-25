@@ -13,6 +13,7 @@ const ratingRoutes = require('./src/routes/ratings.routes');
 const recommendationRoutes = require('./src/routes/recommendations.routes');
 const savedRoutesRoutes = require('./src/routes/savedRoutes.routes');
 const analyticsRoutes = require('./src/routes/analytics.routes');
+const priceSuggestionRoutes = require('./src/routes/priceSuggestion.routes');
 const errorHandler = require('./src/middleware/error.middleware');
 const setupSocket = require('./src/config/socket');
 
@@ -45,6 +46,7 @@ app.use('/api/ratings', ratingRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/saved-routes', savedRoutesRoutes);
 app.use('/api/admin/analytics', analyticsRoutes);
+app.use('/api/price-suggestion', priceSuggestionRoutes);
 
 app.use(errorHandler);
 

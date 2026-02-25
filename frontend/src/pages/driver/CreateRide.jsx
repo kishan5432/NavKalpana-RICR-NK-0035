@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { createRide } from '../../api';
+import { createRide, getPriceSuggestion } from '../../api';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Checkbox } from '../../components/ui/checkbox';
-import { ArrowLeft, MapPin, Calendar, Clock, Users, DollarSign, Plus, X, Car, Settings, Route } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Clock, Users, DollarSign, Plus, X, Car, Settings, Route, Lightbulb } from 'lucide-react';
 
 export default function CreateRide() {
   const navigate = useNavigate();
@@ -29,6 +29,22 @@ export default function CreateRide() {
     }
   });
   const [stopInput, setStopInput] = useState('');
+  const [priceSuggestion, setPriceSuggestion] = useState(null);
+  const [loadingSuggestion, setLoadingSuggestion] = useState(false);
+  const [distanceKm, setDistanceKm] = useState(100);
+  const [manualDistance, setManualDistance] = useState(false);
+
+  const calculateDistance = async (from, to) => {
+    if (!from || !to) return;
+    
+    try {
+      // Simple city-to-city distance estimation (can be replaced with geocoding API)
+      // For now, use a basic estimate: 100km default
+      setDistanceKm(100);
+    } catch (error) {
+      console.error('Distance calculation failed:', error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -40,6 +56,15 @@ export default function CreateRide() {
       }));
     } else {
       setFormData(prev => ({ ...prev, [name]: type === 'number' ? Number(value) : value }));
+      
+      // Auto-calculate distance when from or to changes
+      if (name === 'from' || name === 'to') {
+        const newFrom = name === 'from' ? value : formData.from;
+        const newTo = name === 'to' ? value : formData.to;
+        if (newFrom && newTo) {
+          calculateDistance(newFrom, newTo);
+        }
+      }
     }
   };
 
@@ -71,6 +96,30 @@ export default function CreateRide() {
       return false;
     }
     return true;
+  };
+
+  const handleGetPriceSuggestion = async () => {
+    const { from, to, date } = formData;
+    
+    if (!from || !to || !date) {
+      toast.error('Please fill in from, to, and date first');
+      return;
+    }
+
+    setLoadingSuggestion(true);
+    try {
+      const result = await getPriceSuggestion({
+        from_location: from,
+        to_location: to,
+        ride_date: date,
+        distance_km: distanceKm
+      });
+      setPriceSuggestion(result);
+    } catch (error) {
+      toast.error('Failed to get price suggestion');
+    } finally {
+      setLoadingSuggestion(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -275,17 +324,59 @@ export default function CreateRide() {
                   <Label htmlFor="pricePerSeat" className="text-sm font-medium text-gray-700 mb-2 block">
                     Price per Seat (₹) *
                   </Label>
-                  <Input
-                    id="pricePerSeat"
-                    name="pricePerSeat"
-                    type="number"
-                    min="0"
-                    value={formData.pricePerSeat}
-                    onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
-                    placeholder="Enter price per seat"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Input
+                      id="pricePerSeat"
+                      name="pricePerSeat"
+                      type="number"
+                      min="0"
+                      value={formData.pricePerSeat}
+                      onChange={handleInputChange}
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      placeholder="Enter price per seat"
+                      required
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleGetPriceSuggestion}
+                      disabled={loadingSuggestion}
+                      variant="outline"
+                      className="w-full h-10 border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                    >
+                      {loadingSuggestion ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                          Loading...
+                        </>
+                      ) : (
+                        <>
+                          <Lightbulb className="h-4 w-4 mr-2" />
+                          Get Price Suggestion
+                        </>
+                      )}
+                    </Button>
+                    <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                      <Label htmlFor="distanceKm" className="text-xs text-gray-600">Estimated Distance (km):</Label>
+                      <Input
+                        id="distanceKm"
+                        type="number"
+                        min="1"
+                        value={distanceKm}
+                        onChange={(e) => setDistanceKm(Number(e.target.value))}
+                        className="h-8 w-24 text-sm"
+                      />
+                    </div>
+                    {priceSuggestion && (
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-900">
+                          <span className="font-semibold">Recommended price range:</span> ₹{priceSuggestion.suggested_min} – ₹{priceSuggestion.suggested_max} based on similar routes.
+                        </p>
+                        <p className="text-xs text-blue-700 mt-1">
+                          Demand: {priceSuggestion.demand_level} • Based on {priceSuggestion.based_on_routes} completed routes
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
