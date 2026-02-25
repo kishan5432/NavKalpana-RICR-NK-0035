@@ -2,6 +2,7 @@ const Rating = require('../models/Rating');
 const Booking = require('../models/Booking');
 const User = require('../models/User');
 const { createNotification } = require('../utils/notification');
+const { calculateReliabilityScore } = require('../utils/calculateReliability');
 
 const createRating = async (req, res) => {
   try {
@@ -78,6 +79,8 @@ const createRating = async (req, res) => {
       });
       console.log(`Updated user ${finalRatedUserId} rating to ${Math.round(avgStars * 10) / 10} (${count} ratings)`);
     }
+
+    await calculateReliabilityScore(finalRatedUserId.toString());
 
     await createNotification(
       finalRatedUserId,

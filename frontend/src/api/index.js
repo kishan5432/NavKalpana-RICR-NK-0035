@@ -15,6 +15,7 @@ export const uploadProfilePhoto = (formData) => axios.post('/users/me/upload-pho
   headers: { 'Content-Type': 'multipart/form-data' }
 }).then(res => res.data);
 export const getUserById = (id) => axios.get(`/users/${id}`).then(res => res.data);
+export const getUserReliability = (id) => axios.get(`/users/${id}/reliability`).then(res => res.data);
 
 // RIDES
 export const createRide = (data) => axios.post('/rides', data).then(res => res.data);

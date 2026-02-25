@@ -1,6 +1,7 @@
 const Booking = require('../models/Booking');
 const Ride = require('../models/Ride');
 const { createNotification } = require('../utils/notification');
+const { calculateReliabilityScore } = require('../utils/calculateReliability');
 
 const createBooking = async (req, res) => {
   try {
@@ -41,7 +42,7 @@ const createBooking = async (req, res) => {
     });
 
     await booking.populate('rideId', 'from to date departureTime');
-    await booking.populate('passengerId', 'name profilePhoto rating');
+    await booking.populate('passengerId', 'name profilePhoto rating reliabilityScore reliabilityLabel');
 
     await createNotification(
       ride.driverId,
@@ -62,8 +63,8 @@ const getMyBookings = async (req, res) => {
       $or: [{ passengerId: req.user._id }, { driverId: req.user._id }]
     })
       .populate('rideId')
-      .populate('passengerId', 'name profilePhoto rating')
-      .populate('driverId', 'name profilePhoto rating')
+      .populate('passengerId', 'name profilePhoto rating reliabilityScore reliabilityLabel')
+      .populate('driverId', 'name profilePhoto rating reliabilityScore reliabilityLabel')
       .sort({ createdAt: -1 });
 
     const validBookings = bookings.filter(b => b.rideId);
@@ -79,8 +80,8 @@ const getBookingById = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
       .populate('rideId')
-      .populate('passengerId', 'name profilePhoto rating')
-      .populate('driverId', 'name profilePhoto rating');
+      .populate('passengerId', 'name profilePhoto rating reliabilityScore reliabilityLabel')
+      .populate('driverId', 'name profilePhoto rating reliabilityScore reliabilityLabel');
 
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found' });
@@ -126,6 +127,8 @@ const acceptBooking = async (req, res) => {
     booking.status = 'accepted';
     await booking.save();
 
+    await calculateReliabilityScore(req.user._id.toString());
+
     await createNotification(
       booking.passengerId,
       'booking_accepted',
@@ -156,6 +159,8 @@ const rejectBooking = async (req, res) => {
 
     booking.status = 'rejected';
     await booking.save();
+
+    await calculateReliabilityScore(req.user._id.toString());
 
     await createNotification(
       booking.passengerId,
@@ -194,6 +199,9 @@ const cancelBooking = async (req, res) => {
     booking.status = 'cancelled';
     booking.cancelledBy = req.user._id.toString() === booking.driverId.toString() ? 'driver' : 'passenger';
     await booking.save();
+
+    await calculateReliabilityScore(booking.passengerId.toString());
+    await calculateReliabilityScore(booking.driverId.toString());
 
     const notifyUserId = req.user._id.toString() === booking.driverId.toString() 
       ? booking.passengerId 

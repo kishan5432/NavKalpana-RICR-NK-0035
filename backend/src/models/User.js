@@ -21,6 +21,8 @@ const userSchema = new mongoose.Schema({
     average: { type: Number, default: 0 },
     count: { type: Number, default: 0 }
   },
+  reliabilityScore: { type: Number, default: 50, min: 0, max: 100 },
+  reliabilityLabel: { type: String, enum: ['Low', 'Moderate', 'High'], default: 'Moderate' },
   savedRoutes: [{
     from: String,
     to: String,

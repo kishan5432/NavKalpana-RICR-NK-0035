@@ -5,6 +5,7 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Star, ArrowRight, Users, Car, Shield, Phone, Clock, MapPin, Snowflake, Music, Package, Calendar } from 'lucide-react';
+import ReliabilityBadge from './ReliabilityBadge';
 
 export default function RideCard({ ride, onBook }) {
   const navigate = useNavigate();
@@ -72,6 +73,9 @@ export default function RideCard({ ride, onBook }) {
                 <Badge className="bg-green-500 text-white font-medium px-1.5 py-0.5 text-xs">
                   VERIFIED
                 </Badge>
+              )}
+              {ride.driverId?.reliabilityLabel && (
+                <ReliabilityBadge label={ride.driverId.reliabilityLabel} />
               )}
               <div className="flex items-center gap-1 bg-white/70 backdrop-blur-sm px-2 py-0.5 rounded-full shadow-sm ml-auto">
                 <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
