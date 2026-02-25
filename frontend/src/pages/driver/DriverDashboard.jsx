@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getMyPostedRides, getMyBookings, startRide, completeRide, acceptBooking, rejectBooking, getUserRatings, getOptimizationSuggestions } from '../../api';
+import { getMyPostedRides, getMyBookings, startRide, completeRide, acceptBooking, rejectBooking, getUserRatings, getOptimizationSuggestions, getDriverEarnings, subscribeInstantBadge } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
@@ -19,7 +19,8 @@ import {
   MapPin,
   Users,
   X,
-  AlertTriangle
+  AlertTriangle,
+  Zap
 } from 'lucide-react';
 
 export default function DriverDashboard() {
@@ -40,6 +41,8 @@ export default function DriverDashboard() {
   const [loading, setLoading] = useState(true);
   const [optimizationData, setOptimizationData] = useState({});
   const [dismissedBanners, setDismissedBanners] = useState({});
+  const [earnings, setEarnings] = useState(null);
+  const [subscribing, setSubscribing] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -47,10 +50,11 @@ export default function DriverDashboard() {
 
   const fetchData = async () => {
     try {
-      const [ridesData, bookingsData, ratingsData] = await Promise.all([
+      const [ridesData, bookingsData, ratingsData, earningsResponse] = await Promise.all([
         getMyPostedRides(),
         getMyBookings(),
-        getUserRatings(user._id)
+        getUserRatings(user._id),
+        getDriverEarnings()
       ]);
       
       const rides = ridesData.rides || [];
@@ -90,6 +94,7 @@ export default function DriverDashboard() {
       
       setStats(calculatedStats);
       setBookingRequests(bookings.filter(b => b.status === 'requested').slice(0, 5));
+      setEarnings(earningsResponse);
       
       // Fetch optimization suggestions for upcoming rides
       const optimizationPromises = calculatedStats.upcomingRides.map(ride => 
@@ -153,6 +158,20 @@ export default function DriverDashboard() {
     }
   };
 
+  const handleSubscribeInstantBadge = async () => {
+    if (!confirm('Subscribe to Instant Confirmation Badge for ₹199/month? This will display a badge on your profile showing you respond quickly.')) return;
+    setSubscribing(true);
+    try {
+      await subscribeInstantBadge();
+      toast.success('Instant badge activated!');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to activate badge');
+    } finally {
+      setSubscribing(false);
+    }
+  };
+
   const handleQuickAction = async (ride, suggestionType) => {
     const scrollTargets = {
       price: 'pricePerSeat',
@@ -197,13 +216,27 @@ export default function DriverDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-white/80 mb-1">Total Earnings</p>
-                    <p className="text-3xl font-bold">₹{stats.totalEarnings}</p>
+                    <p className="text-3xl font-bold">₹{earnings?.total_earned || stats.totalEarnings}</p>
+                  </div>
+                  <div className="p-3 bg-white/20 rounded-full">
+                    <DollarSign className="h-6 w-6" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-white/80 mb-1">Platform Fee</p>
+                    <p className="text-3xl font-bold">₹{earnings?.total_platform_fee || 0}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
                     <DollarSign className="h-6 w-6" />
@@ -291,6 +324,53 @@ export default function DriverDashboard() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Instant Badge Subscription */}
+        {(!user?.instant_badge_active || (user?.instant_badge_until && new Date(user.instant_badge_until) < new Date())) && (
+          <Card className="shadow-lg border-0 bg-gradient-to-r from-blue-50 to-purple-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full">
+                    <Zap className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Get Instant Confirmation Badge</h3>
+                    <p className="text-sm text-gray-600">Stand out with a badge showing you respond quickly - ₹199/month</p>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleSubscribeInstantBadge}
+                  disabled={subscribing}
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold px-6 py-3"
+                >
+                  {subscribing ? 'Activating...' : 'Subscribe Now'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {user?.instant_badge_active && user?.instant_badge_until && new Date(user.instant_badge_until) > new Date() && (
+          <Card className="shadow-lg border-0 bg-gradient-to-r from-green-50 to-blue-50">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    Instant Confirmation Badge Active
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Your badge is active until {new Date(user.instant_badge_until).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Upcoming Rides */}
@@ -497,8 +577,9 @@ export default function DriverDashboard() {
           </CardHeader>
           <CardContent className="p-6">
             <div className="h-64 flex items-end justify-between gap-2">
-              {stats.earningsData.map((day, index) => {
-                const maxEarnings = Math.max(...stats.earningsData.map(d => d.earnings), 1);
+              {(earnings?.earnings_chart || stats.earningsData).map((day, index) => {
+                const chartData = earnings?.earnings_chart || stats.earningsData;
+                const maxEarnings = Math.max(...chartData.map(d => d.earnings), 1);
                 const height = (day.earnings / maxEarnings) * 200;
                 return (
                   <div key={index} className="flex flex-col items-center flex-1">
@@ -516,6 +597,82 @@ export default function DriverDashboard() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Earnings Section */}
+        {earnings && (
+          <Card className="shadow-lg border-0">
+            <CardHeader className="border-b bg-gray-50">
+              <CardTitle className="flex items-center gap-2 text-[#3A2A5A]">
+                <DollarSign className="h-5 w-5" />
+                Transaction History
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div>
+                <h3 className="font-semibold text-lg mb-4 text-[#3A2A5A]">Recent Transactions</h3>
+                {earnings.recent_transactions.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Type</th>
+                          <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Description</th>
+                          <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Date</th>
+                          <th className="text-right py-3 px-4 text-sm font-semibold text-gray-700">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {earnings.recent_transactions.map((transaction, index) => (
+                          <tr key={index} className="border-b hover:bg-gray-50">
+                            <td className="py-3 px-4">
+                              {transaction.type === 'service_fee' && (
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                  Earning
+                                </span>
+                              )}
+                              {transaction.type === 'premium_visibility' && (
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                  Boost
+                                </span>
+                              )}
+                              {transaction.type === 'instant_confirmation_badge' && (
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                  Badge
+                                </span>
+                              )}
+                              {!transaction.type && (
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                  Other
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3 px-4 text-sm">{transaction.description || 'N/A'}</td>
+                            <td className="py-3 px-4 text-sm text-gray-600">
+                              {transaction.date ? new Date(transaction.date).toLocaleDateString('en-IN', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              }) : 'N/A'}
+                            </td>
+                            <td className={`py-3 px-4 text-sm font-semibold text-right ${
+                              transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'
+                            }`}>
+                              {transaction.amount >= 0 ? '+' : ''}₹{Math.abs(transaction.amount).toFixed(2)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-center text-gray-500 py-8">No transactions yet</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
