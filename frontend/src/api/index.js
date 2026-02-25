@@ -50,3 +50,6 @@ export const getUserRatings = (userId) => axios.get(`/ratings/user/${userId}`).t
 export const getNotifications = () => axios.get('/users/me/notifications').then(res => res.data);
 export const markNotificationRead = (id) => axios.patch(`/users/me/notifications/${id}/read`).then(res => res.data);
 export const markAllNotificationsRead = () => axios.patch('/users/me/notifications/read-all').then(res => res.data);
+
+// RECOMMENDATIONS
+export const getRecommendations = (userId) => axios.get(`/recommendations/${userId}`).then(res => res.data);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { getRides, updateMe, getMe } from '../../api';
+import { getRides, updateMe, getMe, getRecommendations } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
 import RideCard from '../../components/RideCard';
@@ -10,14 +10,17 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Slider } from '../../components/ui/slider';
 import { Badge } from '../../components/ui/badge';
-import { Star, X, Car, Clock, MapPin, Filter, SlidersHorizontal, ArrowLeft, Bookmark } from 'lucide-react';
+import { Skeleton } from '../../components/ui/skeleton';
+import { Star, X, Car, Clock, MapPin, Filter, SlidersHorizontal, ArrowLeft, Bookmark, Sparkles } from 'lucide-react';
 
 export default function SearchRides() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [rides, setRides] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [filters, setFilters] = useState({
     from: searchParams.get('from') || '',
@@ -36,6 +39,9 @@ export default function SearchRides() {
 
   useEffect(() => {
     fetchRides();
+    if (!filters.from && !filters.to && user) {
+      fetchRecommendations();
+    }
   }, [searchParams, page]);
 
   const fetchRides = async () => {
@@ -65,6 +71,19 @@ export default function SearchRides() {
       setRides([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRecommendations = async () => {
+    if (!user) return;
+    setLoadingRecommendations(true);
+    try {
+      const data = await getRecommendations(user._id);
+      setRecommendations(data.recommendations || []);
+    } catch (error) {
+      console.error('Fetch recommendations error:', error);
+    } finally {
+      setLoadingRecommendations(false);
     }
   };
 
@@ -379,6 +398,21 @@ export default function SearchRides() {
 
             {loading ? (
               <LoadingSkeleton />
+            ) : (!filters.from && !filters.to && recommendations.length > 0) ? (
+              <div>
+                <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="h-5 w-5 text-purple-600" />
+                    <h3 className="font-bold text-lg text-purple-900">Recommended for You</h3>
+                  </div>
+                  <p className="text-sm text-purple-700">Based on your travel history</p>
+                </div>
+                <div className="space-y-4">
+                  {recommendations.map((ride) => (
+                    <RideCard key={ride._id} ride={ride} />
+                  ))}
+                </div>
+              </div>
             ) : rides.length === 0 ? (
               <div className="bg-white rounded-lg shadow-lg border-0 p-12 text-center">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">

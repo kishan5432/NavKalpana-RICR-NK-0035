@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar'
 import { Input } from '../../components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Textarea } from '../../components/ui/textarea';
+import RideRecommendations from '../../components/RideRecommendations';
 import { 
   Search, 
   MapPin, 
@@ -345,6 +346,9 @@ export default function PassengerDashboard() {
             )}
           </CardContent>
         </Card>
+
+        {/* Ride Recommendations */}
+        <RideRecommendations />
 
         {/* Recent Notifications */}
         {notifications.length > 0 && (

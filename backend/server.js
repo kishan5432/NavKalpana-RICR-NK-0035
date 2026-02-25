@@ -10,6 +10,7 @@ const rideRoutes = require('./src/routes/rides.routes');
 const bookingRoutes = require('./src/routes/bookings.routes');
 const messageRoutes = require('./src/routes/messages.routes');
 const ratingRoutes = require('./src/routes/ratings.routes');
+const recommendationRoutes = require('./src/routes/recommendations.routes');
 const errorHandler = require('./src/middleware/error.middleware');
 const setupSocket = require('./src/config/socket');
 
@@ -39,6 +40,7 @@ app.use('/api/rides', rideRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/ratings', ratingRoutes);
+app.use('/api/recommendations', recommendationRoutes);
 
 app.use(errorHandler);
 
