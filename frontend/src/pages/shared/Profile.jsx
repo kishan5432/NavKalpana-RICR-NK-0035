@@ -9,6 +9,7 @@ import { Card } from '../../components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
 import { Switch } from '../../components/ui/switch';
 import StarRating from '../../components/StarRating';
+import ReliabilityBadge from '../../components/ReliabilityBadge';
 import { CheckCircle, Mail, Phone, IdCard, Car, Calendar, Star, MapPin, Settings, Shield, Bell, Eye, Edit3, Award, TrendingUp, Users } from 'lucide-react';
 
 const Profile = () => {
@@ -93,6 +94,9 @@ const Profile = () => {
                 <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
                   {profile.role === 'both' ? 'Driver & Passenger' : profile.role}
                 </Badge>
+                {profile.reliabilityLabel && (
+                  <ReliabilityBadge label={profile.reliabilityLabel} />
+                )}
                 <div className="flex items-center gap-1 text-white/90">
                   <MapPin className="h-4 w-4" />
                   <span className="text-sm">{profile.location || 'Location not set'}</span>

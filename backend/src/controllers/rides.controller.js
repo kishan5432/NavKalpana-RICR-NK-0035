@@ -1,6 +1,7 @@
 const Ride = require('../models/Ride');
 const Booking = require('../models/Booking');
 const { createNotification } = require('../utils/notification');
+const { calculateReliabilityScore } = require('../utils/calculateReliability');
 
 const createRide = async (req, res) => {
   try {
@@ -25,7 +26,7 @@ const createRide = async (req, res) => {
       preferences
     });
 
-    await ride.populate('driverId', 'name profilePhoto rating isPhoneVerified');
+    await ride.populate('driverId', 'name profilePhoto rating isPhoneVerified reliabilityScore reliabilityLabel');
 
     res.status(201).json({ success: true, ride });
   } catch (error) {
@@ -66,7 +67,7 @@ const getRides = async (req, res) => {
       .sort(sortObj)
       .skip(skip)
       .limit(Number(limit))
-      .populate('driverId', 'name profilePhoto rating vehicle isPhoneVerified');
+      .populate('driverId', 'name profilePhoto rating vehicle isPhoneVerified reliabilityScore reliabilityLabel');
 
     res.status(200).json({ success: true, count: rides.length, total, page: Number(page), rides });
   } catch (error) {
@@ -86,7 +87,7 @@ const getMyPostedRides = async (req, res) => {
 
 const getRideById = async (req, res) => {
   try {
-    const ride = await Ride.findById(req.params.id).populate('driverId', 'name profilePhoto rating vehicle bio isPhoneVerified createdAt');
+    const ride = await Ride.findById(req.params.id).populate('driverId', 'name profilePhoto rating vehicle bio isPhoneVerified createdAt reliabilityScore reliabilityLabel');
     if (!ride) {
       return res.status(404).json({ success: false, message: 'Ride not found' });
     }
@@ -221,6 +222,12 @@ const completeRide = async (req, res) => {
       { rideId: ride._id, status: 'accepted' },
       { status: 'completed' }
     );
+
+    // Update reliability scores
+    await calculateReliabilityScore(ride.driverId.toString());
+    for (const booking of bookings) {
+      await calculateReliabilityScore(booking.passengerId.toString());
+    }
 
     for (const booking of bookings) {
       await createNotification(

@@ -168,4 +168,22 @@ const uploadProfilePicture = async (req, res, next) => {
   }
 };
 
-module.exports = { getMe, updateMe, getUserById, getMyNotifications, markNotificationRead, markAllNotificationsRead, uploadProfilePicture };
+const getUserReliability = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).select('reliabilityScore reliabilityLabel');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    res.status(200).json({ 
+      success: true, 
+      reliability: {
+        score: user.reliabilityScore,
+        label: user.reliabilityLabel
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getMe, updateMe, getUserById, getMyNotifications, markNotificationRead, markAllNotificationsRead, uploadProfilePicture, getUserReliability };
