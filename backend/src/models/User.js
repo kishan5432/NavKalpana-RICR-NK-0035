@@ -25,12 +25,7 @@ const userSchema = new mongoose.Schema({
   reliabilityLabel: { type: String, enum: ['Low', 'Moderate', 'High'], default: 'Moderate' },
   referralCode: { type: String, unique: true, sparse: true },
   referredByUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  credits: { type: Number, default: 0 },
-  savedRoutes: [{
-    from: String,
-    to: String,
-    label: String
-  }]
+  credits: { type: Number, default: 0 }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

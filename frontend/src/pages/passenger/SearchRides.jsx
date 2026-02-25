@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { getRides, updateMe, getMe, getRecommendations } from '../../api';
+import { getRides, getRecommendations, saveRoute } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
 import RideCard from '../../components/RideCard';
@@ -129,6 +129,10 @@ export default function SearchRides() {
   };
 
   const handleSaveRoute = async () => {
+    console.log('Save route clicked');
+    console.log('User:', user);
+    console.log('From:', filters.from, 'To:', filters.to);
+    
     if (!user) {
       toast.error('Please login to save routes');
       navigate('/login');
@@ -141,28 +145,17 @@ export default function SearchRides() {
     }
 
     try {
-      const userData = await getMe();
-      const savedRoutes = userData.user.savedRoutes || [];
-      
-      const routeExists = savedRoutes.some(
-        r => r.from === filters.from && r.to === filters.to
-      );
-
-      if (routeExists) {
-        toast.info('Route already saved');
-        return;
-      }
-
-      const newRoute = {
-        from: filters.from,
-        to: filters.to,
-        label: `${filters.from} → ${filters.to}`
-      };
-
-      await updateMe({ savedRoutes: [...savedRoutes, newRoute] });
+      console.log('Calling saveRoute API...');
+      const result = await saveRoute({ fromLocation: filters.from, toLocation: filters.to });
+      console.log('Save route result:', result);
       toast.success('Route saved!');
     } catch (error) {
-      toast.error('Failed to save route');
+      console.error('Save route error:', error);
+      if (error.response?.data?.message === 'Route already saved') {
+        toast.info('Route already saved');
+      } else {
+        toast.error('Failed to save route');
+      }
     }
   };
 
