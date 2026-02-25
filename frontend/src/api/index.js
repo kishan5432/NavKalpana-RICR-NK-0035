@@ -60,3 +60,6 @@ export const getSavedRoutes = () => axios.get('/saved-routes').then(res => res.d
 
 // PRICE SUGGESTION
 export const getPriceSuggestion = (params) => axios.get('/price-suggestion', { params }).then(res => res.data);
+
+// OPTIMIZATION SUGGESTIONS
+export const getOptimizationSuggestions = (rideId) => axios.get(`/rides/${rideId}/optimization-suggestions`).then(res => res.data);

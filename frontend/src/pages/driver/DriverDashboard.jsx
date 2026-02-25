@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getMyPostedRides, getMyBookings, startRide, completeRide, acceptBooking, rejectBooking, getUserRatings } from '../../api';
+import { getMyPostedRides, getMyBookings, startRide, completeRide, acceptBooking, rejectBooking, getUserRatings, getOptimizationSuggestions } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
@@ -17,7 +17,9 @@ import {
   TrendingUp,
   Clock,
   MapPin,
-  Users
+  Users,
+  X,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function DriverDashboard() {
@@ -36,6 +38,8 @@ export default function DriverDashboard() {
   });
   const [bookingRequests, setBookingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [optimizationData, setOptimizationData] = useState({});
+  const [dismissedBanners, setDismissedBanners] = useState({});
 
   useEffect(() => {
     fetchData();
@@ -86,6 +90,21 @@ export default function DriverDashboard() {
       
       setStats(calculatedStats);
       setBookingRequests(bookings.filter(b => b.status === 'requested').slice(0, 5));
+      
+      // Fetch optimization suggestions for upcoming rides
+      const optimizationPromises = calculatedStats.upcomingRides.map(ride => 
+        getOptimizationSuggestions(ride._id)
+          .then(data => ({ rideId: ride._id, data }))
+          .catch(() => ({ rideId: ride._id, data: null }))
+      );
+      const optimizationResults = await Promise.all(optimizationPromises);
+      const optimizationMap = {};
+      optimizationResults.forEach(result => {
+        if (result.data) {
+          optimizationMap[result.rideId] = result.data;
+        }
+      });
+      setOptimizationData(optimizationMap);
     } catch (error) {
       console.error('Dashboard error:', error);
       toast.error('Failed to fetch dashboard data');
@@ -132,6 +151,15 @@ export default function DriverDashboard() {
     } catch (error) {
       toast.error('Failed to reject booking');
     }
+  };
+
+  const handleQuickAction = async (ride, suggestionType) => {
+    const scrollTargets = {
+      price: 'pricePerSeat',
+      details: 'stops',
+      departure_time: 'departureTime'
+    };
+    navigate(`/driver/edit-ride/${ride._id}`, { state: { scrollTo: scrollTargets[suggestionType] } });
   };
 
   const getStatusBadge = (status) => {
@@ -307,6 +335,52 @@ export default function DriverDashboard() {
                           </div>
                         </div>
                       </div>
+                      {optimizationData[ride._id]?.low_booking_rate && !dismissedBanners[ride._id] && (
+                        <div className="mt-2 ml-12 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                                <p className="text-sm font-semibold text-yellow-800">This ride has a low booking rate</p>
+                              </div>
+                              <div className="space-y-2">
+                                {optimizationData[ride._id].suggestions.map((suggestion, idx) => {
+                                  const buttonLabels = {
+                                    price: 'Edit Price',
+                                    details: 'Add Details',
+                                    departure_time: 'Edit Time'
+                                  };
+                                  return (
+                                    <div key={idx} className="flex items-center justify-between gap-2">
+                                      <p className="text-xs text-yellow-700 flex-1">• {suggestion.message}</p>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="h-7 text-xs border-yellow-600 text-yellow-700 hover:bg-yellow-100"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleQuickAction(ride, suggestion.type);
+                                        }}
+                                      >
+                                        {buttonLabels[suggestion.type]}
+                                      </Button>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDismissedBanners(prev => ({ ...prev, [ride._id]: true }));
+                              }}
+                              className="text-yellow-600 hover:text-yellow-800"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
