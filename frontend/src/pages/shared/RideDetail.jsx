@@ -23,7 +23,8 @@ import {
   DollarSign,
   Route,
   CheckCircle,
-  Info
+  Info,
+  Zap
 } from 'lucide-react';
 import BookingFlow from '../../components/BookingFlow';
 import ReliabilityBadge from '../../components/ReliabilityBadge';
@@ -401,6 +402,12 @@ export default function RideDetail() {
                   </AvatarFallback>
                 </Avatar>
                 <h3 className="text-xl font-bold text-gray-900">{ride.driverId?.name}</h3>
+                {ride.driverId?.instant_badge_active && (
+                  <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium px-2 py-1 text-xs flex items-center gap-1 mx-auto w-fit mt-2">
+                    <Zap className="w-3 h-3" />
+                    Instant Confirm
+                  </Badge>
+                )}
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <span className="font-medium">{ride.driverId?.rating?.average?.toFixed(1) || 'New'}</span>

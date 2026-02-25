@@ -3,11 +3,13 @@ const Booking = require('../models/Booking');
 const User = require('../models/User');
 const UserActivity = require('../models/UserActivity');
 const SavedRoute = require('../models/SavedRoute');
+const Transaction = require('../models/Transaction');
 const { createNotification } = require('../utils/notification');
 const { calculateReliabilityScore } = require('../utils/calculateReliability');
 const getOptimizationSuggestions = require('../utils/getOptimizationSuggestions');
 const getRideBookingRate = require('../utils/getRideBookingRate');
 const isLowBookingRate = require('../utils/isLowBookingRate');
+const { PREMIUM_VISIBILITY_PRICE } = require('../../config/monetization');
 
 const createRide = async (req, res) => {
   try {
@@ -82,13 +84,30 @@ const getRides = async (req, res) => {
     if (sort === 'price') sortObj = { pricePerSeat: 1 };
     if (sort === 'departure') sortObj = { departureTime: 1 };
 
+    const now = new Date();
     const skip = (Number(page) - 1) * Number(limit);
     const total = await Ride.countDocuments(filter);
-    const rides = await Ride.find(filter)
-      .sort(sortObj)
-      .skip(skip)
-      .limit(Number(limit))
-      .populate('driverId', 'name profilePhoto rating vehicle isPhoneVerified reliabilityScore reliabilityLabel');
+    
+    // Fetch all matching rides and sort in memory
+    const allRides = await Ride.find(filter)
+      .populate('driverId', 'name profilePhoto rating vehicle isPhoneVerified reliabilityScore reliabilityLabel instant_badge_active');
+    
+    // Sort: premium rides first, then by selected criteria
+    const sortedRides = allRides.sort((a, b) => {
+      const aIsPremium = a.is_premium_visible && a.premium_visible_until > now;
+      const bIsPremium = b.is_premium_visible && b.premium_visible_until > now;
+      
+      if (aIsPremium && !bIsPremium) return -1;
+      if (!aIsPremium && bIsPremium) return 1;
+      
+      // Apply secondary sort
+      if (sort === 'price') return a.pricePerSeat - b.pricePerSeat;
+      if (sort === 'departure') return a.departureTime.localeCompare(b.departureTime);
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    // Apply pagination
+    const rides = sortedRides.slice(skip, skip + Number(limit));
 
     // Log search activity
     if (req.user && from && to) {
@@ -356,4 +375,42 @@ const getOptimizationSuggestionsEndpoint = async (req, res) => {
   }
 };
 
-module.exports = { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, startRide, completeRide, getDriverStats, getOptimizationSuggestionsEndpoint };
+const boostRide = async (req, res) => {
+  try {
+    const { payment_confirmed } = req.body;
+
+    if (!payment_confirmed) {
+      return res.status(400).json({ success: false, message: 'Payment confirmation required' });
+    }
+
+    const ride = await Ride.findById(req.params.ride_id);
+    if (!ride) {
+      return res.status(404).json({ success: false, message: 'Ride not found' });
+    }
+
+    if (ride.driverId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+
+    const premium_visible_until = new Date();
+    premium_visible_until.setDate(premium_visible_until.getDate() + 7);
+
+    ride.is_premium_visible = true;
+    ride.premium_visible_until = premium_visible_until;
+    await ride.save();
+
+    await Transaction.create({
+      driver_id: req.user._id,
+      ride_id: ride._id,
+      type: 'premium_visibility',
+      amount: PREMIUM_VISIBILITY_PRICE,
+      status: 'completed',
+    });
+
+    res.status(200).json({ success: true, message: 'Ride boosted successfully', ride });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, startRide, completeRide, getDriverStats, getOptimizationSuggestionsEndpoint, boostRide };

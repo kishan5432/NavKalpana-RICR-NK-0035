@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, startRide, completeRide, getDriverStats, getOptimizationSuggestionsEndpoint } = require('../controllers/rides.controller');
+const { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, startRide, completeRide, getDriverStats, getOptimizationSuggestionsEndpoint, boostRide } = require('../controllers/rides.controller');
 const { verifyJWT } = require('../middleware/auth.middleware');
 const { requireDriver } = require('../middleware/role.middleware');
 
@@ -9,6 +9,7 @@ router.get('/', getRides);
 router.get('/my-rides', verifyJWT, requireDriver, getMyPostedRides);
 router.get('/driver-stats', verifyJWT, requireDriver, getDriverStats);
 router.get('/:ride_id/optimization-suggestions', verifyJWT, requireDriver, getOptimizationSuggestionsEndpoint);
+router.post('/:ride_id/boost', verifyJWT, requireDriver, boostRide);
 router.get('/:id', getRideById);
 router.put('/:id', verifyJWT, requireDriver, updateRide);
 router.patch('/:id/start', verifyJWT, requireDriver, startRide);

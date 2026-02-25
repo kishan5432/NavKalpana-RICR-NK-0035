@@ -22,7 +22,9 @@ const rideSchema = new mongoose.Schema({
     pets: { type: Boolean, default: false },
     music: { type: Boolean, default: true }
   },
-  status: { type: String, enum: ['active', 'fully_booked', 'in_progress', 'cancelled', 'completed'], default: 'active' }
+  status: { type: String, enum: ['active', 'fully_booked', 'in_progress', 'cancelled', 'completed'], default: 'active' },
+  is_premium_visible: { type: Boolean, default: false },
+  premium_visible_until: { type: Date }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Ride', rideSchema);
