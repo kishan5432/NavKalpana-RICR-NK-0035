@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getMyBookings, getRides, submitRating, getNotifications, markNotificationRead } from '../../api';
+import { getMyBookings, getRides, submitRating, getNotifications, markNotificationRead, getMe } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
@@ -21,7 +21,8 @@ import {
   Route,
   Calendar,
   TrendingUp,
-  Navigation
+  Navigation,
+  Bookmark
 } from 'lucide-react';
 
 export default function PassengerDashboard() {
@@ -29,12 +30,14 @@ export default function PassengerDashboard() {
   const { user } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [savedRoutes, setSavedRoutes] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [ratingModal, setRatingModal] = useState({ open: false, booking: null, rating: 0, comment: '' });
 
   useEffect(() => {
     fetchBookings();
+    fetchSavedRoutes();
   }, []);
 
   const fetchBookings = async () => {
@@ -52,6 +55,15 @@ export default function PassengerDashboard() {
       toast.error('Failed to fetch dashboard data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSavedRoutes = async () => {
+    try {
+      const userData = await getMe();
+      setSavedRoutes(userData.user.savedRoutes || []);
+    } catch (error) {
+      console.error('Fetch saved routes error:', error);
     }
   };
 
@@ -240,6 +252,32 @@ export default function PassengerDashboard() {
             Search for Rides
           </Button>
         </div>
+
+        {/* Saved Routes */}
+        {savedRoutes.length > 0 && (
+          <Card className="shadow-lg border-0">
+            <CardHeader className="border-b bg-gray-50">
+              <CardTitle className="flex items-center gap-2 text-[#3A2A5A]">
+                <Bookmark className="h-5 w-5" />
+                Saved Routes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="flex flex-wrap gap-3">
+                {savedRoutes.map((route, index) => (
+                  <button
+                    key={index}
+                    onClick={() => navigate(`/search?from=${encodeURIComponent(route.from)}&to=${encodeURIComponent(route.to)}`)}
+                    className="px-4 py-2 bg-gradient-to-r from-[#3A2A5A] to-[#2d1f47] text-white rounded-full hover:shadow-lg transition-all duration-200 flex items-center gap-2 group"
+                  >
+                    <MapPin className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                    <span className="font-medium">{route.label}</span>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Upcoming Rides */}
         <Card className="shadow-lg border-0">

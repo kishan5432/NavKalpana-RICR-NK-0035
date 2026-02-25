@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { getRides } from '../../api';
+import { getRides, updateMe, getMe } from '../../api';
+import { useAuth } from '../../context/AuthContext';
+import { toast } from 'sonner';
 import RideCard from '../../components/RideCard';
 import MobileFilterSheet from '../../components/MobileFilterSheet';
 import { Button } from '../../components/ui/button';
@@ -8,13 +10,15 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Slider } from '../../components/ui/slider';
 import { Badge } from '../../components/ui/badge';
-import { Star, X, Car, Clock, MapPin, Filter, SlidersHorizontal, ArrowLeft } from 'lucide-react';
+import { Star, X, Car, Clock, MapPin, Filter, SlidersHorizontal, ArrowLeft, Bookmark } from 'lucide-react';
 
 export default function SearchRides() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [filters, setFilters] = useState({
     from: searchParams.get('from') || '',
     to: searchParams.get('to') || '',
@@ -36,6 +40,7 @@ export default function SearchRides() {
 
   const fetchRides = async () => {
     setLoading(true);
+    setHasSearched(true);
     try {
       const params = {
         from: filters.from,
@@ -102,6 +107,44 @@ export default function SearchRides() {
     });
     setSearchParams(params);
     setPage(1);
+  };
+
+  const handleSaveRoute = async () => {
+    if (!user) {
+      toast.error('Please login to save routes');
+      navigate('/login');
+      return;
+    }
+
+    if (!filters.from || !filters.to) {
+      toast.error('Please enter both departure and destination');
+      return;
+    }
+
+    try {
+      const userData = await getMe();
+      const savedRoutes = userData.user.savedRoutes || [];
+      
+      const routeExists = savedRoutes.some(
+        r => r.from === filters.from && r.to === filters.to
+      );
+
+      if (routeExists) {
+        toast.info('Route already saved');
+        return;
+      }
+
+      const newRoute = {
+        from: filters.from,
+        to: filters.to,
+        label: `${filters.from} → ${filters.to}`
+      };
+
+      await updateMe({ savedRoutes: [...savedRoutes, newRoute] });
+      toast.success('Route saved!');
+    } catch (error) {
+      toast.error('Failed to save route');
+    }
   };
 
   const LoadingSkeleton = () => (
@@ -322,6 +365,16 @@ export default function SearchRides() {
                   </p>
                 )}
               </div>
+              {hasSearched && filters.from && filters.to && (
+                <Button
+                  onClick={handleSaveRoute}
+                  variant="outline"
+                  className="border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                >
+                  <Bookmark className="h-4 w-4 mr-2" />
+                  Save this route ★
+                </Button>
+              )}
             </div>
 
             {loading ? (
