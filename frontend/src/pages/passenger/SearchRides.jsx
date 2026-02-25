@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { getRides } from '../../api';
+import { getRides, updateMe, getMe, getRecommendations } from '../../api';
+import { useAuth } from '../../context/AuthContext';
+import { toast } from 'sonner';
 import RideCard from '../../components/RideCard';
 import MobileFilterSheet from '../../components/MobileFilterSheet';
 import { Button } from '../../components/ui/button';
@@ -8,13 +10,18 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Slider } from '../../components/ui/slider';
 import { Badge } from '../../components/ui/badge';
-import { Star, X, Car, Clock, MapPin, Filter, SlidersHorizontal, ArrowLeft } from 'lucide-react';
+import { Skeleton } from '../../components/ui/skeleton';
+import { Star, X, Car, Clock, MapPin, Filter, SlidersHorizontal, ArrowLeft, Bookmark, Sparkles } from 'lucide-react';
 
 export default function SearchRides() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [rides, setRides] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [filters, setFilters] = useState({
     from: searchParams.get('from') || '',
     to: searchParams.get('to') || '',
@@ -32,10 +39,14 @@ export default function SearchRides() {
 
   useEffect(() => {
     fetchRides();
+    if (!filters.from && !filters.to && user) {
+      fetchRecommendations();
+    }
   }, [searchParams, page]);
 
   const fetchRides = async () => {
     setLoading(true);
+    setHasSearched(true);
     try {
       const params = {
         from: filters.from,
@@ -60,6 +71,19 @@ export default function SearchRides() {
       setRides([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRecommendations = async () => {
+    if (!user) return;
+    setLoadingRecommendations(true);
+    try {
+      const data = await getRecommendations(user._id);
+      setRecommendations(data.recommendations || []);
+    } catch (error) {
+      console.error('Fetch recommendations error:', error);
+    } finally {
+      setLoadingRecommendations(false);
     }
   };
 
@@ -102,6 +126,44 @@ export default function SearchRides() {
     });
     setSearchParams(params);
     setPage(1);
+  };
+
+  const handleSaveRoute = async () => {
+    if (!user) {
+      toast.error('Please login to save routes');
+      navigate('/login');
+      return;
+    }
+
+    if (!filters.from || !filters.to) {
+      toast.error('Please enter both departure and destination');
+      return;
+    }
+
+    try {
+      const userData = await getMe();
+      const savedRoutes = userData.user.savedRoutes || [];
+      
+      const routeExists = savedRoutes.some(
+        r => r.from === filters.from && r.to === filters.to
+      );
+
+      if (routeExists) {
+        toast.info('Route already saved');
+        return;
+      }
+
+      const newRoute = {
+        from: filters.from,
+        to: filters.to,
+        label: `${filters.from} → ${filters.to}`
+      };
+
+      await updateMe({ savedRoutes: [...savedRoutes, newRoute] });
+      toast.success('Route saved!');
+    } catch (error) {
+      toast.error('Failed to save route');
+    }
   };
 
   const LoadingSkeleton = () => (
@@ -322,10 +384,35 @@ export default function SearchRides() {
                   </p>
                 )}
               </div>
+              {hasSearched && filters.from && filters.to && (
+                <Button
+                  onClick={handleSaveRoute}
+                  variant="outline"
+                  className="border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                >
+                  <Bookmark className="h-4 w-4 mr-2" />
+                  Save this route ★
+                </Button>
+              )}
             </div>
 
             {loading ? (
               <LoadingSkeleton />
+            ) : (!filters.from && !filters.to && recommendations.length > 0) ? (
+              <div>
+                <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="h-5 w-5 text-purple-600" />
+                    <h3 className="font-bold text-lg text-purple-900">Recommended for You</h3>
+                  </div>
+                  <p className="text-sm text-purple-700">Based on your travel history</p>
+                </div>
+                <div className="space-y-4">
+                  {recommendations.map((ride) => (
+                    <RideCard key={ride._id} ride={ride} />
+                  ))}
+                </div>
+              </div>
             ) : rides.length === 0 ? (
               <div className="bg-white rounded-lg shadow-lg border-0 p-12 text-center">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">

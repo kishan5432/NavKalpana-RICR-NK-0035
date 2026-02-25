@@ -1,5 +1,6 @@
 const Ride = require('../models/Ride');
 const Booking = require('../models/Booking');
+const UserActivity = require('../models/UserActivity');
 const { createNotification } = require('../utils/notification');
 const { calculateReliabilityScore } = require('../utils/calculateReliability');
 
@@ -68,6 +69,17 @@ const getRides = async (req, res) => {
       .skip(skip)
       .limit(Number(limit))
       .populate('driverId', 'name profilePhoto rating vehicle isPhoneVerified reliabilityScore reliabilityLabel');
+
+    // Log search activity
+    if (req.user && from && to) {
+      await UserActivity.create({
+        userId: req.user._id,
+        type: 'search',
+        fromLocation: from,
+        toLocation: to,
+        travelDate: date ? new Date(date) : null
+      }).catch(err => console.error('UserActivity log error:', err));
+    }
 
     res.status(200).json({ success: true, count: rides.length, total, page: Number(page), rides });
   } catch (error) {
@@ -227,6 +239,14 @@ const completeRide = async (req, res) => {
     await calculateReliabilityScore(ride.driverId.toString());
     for (const booking of bookings) {
       await calculateReliabilityScore(booking.passengerId.toString());
+      
+      // Log completed trip activity
+      await UserActivity.create({
+        userId: booking.passengerId,
+        type: 'completed_trip',
+        fromLocation: ride.from,
+        toLocation: ride.to
+      }).catch(err => console.error('UserActivity log error:', err));
     }
 
     for (const booking of bookings) {
