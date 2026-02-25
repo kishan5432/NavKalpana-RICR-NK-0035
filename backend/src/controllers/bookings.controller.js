@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const Ride = require('../models/Ride');
+const RideAnalytics = require('../models/RideAnalytics');
 const { createNotification } = require('../utils/notification');
 const { calculateReliabilityScore } = require('../utils/calculateReliability');
 
@@ -128,6 +129,25 @@ const acceptBooking = async (req, res) => {
     await booking.save();
 
     await calculateReliabilityScore(req.user._id.toString());
+
+    // Update ride analytics
+    const rideDate = new Date(ride.date);
+    rideDate.setHours(0, 0, 0, 0);
+    
+    await RideAnalytics.findOneAndUpdate(
+      {
+        routeFrom: ride.from,
+        routeTo: ride.to,
+        rideDate: rideDate
+      },
+      {
+        $inc: { bookingCount: 1 }
+      },
+      {
+        upsert: true,
+        new: true
+      }
+    );
 
     await createNotification(
       booking.passengerId,

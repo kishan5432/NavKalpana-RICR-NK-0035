@@ -12,4 +12,11 @@ const requirePassenger = (req, res, next) => {
   return res.status(403).json({ success: false, message: 'Passenger access required' });
 };
 
-module.exports = { requireDriver, requirePassenger };
+const requireAdmin = (req, res, next) => {
+  if (req.user.role === 'admin') {
+    return next();
+  }
+  return res.status(403).json({ success: false, message: 'Admin access required' });
+};
+
+module.exports = { requireDriver, requirePassenger, requireAdmin };

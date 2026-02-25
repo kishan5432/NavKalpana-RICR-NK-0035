@@ -12,6 +12,7 @@ const messageRoutes = require('./src/routes/messages.routes');
 const ratingRoutes = require('./src/routes/ratings.routes');
 const recommendationRoutes = require('./src/routes/recommendations.routes');
 const savedRoutesRoutes = require('./src/routes/savedRoutes.routes');
+const analyticsRoutes = require('./src/routes/analytics.routes');
 const errorHandler = require('./src/middleware/error.middleware');
 const setupSocket = require('./src/config/socket');
 
@@ -43,6 +44,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/ratings', ratingRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/saved-routes', savedRoutesRoutes);
+app.use('/api/admin/analytics', analyticsRoutes);
 
 app.use(errorHandler);
 
