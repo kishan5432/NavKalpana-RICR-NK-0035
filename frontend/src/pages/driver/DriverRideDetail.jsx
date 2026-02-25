@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getRideById, getMyBookings, startRide, completeRide, cancelRide, acceptBooking, rejectBooking, submitRating } from '../../api';
+import { getRideById, getMyBookings, startRide, completeRide, cancelRide, acceptBooking, rejectBooking, submitRating, boostRide } from '../../api';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Textarea } from '../../components/ui/textarea';
 import { 
@@ -20,7 +20,8 @@ import {
   Square,
   ArrowLeft,
   Settings,
-  TrendingUp
+  TrendingUp,
+  Sparkles
 } from 'lucide-react';
 
 export default function DriverRideDetail() {
@@ -30,6 +31,7 @@ export default function DriverRideDetail() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [ratingModal, setRatingModal] = useState({ open: false, booking: null, rating: 0, comment: '' });
+  const [boosting, setBoosting] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -118,6 +120,20 @@ export default function DriverRideDetail() {
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to submit rating');
+    }
+  };
+
+  const handleBoostRide = async () => {
+    if (!confirm('Boost this ride for ₹99? It will appear at the top of search results for 7 days.')) return;
+    setBoosting(true);
+    try {
+      await boostRide(ride._id);
+      toast.success('Ride boosted successfully!');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to boost ride');
+    } finally {
+      setBoosting(false);
     }
   };
 
@@ -257,6 +273,14 @@ export default function DriverRideDetail() {
                       Start Ride
                     </button>
                     <button 
+                      onClick={handleBoostRide}
+                      disabled={boosting || (ride.is_premium_visible && new Date(ride.premium_visible_until) > new Date())}
+                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-white rounded-xl font-medium hover:from-yellow-500 hover:to-orange-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {ride.is_premium_visible && new Date(ride.premium_visible_until) > new Date() ? 'Already Boosted' : boosting ? 'Boosting...' : 'Boost Ride (₹99)'}
+                    </button>
+                    <button 
                       onClick={handleCancelRide}
                       className="flex items-center gap-2 px-6 py-3 border border-red-300 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors"
                     >
@@ -275,6 +299,14 @@ export default function DriverRideDetail() {
                   </button>
                 )}
               </div>
+              {ride.is_premium_visible && new Date(ride.premium_visible_until) > new Date() && (
+                <div className="mt-4 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-800 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    This ride is boosted until {new Date(ride.premium_visible_until).toLocaleDateString()}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Route Details */}

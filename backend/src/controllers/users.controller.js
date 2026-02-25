@@ -2,7 +2,9 @@ const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Ride = require('../models/Ride');
 const Notification = require('../models/Notification');
+const Transaction = require('../models/Transaction');
 const cloudinary = require('../config/cloudinary');
+const { INSTANT_CONFIRMATION_BADGE_PRICE } = require('../../config/monetization');
 
 const getMe = async (req, res) => {
   try {
@@ -186,4 +188,37 @@ const getUserReliability = async (req, res, next) => {
   }
 };
 
-module.exports = { getMe, updateMe, getUserById, getMyNotifications, markNotificationRead, markAllNotificationsRead, uploadProfilePicture, getUserReliability };
+const subscribeInstantBadge = async (req, res, next) => {
+  try {
+    const { payment_confirmed } = req.body;
+
+    if (!payment_confirmed) {
+      return res.status(400).json({ success: false, message: 'Payment confirmation required' });
+    }
+
+    const instant_badge_until = new Date();
+    instant_badge_until.setDate(instant_badge_until.getDate() + 30);
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        instant_badge_active: true,
+        instant_badge_until
+      },
+      { new: true }
+    );
+
+    await Transaction.create({
+      driver_id: req.user._id,
+      type: 'instant_confirmation_badge',
+      amount: INSTANT_CONFIRMATION_BADGE_PRICE,
+      status: 'completed',
+    });
+
+    res.status(200).json({ success: true, message: 'Instant badge activated', user });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getMe, updateMe, getUserById, getMyNotifications, markNotificationRead, markAllNotificationsRead, uploadProfilePicture, getUserReliability, subscribeInstantBadge };

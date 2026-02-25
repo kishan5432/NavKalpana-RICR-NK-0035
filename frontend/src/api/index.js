@@ -60,3 +60,13 @@ export const getSavedRoutes = () => axios.get('/saved-routes').then(res => res.d
 
 // PRICE SUGGESTION
 export const getPriceSuggestion = (params) => axios.get('/price-suggestion', { params }).then(res => res.data);
+
+// OPTIMIZATION SUGGESTIONS
+export const getOptimizationSuggestions = (rideId) => axios.get(`/rides/${rideId}/optimization-suggestions`).then(res => res.data);
+
+// EARNINGS
+export const getDriverEarnings = () => axios.get('/driver/earnings').then(res => res.data);
+
+// MONETIZATION
+export const boostRide = (rideId) => axios.post(`/rides/${rideId}/boost`, { payment_confirmed: true }).then(res => res.data);
+export const subscribeInstantBadge = () => axios.post('/users/driver/subscribe/instant-badge', { payment_confirmed: true }).then(res => res.data);

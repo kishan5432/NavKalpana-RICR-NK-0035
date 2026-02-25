@@ -1,8 +1,10 @@
 const Booking = require('../models/Booking');
 const Ride = require('../models/Ride');
 const RideAnalytics = require('../models/RideAnalytics');
+const Transaction = require('../models/Transaction');
 const { createNotification } = require('../utils/notification');
 const { calculateReliabilityScore } = require('../utils/calculateReliability');
+const calculateServiceFee = require('../utils/calculateServiceFee');
 
 const createBooking = async (req, res) => {
   try {
@@ -155,6 +157,19 @@ const acceptBooking = async (req, res) => {
       'Your booking was accepted',
       `/passenger/bookings`
     );
+
+    // Create transaction record
+    const feeCalculation = calculateServiceFee(ride.pricePerSeat, booking.seatsBooked);
+    await Transaction.create({
+      booking_id: booking._id,
+      rider_id: booking.passengerId,
+      driver_id: booking.driverId,
+      total_ride_value: feeCalculation.total_ride_value,
+      fee_amount: feeCalculation.fee_amount,
+      driver_payout: feeCalculation.driver_payout,
+      fee_percent: feeCalculation.fee_percent,
+      status: 'pending',
+    });
 
     res.status(200).json({ success: true, booking });
   } catch (error) {

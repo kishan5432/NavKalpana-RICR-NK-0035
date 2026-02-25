@@ -4,7 +4,7 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
-import { Star, ArrowRight, Users, Car, Shield, Phone, Clock, MapPin, Snowflake, Music, Package, Calendar } from 'lucide-react';
+import { Star, ArrowRight, Users, Car, Shield, Phone, Clock, MapPin, Snowflake, Music, Package, Calendar, Sparkles, Zap } from 'lucide-react';
 import ReliabilityBadge from './ReliabilityBadge';
 
 export default function RideCard({ ride, onBook }) {
@@ -69,6 +69,18 @@ export default function RideCard({ ride, onBook }) {
             {/* Driver Info & Rating */}
             <div className="flex items-center gap-2 mb-2">
               <h4 className="font-bold text-base text-gray-800">{ride.driverId?.name}</h4>
+              {ride.is_premium_visible && (
+                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-medium px-1.5 py-0.5 text-xs flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  Featured
+                </Badge>
+              )}
+              {ride.driverId?.instant_badge_active && (
+                <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium px-1.5 py-0.5 text-xs flex items-center gap-1">
+                  <Zap className="w-3 h-3" />
+                  Instant Confirm
+                </Badge>
+              )}
               {ride.driverId?.isPhoneVerified && (
                 <Badge className="bg-green-500 text-white font-medium px-1.5 py-0.5 text-xs">
                   VERIFIED
