@@ -5,6 +5,9 @@ const UserActivity = require('../models/UserActivity');
 const SavedRoute = require('../models/SavedRoute');
 const { createNotification } = require('../utils/notification');
 const { calculateReliabilityScore } = require('../utils/calculateReliability');
+const getOptimizationSuggestions = require('../utils/getOptimizationSuggestions');
+const getRideBookingRate = require('../utils/getRideBookingRate');
+const isLowBookingRate = require('../utils/isLowBookingRate');
 
 const createRide = async (req, res) => {
   try {
@@ -328,4 +331,29 @@ const getDriverStats = async (req, res) => {
   }
 };
 
-module.exports = { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, startRide, completeRide, getDriverStats };
+const getOptimizationSuggestionsEndpoint = async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.ride_id);
+    if (!ride) {
+      return res.status(404).json({ success: false, message: 'Ride not found' });
+    }
+    if (ride.driverId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+
+    const bookingRate = await getRideBookingRate(req.params.ride_id);
+    const lowBookingRate = await isLowBookingRate(req.params.ride_id);
+    const suggestions = await getOptimizationSuggestions(req.params.ride_id);
+
+    res.status(200).json({
+      success: true,
+      low_booking_rate: lowBookingRate,
+      fill_rate: bookingRate ? bookingRate.fill_rate : 0,
+      suggestions
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { createRide, getRides, getMyPostedRides, getRideById, updateRide, cancelRide, startRide, completeRide, getDriverStats, getOptimizationSuggestionsEndpoint };
