@@ -247,6 +247,21 @@ const completeRide = async (req, res) => {
         fromLocation: ride.from,
         toLocation: ride.to
       }).catch(err => console.error('UserActivity log error:', err));
+
+      // Referral bonus: check if this is passenger's first completed trip
+      const passenger = await User.findById(booking.passengerId);
+      if (passenger && passenger.referredByUserId) {
+        const completedTripsCount = await Booking.countDocuments({
+          passengerId: passenger._id,
+          status: 'completed'
+        });
+        
+        if (completedTripsCount === 1) {
+          await User.findByIdAndUpdate(passenger.referredByUserId, {
+            $inc: { credits: 100 }
+          });
+        }
+      }
     }
 
     for (const booking of bookings) {

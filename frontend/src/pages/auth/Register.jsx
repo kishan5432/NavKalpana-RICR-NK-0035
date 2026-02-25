@@ -17,7 +17,8 @@ export default function Register() {
     email: '',
     phone: '',
     password: '',
-    role: 'passenger'
+    role: 'passenger',
+    referredBy: ''
   });
   const [errors, setErrors] = useState({});
 
@@ -59,6 +60,8 @@ export default function Register() {
     try {
       await register(formData);
       toast.success('Account created successfully! Please verify your email.');
+      // Clear OTP tracking for this email to allow fresh OTP
+      sessionStorage.setItem('pendingVerification', formData.email);
       navigate('/verify', { state: { email: formData.email } });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Registration failed');
@@ -186,6 +189,21 @@ export default function Register() {
                   {errors.password && (
                     <p className="text-red-500 text-sm mt-1">{errors.password}</p>
                   )}
+                </div>
+
+                <div>
+                  <Label htmlFor="referredBy" className="text-sm font-medium text-gray-700 mb-1 block">
+                    Referral Code (Optional)
+                  </Label>
+                  <Input
+                    id="referredBy"
+                    name="referredBy"
+                    type="text"
+                    value={formData.referredBy}
+                    onChange={handleChange}
+                    className="h-10 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    placeholder="Enter referral code"
+                  />
                 </div>
 
                 <div>
