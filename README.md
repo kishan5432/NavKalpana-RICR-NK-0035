@@ -2,7 +2,7 @@
 
 A full-stack carpooling/rideshare platform built with MERN stack, featuring real-time chat, intelligent pricing, monetization system, and ride optimization.
 
-## 🚀 Features
+## Features
 
 ### Core Functionality
 - **Dual Role System**: Separate interfaces for drivers and passengers

@@ -132,7 +132,7 @@ const Profile = () => {
               </div>
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-[#111111]">
-                  {new Date(profile.createdAt).getFullYear()}
+                  {profile.createdAt ? new Date(profile.createdAt).getFullYear() : 'N/A'}
                 </div>
                 <div className="text-[#4F4F4F] text-sm">Since</div>
               </div>
@@ -303,29 +303,13 @@ const Profile = () => {
         <Card className="bg-white shadow-lg rounded-2xl border-0 overflow-hidden">
           <Tabs defaultValue="reviews" className="w-full">
             <div className="border-b border-gray-100 px-6 pt-6">
-              <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:grid-cols-none lg:flex bg-gray-100 rounded-xl p-1">
+              <TabsList className="grid w-full grid-cols-1 lg:w-auto bg-gray-100 rounded-xl p-1">
                 <TabsTrigger 
                   value="reviews" 
                   className="data-[state=active]:bg-white data-[state=active]:text-[#111111] data-[state=active]:shadow-sm rounded-lg font-medium"
                 >
                   Reviews
                 </TabsTrigger>
-                {(profile.role === 'driver' || profile.role === 'both') && (
-                  <TabsTrigger 
-                    value="vehicle" 
-                    className="data-[state=active]:bg-white data-[state=active]:text-[#111111] data-[state=active]:shadow-sm rounded-lg font-medium"
-                  >
-                    Vehicle
-                  </TabsTrigger>
-                )}
-                {isOwnProfile && (
-                  <TabsTrigger 
-                    value="settings" 
-                    className="data-[state=active]:bg-white data-[state=active]:text-[#111111] data-[state=active]:shadow-sm rounded-lg font-medium"
-                  >
-                    Settings
-                  </TabsTrigger>
-                )}
               </TabsList>
             </div>
 
@@ -377,139 +361,6 @@ const Profile = () => {
                 </div>
               )}
             </TabsContent>
-
-            {/* Vehicle Tab */}
-            {(profile.role === 'driver' || profile.role === 'both') && (
-              <TabsContent value="vehicle" className="p-6 mt-0">
-                {profile.vehicle ? (
-                  <div>
-                    <div className="flex items-center gap-3 mb-8">
-                      <div className="w-12 h-12 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
-                        <Car className="h-6 w-6 text-[#111111]" />
-                      </div>
-                      <h3 className="text-2xl font-bold text-gray-900">Vehicle Information</h3>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="p-4 rounded-xl bg-gray-50">
-                        <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Make</label>
-                        <p className="text-lg font-semibold text-gray-900 mt-1">{profile.vehicle.make}</p>
-                      </div>
-                      <div className="p-4 rounded-xl bg-gray-50">
-                        <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Model</label>
-                        <p className="text-lg font-semibold text-gray-900 mt-1">{profile.vehicle.model}</p>
-                      </div>
-                      <div className="p-4 rounded-xl bg-gray-50">
-                        <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Year</label>
-                        <p className="text-lg font-semibold text-gray-900 mt-1">{profile.vehicle.year || 'N/A'}</p>
-                      </div>
-                      <div className="p-4 rounded-xl bg-gray-50">
-                        <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Color</label>
-                        <p className="text-lg font-semibold text-gray-900 mt-1">{profile.vehicle.color}</p>
-                      </div>
-                      <div className="p-4 rounded-xl bg-gray-50">
-                        <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">License Plate</label>
-                        <p className="text-lg font-semibold text-gray-900 mt-1">{profile.vehicle.licensePlate}</p>
-                      </div>
-                      <div className="p-4 rounded-xl bg-gray-50">
-                        <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Seats</label>
-                        <p className="text-lg font-semibold text-gray-900 mt-1">{profile.vehicle.seats || 'N/A'}</p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-16">
-                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
-                      <Car className="h-10 w-10 text-[#111111]" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No vehicle information</h3>
-                    <p className="text-gray-500">Add your vehicle details to start offering rides</p>
-                  </div>
-                )}
-              </TabsContent>
-            )}
-
-            {/* Settings Tab */}
-            {isOwnProfile && (
-              <TabsContent value="settings" className="p-6 mt-0">
-                <div>
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
-                      <Settings className="h-6 w-6 text-[#111111]" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900">Notification Settings</h3>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between p-6 rounded-xl bg-gray-50 border border-gray-100">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                          <Mail className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900">Email Notifications</h4>
-                          <p className="text-sm text-gray-600">Receive notifications via email</p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={settings.emailNotifications}
-                        onCheckedChange={(checked) => setSettings({ ...settings, emailNotifications: checked })}
-                        className="data-[state=checked]:bg-[#FFD400]"
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-6 rounded-xl bg-gray-50 border border-gray-100">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center">
-                          <Bell className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900">Push Notifications</h4>
-                          <p className="text-sm text-gray-600">Receive push notifications</p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={settings.pushNotifications}
-                        onCheckedChange={(checked) => setSettings({ ...settings, pushNotifications: checked })}
-                        className="data-[state=checked]:bg-[#FFD400]"
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-6 rounded-xl bg-gray-50 border border-gray-100">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center">
-                          <Phone className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900">SMS Notifications</h4>
-                          <p className="text-sm text-gray-600">Receive notifications via SMS</p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={settings.smsNotifications}
-                        onCheckedChange={(checked) => setSettings({ ...settings, smsNotifications: checked })}
-                        className="data-[state=checked]:bg-[#FFD400]"
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-6 rounded-xl bg-gray-50 border border-gray-100">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
-                          <Eye className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900">Profile Visibility</h4>
-                          <p className="text-sm text-gray-600">Make your profile visible to others</p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={settings.profileVisibility}
-                        onCheckedChange={(checked) => setSettings({ ...settings, profileVisibility: checked })}
-                        className="data-[state=checked]:bg-[#FFD400]"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-            )}
           </Tabs>
         </Card>
       </div>
