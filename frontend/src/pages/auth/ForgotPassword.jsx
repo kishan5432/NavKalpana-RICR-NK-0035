@@ -89,11 +89,14 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] items-center justify-center p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#FFD400] via-[#FFC400] to-[#E6B800] items-center justify-center p-12 relative overflow-hidden">
+        <svg className="absolute top-0 left-0 w-full" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{height: '80px'}}>
+          <path d="M0,0 L0,40 Q300,100 600,40 T1200,40 L1200,0 Z" fill="#f9fafb"></path>
+        </svg>
         <img 
-          src="https://res.cloudinary.com/dse13zdp7/image/upload/v1771946793/enhance_lh0bq81mkfvfxnmjchhq_jktxrh.png"
+          src="https://media.istockphoto.com/id/1397930967/vector/wrong-password-isolated-cartoon-vector-illustrations.jpg?s=612x612&amp;w=0&amp;k=20&amp;c=x8JNYsntSpHYfimxTecNGrzne49rcv-lK56jYKxBYVc="
           alt="Forgot password illustration"
-          className="w-full max-w-lg rounded-2xl shadow-2xl"
+          className="w-full max-w-lg rounded-2xl shadow-2xl object-cover"
         />
       </div>
 
@@ -101,7 +104,7 @@ export default function ForgotPassword() {
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-[#3A2A5A] mb-2">
+            <h1 className="text-3xl font-bold text-[#111111] mb-2">
               Reset Password
             </h1>
             <p className="text-gray-600">
@@ -123,7 +126,7 @@ export default function ForgotPassword() {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                       placeholder="Enter your email"
                     />
                     {errors.email && (
@@ -133,7 +136,7 @@ export default function ForgotPassword() {
 
                   <Button 
                     type="submit" 
-                    className="w-full h-12 bg-[#EC3399] hover:bg-[#d62d88] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200" 
+                    className="w-full h-12 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200" 
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -158,7 +161,7 @@ export default function ForgotPassword() {
                       type="text"
                       value={formData.otp}
                       onChange={handleChange}
-                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                       placeholder="Enter 6-digit OTP"
                       maxLength={6}
                     />
@@ -177,7 +180,7 @@ export default function ForgotPassword() {
                       type="password"
                       value={formData.newPassword}
                       onChange={handleChange}
-                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                       placeholder="Enter new password"
                     />
                     {errors.newPassword && (
@@ -195,7 +198,7 @@ export default function ForgotPassword() {
                       type="password"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                       placeholder="Confirm new password"
                     />
                     {errors.confirmPassword && (
@@ -205,7 +208,7 @@ export default function ForgotPassword() {
 
                   <Button 
                     type="submit" 
-                    className="w-full h-12 bg-[#EC3399] hover:bg-[#d62d88] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200" 
+                    className="w-full h-12 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200" 
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -231,7 +234,7 @@ export default function ForgotPassword() {
               )}
 
               <div className="mt-6 text-center">
-                <Link to="/login" className="text-sm text-[#EC3399] hover:underline font-semibold">
+                <Link to="/login" className="text-sm text-[#FFD400] hover:underline font-semibold">
                   Back to Login
                 </Link>
               </div>

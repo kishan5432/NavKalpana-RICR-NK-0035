@@ -100,8 +100,8 @@ export default function MyPostedRides() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Header */}
-      <div className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <div className="relative bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] overflow-hidden">
+        <div className="absolute inset-0 bg-black/5"></div>
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
@@ -109,27 +109,27 @@ export default function MyPostedRides() {
                 onClick={() => navigate('/driver/dashboard')}
                 variant="ghost"
                 size="sm"
-                className="text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
+                className="text-[#111111] hover:bg-[#111111]/10 rounded-full w-10 h-10 p-0"
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                  <Route className="h-6 w-6 text-white" />
+                <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center shadow-lg">
+                  <Route className="h-6 w-6 text-[#FFD400]" />
                 </div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-white">My Posted Rides</h1>
+                <h1 className="text-3xl lg:text-4xl font-bold text-[#111111]">My Posted Rides</h1>
               </div>
             </div>
             <Button 
               onClick={() => navigate('/post-ride')}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+              className="bg-[#111111] hover:bg-[#222222] text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               Post New Ride
             </Button>
           </div>
           
-          <p className="text-white/90 text-lg max-w-2xl">
+          <p className="text-[#4F4F4F] text-lg max-w-2xl">
             Manage your posted rides and track passenger bookings
           </p>
         </div>
@@ -148,14 +148,14 @@ export default function MyPostedRides() {
         <Card className="mb-8 bg-white shadow-lg rounded-2xl border-0">
           <div className="p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                <Filter className="h-4 w-4 text-white" />
+              <div className="w-8 h-8 rounded-full bg-[#FFD400] flex items-center justify-center">
+                <Filter className="h-4 w-4 text-[#111111]" />
               </div>
-              <h2 className="text-lg font-bold text-gray-900">Filter Rides</h2>
+              <h2 className="text-lg font-bold text-[#111111]">Filter Rides</h2>
             </div>
             <div className="flex flex-wrap gap-4">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48 h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]">
+                <SelectTrigger className="w-48 h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -172,7 +172,7 @@ export default function MyPostedRides() {
                 type="date"
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="w-48 h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                className="w-48 h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                 placeholder="Filter by date"
               />
               
@@ -207,7 +207,7 @@ export default function MyPostedRides() {
             {rides.length === 0 && (
               <Button 
                 onClick={() => navigate('/post-ride')}
-                className="bg-[#3A2A5A] hover:bg-[#2d1f47] text-white"
+                className="bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Post Your First Ride
@@ -226,8 +226,8 @@ export default function MyPostedRides() {
                   <div className="flex flex-col lg:flex-row gap-6">
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                          <MapPin className="h-6 w-6 text-white" />
+                        <div className="w-12 h-12 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                          <MapPin className="h-6 w-6 text-[#111111]" />
                         </div>
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-gray-900 mb-1">
@@ -293,7 +293,7 @@ export default function MyPostedRides() {
                     <div className="flex flex-col justify-center gap-3" onClick={(e) => e.stopPropagation()}>
                       <Button
                         onClick={() => navigate(`/driver/bookings?rideId=${ride._id}`)}
-                        className="bg-[#3A2A5A] hover:bg-[#2d1f47] text-white font-semibold rounded-xl"
+                        className="bg-[#111111] hover:bg-[#222222] text-white font-semibold rounded-xl"
                       >
                         <Users className="h-4 w-4 mr-2" />
                         View Bookings

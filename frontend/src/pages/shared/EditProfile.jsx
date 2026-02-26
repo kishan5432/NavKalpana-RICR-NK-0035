@@ -82,19 +82,19 @@ const EditProfile = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Header */}
-      <div className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <div className="relative bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] overflow-hidden">
+        <div className="absolute inset-0 bg-black/5"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center gap-4 mb-8">
             <Button
               onClick={() => navigate(-1)}
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
+              className="text-[#111111] hover:bg-[#111111]/10 rounded-full w-10 h-10 p-0"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-3xl lg:text-4xl font-bold text-white">Edit Profile</h1>
+            <h1 className="text-3xl lg:text-4xl font-bold text-[#111111]">Edit Profile</h1>
           </div>
           
           {/* Profile Photo Section */}
@@ -110,7 +110,7 @@ const EditProfile = () => {
               </div>
               <label 
                 htmlFor="photo-upload" 
-                className="absolute -bottom-2 -right-2 bg-[#EC3399] hover:bg-[#d62d88] text-white p-3 rounded-full cursor-pointer shadow-lg transition-colors"
+                className="absolute -bottom-2 -right-2 bg-[#111111] hover:bg-[#222222] text-white p-3 rounded-full cursor-pointer shadow-lg transition-colors"
               >
                 <Camera className="w-5 h-5" />
                 <input
@@ -125,7 +125,7 @@ const EditProfile = () => {
             </div>
           </div>
           {uploading && (
-            <p className="text-center text-white/90 mt-4">Uploading photo...</p>
+            <p className="text-center text-[#4F4F4F] mt-4">Uploading photo...</p>
           )}
         </div>
         
@@ -143,8 +143,8 @@ const EditProfile = () => {
           {/* Personal Information */}
           <Card className="p-8 bg-white shadow-lg rounded-2xl border-0">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                <User className="h-5 w-5 text-white" />
+              <div className="w-10 h-10 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                <User className="h-5 w-5 text-[#111111]" />
               </div>
               <h2 className="text-xl font-bold text-gray-900">Personal Information</h2>
             </div>
@@ -159,7 +159,7 @@ const EditProfile = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                  className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                   placeholder="Enter your full name"
                   required
                 />
@@ -175,7 +175,7 @@ const EditProfile = () => {
                   value={formData.bio}
                   onChange={handleChange}
                   rows={4}
-                  className="rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399] resize-none"
+                  className="rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400] resize-none"
                   placeholder="Tell us about yourself, your interests, and what makes you a great travel companion..."
                 />
               </div>
@@ -186,7 +186,7 @@ const EditProfile = () => {
           {isDriver && (
             <Card className="p-8 bg-white shadow-lg rounded-2xl border-0">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#EC3399] to-[#d62d88] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center shadow-md">
                   <Car className="h-5 w-5 text-white" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">Vehicle Information</h2>
@@ -202,7 +202,7 @@ const EditProfile = () => {
                     name="vehicle.make"
                     value={formData.vehicle.make}
                     onChange={handleChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="e.g., Toyota, Honda"
                   />
                 </div>
@@ -216,7 +216,7 @@ const EditProfile = () => {
                     name="vehicle.model"
                     value={formData.vehicle.model}
                     onChange={handleChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="e.g., Camry, Civic"
                   />
                 </div>
@@ -231,7 +231,7 @@ const EditProfile = () => {
                     type="number"
                     value={formData.vehicle.year}
                     onChange={handleChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="e.g., 2020"
                     min="1990"
                     max={new Date().getFullYear() + 1}
@@ -247,7 +247,7 @@ const EditProfile = () => {
                     name="vehicle.color"
                     value={formData.vehicle.color}
                     onChange={handleChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="e.g., White, Black"
                   />
                 </div>
@@ -261,7 +261,7 @@ const EditProfile = () => {
                     name="vehicle.licensePlate"
                     value={formData.vehicle.licensePlate}
                     onChange={handleChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="e.g., ABC-1234"
                   />
                 </div>
@@ -273,7 +273,7 @@ const EditProfile = () => {
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <Button 
               type="submit" 
-              className="h-12 bg-[#EC3399] hover:bg-[#d62d88] text-white font-semibold rounded-xl flex items-center justify-center gap-2 flex-1"
+              className="h-12 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] font-semibold rounded-xl flex items-center justify-center gap-2 flex-1"
             >
               <Save className="h-5 w-5" />
               Save Changes

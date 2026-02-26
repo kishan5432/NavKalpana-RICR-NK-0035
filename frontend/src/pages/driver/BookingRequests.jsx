@@ -87,27 +87,27 @@ export default function BookingRequests() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Header */}
-      <div className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <div className="relative bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] overflow-hidden">
+        <div className="absolute inset-0 bg-black/5"></div>
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center gap-4 mb-6">
             <Button
               onClick={() => navigate('/driver/dashboard')}
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
+              className="text-[#111111] hover:bg-[#111111]/10 rounded-full w-10 h-10 p-0"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                <Inbox className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center shadow-lg">
+                <Inbox className="h-6 w-6 text-[#FFD400]" />
               </div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-white">Booking Requests</h1>
+              <h1 className="text-3xl lg:text-4xl font-bold text-[#111111]">Booking Requests</h1>
             </div>
           </div>
           
-          <p className="text-white/90 text-lg max-w-2xl">
+          <p className="text-[#4F4F4F] text-lg max-w-2xl">
             Manage passenger booking requests for your rides
           </p>
         </div>
@@ -132,7 +132,7 @@ export default function BookingRequests() {
             <p className="text-gray-500 mb-6">You don't have any booking requests at the moment</p>
             <Button 
               onClick={() => navigate('/driver/create-ride')} 
-              className="bg-[#EC3399] hover:bg-[#d62d88] text-white"
+              className="bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]"
             >
               Create New Ride
             </Button>
@@ -143,8 +143,8 @@ export default function BookingRequests() {
               <Card key={ride._id} className="bg-white shadow-lg rounded-2xl border-0 overflow-hidden">
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-6 pb-4 border-b border-gray-100">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                      <MapPin className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                      <MapPin className="h-6 w-6 text-[#111111]" />
                     </div>
                     <div className="flex-1">
                       <h2 className="text-xl font-bold text-gray-900">
@@ -181,7 +181,7 @@ export default function BookingRequests() {
                           <div className="flex items-center gap-4 flex-1">
                             <Avatar className="w-14 h-14 border-2 border-white shadow-md">
                               <AvatarImage src={booking.passengerId?.profilePhoto} />
-                              <AvatarFallback className="bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] text-white font-semibold">
+                              <AvatarFallback className="bg-[#111111] text-white font-semibold">
                                 {booking.passengerId?.name?.[0]}
                               </AvatarFallback>
                             </Avatar>
@@ -229,7 +229,7 @@ export default function BookingRequests() {
                                 <Button 
                                   size="sm" 
                                   onClick={() => navigate(`/chat/${booking._id}`)}
-                                  className="bg-[#EC3399] hover:bg-[#d62d88] text-white"
+                                  className="bg-[#111111] hover:bg-[#222222] text-white"
                                 >
                                   <MessageCircle className="h-4 w-4 mr-1" />
                                   Message

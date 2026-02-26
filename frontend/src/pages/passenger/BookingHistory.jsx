@@ -80,7 +80,7 @@ export default function BookingHistory() {
   const getStatusColor = (status) => {
     const colors = {
       requested: 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white',
-      accepted: 'bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] text-white',
+      accepted: 'bg-gradient-to-r from-[#FFD400] to-[#FFC400] text-[#111111]',
       rejected: 'bg-gradient-to-r from-red-500 to-red-600 text-white',
       cancelled: 'bg-gradient-to-r from-gray-500 to-gray-600 text-white',
       completed: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
@@ -106,7 +106,7 @@ export default function BookingHistory() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Header */}
-      <div className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
+      <div className="relative bg-gradient-to-br from-[#FFD400] via-[#FFC400] to-[#E6B800] overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center gap-4 mb-6">
@@ -119,14 +119,14 @@ export default function BookingHistory() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#111111]/20 flex items-center justify-center">>
                 <History className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-white">My Bookings</h1>
+              <h1 className="text-3xl lg:text-4xl font-bold text-[#111111]">My Bookings</h1>
             </div>
           </div>
           
-          <p className="text-white/90 text-lg max-w-2xl">
+          <p className="text-[#111111]/90 text-lg max-w-2xl">
             Track all your ride bookings and manage your travel history
           </p>
         </div>
@@ -156,7 +156,7 @@ export default function BookingHistory() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
                     activeTab === tab.key 
-                      ? 'bg-[#3A2A5A] text-white shadow-lg' 
+                      ? 'bg-[#111111] text-white shadow-lg' 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -184,7 +184,7 @@ export default function BookingHistory() {
             <p className="text-gray-500 mb-6">You haven't made any bookings yet. Start exploring rides!</p>
             <Button 
               onClick={() => navigate('/search')} 
-              className="bg-[#EC3399] hover:bg-[#d62d88] text-white"
+              className="bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]"
             >
               Find Rides
             </Button>
@@ -204,7 +204,7 @@ export default function BookingHistory() {
                       <div className="relative">
                         <Avatar className="w-16 h-16 border-2 border-white shadow-lg">
                           <AvatarImage src={booking.driverId?.profilePhoto} />
-                          <AvatarFallback className="bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] text-white text-lg font-semibold">
+                          <AvatarFallback className="bg-[#FFD400] text-[#111111] text-lg font-semibold">
                             {booking.driverId?.name?.[0]}
                           </AvatarFallback>
                         </Avatar>
@@ -281,7 +281,7 @@ export default function BookingHistory() {
                             <Button 
                               size="sm" 
                               onClick={() => navigate(`/chat/${booking._id}`)}
-                              className="bg-[#EC3399] hover:bg-[#d62d88] text-white"
+                              className="bg-[#111111] hover:bg-[#222222] text-white"
                             >
                               <MessageCircle className="h-4 w-4 mr-1" />
                               Message
@@ -301,7 +301,7 @@ export default function BookingHistory() {
                           <Button 
                             size="sm" 
                             onClick={() => setRatingModal({ open: true, booking, rating: 0, comment: '' })}
-                            className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white"
+                            className="bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]"
                           >
                             <Star className="h-4 w-4 mr-1" />
                             Rate Trip
@@ -326,7 +326,7 @@ export default function BookingHistory() {
               <div className="flex flex-col items-center gap-4">
                 <Avatar className="w-20 h-20 border-4 border-white shadow-lg">
                   <AvatarImage src={ratingModal.booking?.driverId?.profilePhoto} />
-                  <AvatarFallback className="bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] text-white text-2xl font-bold">
+                  <AvatarFallback className="bg-[#FFD400] text-[#111111] text-2xl font-bold">
                     {ratingModal.booking?.driverId?.name?.[0]}
                   </AvatarFallback>
                 </Avatar>
@@ -359,12 +359,12 @@ export default function BookingHistory() {
                 placeholder="Share your experience with other travelers (optional)"
                 value={ratingModal.comment}
                 onChange={(e) => setRatingModal({ ...ratingModal, comment: e.target.value })}
-                className="rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399] resize-none"
+                className="rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400] resize-none"
                 rows={3}
               />
               
               <Button 
-                className="w-full h-12 bg-[#EC3399] hover:bg-[#d62d88] text-white font-semibold rounded-xl" 
+                className="w-full h-12 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] font-semibold rounded-xl" 
                 onClick={handleRatingSubmit}
               >
                 Submit Rating

@@ -166,8 +166,8 @@ export default function PassengerDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#3A3A6A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[#3A3A6A] font-medium">Loading dashboard...</p>
+          <div className="w-12 h-12 border-4 border-[#FFD400] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#111111] font-medium">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -176,18 +176,18 @@ export default function PassengerDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-[#3A2A5A] to-[#2d1f47] text-white">
+      <div className="bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] text-[#111111]">
         <div className="container mx-auto px-6 py-8">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name}!</h1>
-              <p className="text-white/80">Ready for your next journey?</p>
+              <p className="text-[#111111]/80">Ready for your next journey?</p>
             </div>
             <div className="relative">
-              <Button variant="ghost" className="text-white hover:bg-white/10" onClick={() => navigate('/notifications')}>
+              <Button variant="ghost" className="text-[#111111] hover:bg-[#111111]/10" onClick={() => navigate('/notifications')}>
                 <Bell className="h-6 w-6" />
                 {unreadNotifications > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#EC3399] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-[#111111] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {unreadNotifications}
                   </span>
                 )}
@@ -197,42 +197,42 @@ export default function PassengerDashboard() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <Card className="bg-[#111111]/10 backdrop-blur-sm border-[#111111]/20 text-[#111111]">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/80 mb-1">Total Trips</p>
+                    <p className="text-sm text-[#111111]/80 mb-1">Total Trips</p>
                     <p className="text-3xl font-bold">{totalTrips}</p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-full">
+                  <div className="p-3 bg-[#111111]/20 rounded-full">
                     <Car className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <Card className="bg-[#111111]/10 backdrop-blur-sm border-[#111111]/20 text-[#111111]">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/80 mb-1">Money Saved</p>
+                    <p className="text-sm text-[#111111]/80 mb-1">Money Saved</p>
                     <p className="text-3xl font-bold">₹{moneySaved}</p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-full">
+                  <div className="p-3 bg-[#111111]/20 rounded-full">
                     <DollarSign className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <Card className="bg-[#111111]/10 backdrop-blur-sm border-[#111111]/20 text-[#111111]">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/80 mb-1">Upcoming</p>
+                    <p className="text-sm text-[#111111]/80 mb-1">Upcoming</p>
                     <p className="text-3xl font-bold">{upcomingTrips}</p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-full">
+                  <div className="p-3 bg-[#111111]/20 rounded-full">
                     <Clock className="h-6 w-6" />
                   </div>
                 </div>
@@ -247,7 +247,7 @@ export default function PassengerDashboard() {
         <div className="text-center">
           <Button 
             onClick={() => navigate('/search')}
-            className="w-full max-w-md h-16 text-lg font-semibold bg-gradient-to-r from-[#EC3399] to-[#d62d88] hover:from-[#d62d88] hover:to-[#c02876] shadow-lg hover:shadow-xl transition-all duration-200"
+            className="w-full max-w-md h-16 text-lg font-semibold bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] shadow-lg hover:shadow-xl transition-all duration-200"
           >
             <Search className="h-6 w-6 mr-3" />
             Search for Rides
@@ -269,7 +269,7 @@ export default function PassengerDashboard() {
                   <button
                     key={route._id}
                     onClick={() => navigate(`/search?from=${encodeURIComponent(route.fromLocation)}&to=${encodeURIComponent(route.toLocation)}`)}
-                    className="px-4 py-2 bg-gradient-to-r from-[#3A2A5A] to-[#2d1f47] text-white rounded-full hover:shadow-lg transition-all duration-200 flex items-center gap-2 group"
+                    className="px-4 py-2 bg-[#111111] text-white rounded-full hover:shadow-lg transition-all duration-200 flex items-center gap-2 group"
                   >
                     <MapPin className="h-4 w-4 group-hover:scale-110 transition-transform" />
                     <span className="font-medium">{route.fromLocation} → {route.toLocation}</span>
@@ -295,19 +295,19 @@ export default function PassengerDashboard() {
                   <Calendar className="h-8 w-8 text-gray-400" />
                 </div>
                 <p className="text-gray-500 mb-4">No upcoming rides</p>
-                <Button className="bg-[#EC3399] hover:bg-[#d62d88]" onClick={() => navigate('/search')}>
+                <Button className="bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]" onClick={() => navigate('/search')}>
                   Book a Ride
                 </Button>
               </div>
             ) : (
               <div className="space-y-4">
                 {upcomingBookings.map((booking) => (
-                  <div key={booking._id} className="p-4 border-l-4 border-[#EC3399] bg-gray-50 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/rides/${booking.rideId?._id}`)}>
+                  <div key={booking._id} className="p-4 border-l-4 border-[#FFD400] bg-gray-50 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/rides/${booking.rideId?._id}`)}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10 ring-2 ring-[#EC3399]">
+                        <Avatar className="h-10 w-10 ring-2 ring-[#FFD400]">
                           <AvatarImage src={booking.driverId?.profilePhoto} />
-                          <AvatarFallback className="bg-[#3A2A5A] text-white">{booking.driverId?.name?.[0]}</AvatarFallback>
+                          <AvatarFallback className="bg-[#111111] text-white">{booking.driverId?.name?.[0]}</AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="font-semibold text-[#3A2A5A]">{booking.rideId?.from} → {booking.rideId?.to}</p>
@@ -329,13 +329,13 @@ export default function PassengerDashboard() {
                         </span>
                       </div>
                       <div className="text-right">
-                        <p className="text-lg font-bold text-[#EC3399]">₹{booking.totalPrice}</p>
+                        <p className="text-lg font-bold text-[#FFD400]">₹{booking.totalPrice}</p>
                       </div>
                     </div>
                     
                     {booking.status === 'accepted' && (
                       <div className="mt-3 pt-3 border-t">
-                        <Button size="sm" className="bg-[#3A2A5A] hover:bg-[#2d1f47]" onClick={(e) => { e.stopPropagation(); navigate(`/chat/${booking._id}`); }}>
+                        <Button size="sm" className="bg-[#111111] hover:bg-[#222222] text-white" onClick={(e) => { e.stopPropagation(); navigate(`/chat/${booking._id}`); }}>
                           Message Driver
                         </Button>
                       </div>
@@ -358,7 +358,7 @@ export default function PassengerDashboard() {
                 <Bell className="h-5 w-5" />
                 Recent Notifications
                 {unreadNotifications > 0 && (
-                  <Badge className="bg-[#EC3399]">{unreadNotifications} new</Badge>
+                  <Badge className="bg-[#FFD400] text-[#111111]">{unreadNotifications} new</Badge>
                 )}
               </CardTitle>
             </CardHeader>
@@ -368,7 +368,7 @@ export default function PassengerDashboard() {
                   <div 
                     key={notification._id} 
                     className={`p-4 rounded-lg border cursor-pointer hover:shadow-md transition-shadow ${
-                      !notification.read ? 'bg-pink-50 border-[#EC3399]' : 'bg-gray-50'
+                      !notification.read ? 'bg-yellow-50 border-[#FFD400]' : 'bg-gray-50'
                     }`}
                     onClick={() => {
                       if (!notification.read) {
@@ -383,14 +383,14 @@ export default function PassengerDashboard() {
                         <p className="text-sm text-gray-600">{notification.message}</p>
                       </div>
                       {!notification.read && (
-                        <div className="w-2 h-2 bg-[#EC3399] rounded-full mt-2" />
+                        <div className="w-2 h-2 bg-[#FFD400] rounded-full mt-2" />
                       )}
                     </div>
                   </div>
                 ))}
                 
                 <div className="text-center pt-2">
-                  <Button variant="outline" className="border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white" onClick={() => navigate('/notifications')}>
+                  <Button variant="outline" className="border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white" onClick={() => navigate('/notifications')}>
                     View All Notifications
                   </Button>
                 </div>
@@ -431,11 +431,15 @@ export default function PassengerDashboard() {
                     
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={booking.rideId?.driverId?.profilePhoto} />
-                            <AvatarFallback className="bg-[#3A2A5A] text-white">{booking.rideId?.driverId?.name?.[0]}</AvatarFallback>
+                          <Avatar className="h-8 w-8 ring-2 ring-[#FFD400]">
+                            <AvatarImage src={booking.rideId?.driverId?.profilePhoto || booking.driverId?.profilePhoto} />
+                            <AvatarFallback className="bg-[#FFD400] text-[#111111]">
+                              {(booking.rideId?.driverId?.name || booking.driverId?.name)?.[0] || 'D'}
+                            </AvatarFallback>
                           </Avatar>
-                          <span className="text-sm text-gray-600">{booking.rideId?.driverId?.name}</span>
+                          <span className="text-sm text-gray-600">
+                            {booking.rideId?.driverId?.name || booking.driverId?.name || 'Driver'}
+                          </span>
                         </div>
                         
                         <div className="flex items-center gap-2">
@@ -453,7 +457,7 @@ export default function PassengerDashboard() {
                             <Button
                               size="sm"
                               onClick={() => setRatingModal({ open: true, booking, rating: 0, comment: '' })}
-                              className="bg-[#EC3399] hover:bg-[#d62d88] text-white"
+                              className="bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]"
                             >
                               <Star className="h-3 w-3 mr-1" />
                               Rate Driver
@@ -465,7 +469,7 @@ export default function PassengerDashboard() {
                 ))}
                 
                 <div className="text-center pt-4">
-                  <Button variant="outline" className="border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white" onClick={() => navigate('/passenger/bookings')}>
+                  <Button variant="outline" className="border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white" onClick={() => navigate('/passenger/bookings')}>
                     View All Bookings
                   </Button>
                 </div>
@@ -506,7 +510,7 @@ export default function PassengerDashboard() {
             <Button 
               onClick={handleRateTrip}
               disabled={ratingModal.rating === 0}
-              className="w-full py-3 bg-[#EC3399] text-white rounded-xl font-semibold hover:bg-[#d62d88] disabled:opacity-50 transition-colors"
+              className="w-full py-3 bg-[#FFD400] text-[#111111] rounded-xl font-semibold hover:bg-[#FFC400] disabled:opacity-50 transition-colors"
             >
               Submit Rating
             </Button>

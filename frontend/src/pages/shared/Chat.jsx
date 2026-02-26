@@ -31,7 +31,7 @@ const Chat = () => {
   if (!booking || !otherUser) {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
-        <div className="text-[#3A3A6A]">Loading...</div>
+        <div className="text-[#111111]">Loading...</div>
       </div>
     );
   }
@@ -39,16 +39,16 @@ const Chat = () => {
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Header */}
-      <div className="bg-[#3A3A6A] text-white p-4 shadow-sm">
+      <div className="bg-[#FFD400] text-[#111111] p-4 shadow-md">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate(-1)} 
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 hover:bg-[#111111]/10 rounded-full transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
           
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-white/20">
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-[#111111]/20 border-2 border-[#111111]">
             <img 
               src={otherUser.photo || '/default-avatar.png'} 
               alt={otherUser.name}

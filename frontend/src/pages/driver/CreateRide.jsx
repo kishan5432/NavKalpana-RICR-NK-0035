@@ -139,43 +139,48 @@ export default function CreateRide() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-white to-purple-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#3A2A5A] to-[#EC3399]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-4">
             <Button
               onClick={() => navigate('/driver/dashboard')}
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
+              className="text-[#111111] hover:bg-[#111111]/10 rounded-full w-10 h-10 p-0"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <Plus className="h-5 w-5 text-white" />
+              <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center shadow-lg">
+                <Plus className="h-6 w-6 text-[#FFD400]" />
               </div>
-              <h1 className="text-2xl font-bold text-white">Create New Ride</h1>
+              <h1 className="text-3xl font-bold text-[#111111]">Create New Ride</h1>
             </div>
           </div>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg viewBox="0 0 1440 40" className="w-full h-[40px]" preserveAspectRatio="none">
+            <path fill="#f9fafb" d="M0,20 Q180,40 360,20 T720,20 T1080,20 T1440,20 L1440,40 L0,40 Z"></path>
+          </svg>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           {/* Left Side - Sticky Image */}
           <div className="hidden lg:flex justify-center items-center sticky top-8">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#3A2A5A]/10 to-[#EC3399]/10 rounded-3xl blur-2xl transform rotate-3"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FFD400]/20 to-[#E6B800]/20 rounded-3xl blur-2xl transform rotate-3"></div>
               <img 
                 src="https://res.cloudinary.com/dse13zdp7/image/upload/v1771953356/WhatsApp_Image_2026-02-24_at_22.44.48_vuze12.jpg"
                 alt="Create Ride"
-                className="relative z-10 w-full max-w-xl h-[500px] object-cover rounded-3xl shadow-2xl border border-white/50"
+                className="relative z-10 w-full max-w-xl h-[500px] object-cover rounded-3xl transition-transform duration-300 hover:scale-105"
               />
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-[#EC3399]/20 to-[#3A2A5A]/20 rounded-full blur-xl"></div>
-              <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-br from-[#3A2A5A]/20 to-[#EC3399]/20 rounded-full blur-xl"></div>
+              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[#FFD400]/30 rounded-full blur-xl"></div>
+              <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#E6B800]/30 rounded-full blur-xl"></div>
             </div>
           </div>
 
@@ -183,13 +188,13 @@ export default function CreateRide() {
           <div className="lg:max-w-2xl">
             <form onSubmit={handleSubmit} className="space-y-6">
           {/* Route Information */}
-          <Card className="bg-white shadow-lg rounded-2xl border-0">
-            <CardContent className="p-8">
+          <Card className="bg-white shadow-lg rounded-2xl border-2 border-[#E5E5E5] hover:border-[#FFD400] transition-colors">
+            <CardContent className="p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                  <MapPin className="h-5 w-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                  <MapPin className="h-5 w-5 text-[#111111]" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">Route Information</h2>
+                <h2 className="text-xl font-bold text-[#111111]">Route Information</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -202,7 +207,7 @@ export default function CreateRide() {
                     name="from"
                     value={formData.from}
                     onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Enter pickup location"
                     required
                   />
@@ -216,7 +221,7 @@ export default function CreateRide() {
                     name="to"
                     value={formData.to}
                     onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Enter destination"
                     required
                   />
@@ -231,21 +236,21 @@ export default function CreateRide() {
                   <Input
                     value={stopInput}
                     onChange={(e) => setStopInput(e.target.value)}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Add a stop along the way"
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addStop())}
                   />
                   <Button 
                     type="button" 
                     onClick={addStop}
-                    className="h-12 px-6 bg-[#EC3399] hover:bg-[#d62d88] text-white rounded-xl"
+                    className="h-12 px-6 bg-[#111111] hover:bg-[#222222] text-white rounded-xl shadow-md"
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {formData.optionalStops.map((stop, index) => (
-                    <span key={index} className="bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-2 rounded-full text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <span key={index} className="bg-[#FFD400]/20 border border-[#FFD400] px-3 py-2 rounded-full text-sm font-medium text-[#111111] flex items-center gap-2">
                       {stop}
                       <button 
                         type="button" 
@@ -262,13 +267,13 @@ export default function CreateRide() {
           </Card>
 
           {/* Schedule & Pricing */}
-          <Card className="bg-white shadow-lg rounded-2xl border-0">
-            <CardContent className="p-8">
+          <Card className="bg-white shadow-lg rounded-2xl border-2 border-[#E5E5E5] hover:border-[#FFD400] transition-colors">
+            <CardContent className="p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center">
-                  <Calendar className="h-5 w-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                  <Calendar className="h-5 w-5 text-[#111111]" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">Schedule & Pricing</h2>
+                <h2 className="text-xl font-bold text-[#111111]">Schedule & Pricing</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -282,7 +287,7 @@ export default function CreateRide() {
                     type="date"
                     value={formData.date}
                     onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     required
                   />
                 </div>
@@ -296,7 +301,7 @@ export default function CreateRide() {
                     type="time"
                     value={formData.departureTime}
                     onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     required
                   />
                 </div>
@@ -315,7 +320,7 @@ export default function CreateRide() {
                     max="8"
                     value={formData.totalSeats}
                     onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Number of seats"
                     required
                   />
@@ -332,7 +337,7 @@ export default function CreateRide() {
                       min="0"
                       value={formData.pricePerSeat}
                       onChange={handleInputChange}
-                      className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                      className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                       placeholder="Enter price per seat"
                       required
                     />
@@ -341,7 +346,7 @@ export default function CreateRide() {
                       onClick={handleGetPriceSuggestion}
                       disabled={loadingSuggestion}
                       variant="outline"
-                      className="w-full h-10 border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                      className="w-full h-10 border-[#111111] text-[#111111] hover:bg-[#FFD400] hover:text-[#111111] hover:border-[#FFD400]"
                     >
                       {loadingSuggestion ? (
                         <>
@@ -367,11 +372,11 @@ export default function CreateRide() {
                       />
                     </div>
                     {priceSuggestion && (
-                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-sm text-blue-900">
+                      <div className="p-3 bg-[#FFD400]/10 border border-[#FFD400] rounded-lg">
+                        <p className="text-sm text-[#111111]">
                           <span className="font-semibold">Recommended price range:</span> ₹{priceSuggestion.suggested_min} – ₹{priceSuggestion.suggested_max} based on similar routes.
                         </p>
-                        <p className="text-xs text-blue-700 mt-1">
+                        <p className="text-xs text-[#4F4F4F] mt-1">
                           Demand: {priceSuggestion.demand_level} • Based on {priceSuggestion.based_on_routes} completed routes
                         </p>
                       </div>
@@ -383,13 +388,13 @@ export default function CreateRide() {
           </Card>
 
           {/* Preferences & Settings */}
-          <Card className="bg-white shadow-lg rounded-2xl border-0">
-            <CardContent className="p-8">
+          <Card className="bg-white shadow-lg rounded-2xl border-2 border-[#E5E5E5] hover:border-[#FFD400] transition-colors">
+            <CardContent className="p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#EC3399] to-[#d62d88] flex items-center justify-center">
-                  <Settings className="h-5 w-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                  <Settings className="h-5 w-5 text-[#111111]" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">Preferences & Settings</h2>
+                <h2 className="text-xl font-bold text-[#111111]">Preferences & Settings</h2>
               </div>
               
               <div className="mb-6">
@@ -397,7 +402,7 @@ export default function CreateRide() {
                   Luggage Allowance
                 </Label>
                 <Select value={formData.luggageAllowance} onValueChange={(value) => setFormData(prev => ({ ...prev, luggageAllowance: value }))}>
-                  <SelectTrigger className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]">
+                  <SelectTrigger className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]">
                     <SelectValue placeholder="Select luggage allowance" />
                   </SelectTrigger>
                   <SelectContent>
@@ -413,12 +418,12 @@ export default function CreateRide() {
                   Travel Preferences
                 </Label>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-[#F8F9FA] border border-[#E5E5E5] hover:border-[#FFD400] transition-colors">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">🚬</span>
                       <div>
-                        <p className="font-medium text-gray-900">Smoking Allowed</p>
-                        <p className="text-sm text-gray-600">Allow passengers to smoke during the trip</p>
+                        <p className="font-medium text-[#111111]">Smoking Allowed</p>
+                        <p className="text-sm text-[#4F4F4F]">Allow passengers to smoke during the trip</p>
                       </div>
                     </div>
                     <Checkbox
@@ -427,16 +432,16 @@ export default function CreateRide() {
                         ...prev,
                         preferences: { ...prev.preferences, smokingAllowed: checked }
                       }))}
-                      className="data-[state=checked]:bg-[#EC3399] data-[state=checked]:border-[#EC3399]"
+                      className="data-[state=checked]:bg-[#FFD400] data-[state=checked]:border-[#FFD400]"
                     />
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-[#F8F9FA] border border-[#E5E5E5] hover:border-[#FFD400] transition-colors">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">🐕</span>
                       <div>
-                        <p className="font-medium text-gray-900">Pets Allowed</p>
-                        <p className="text-sm text-gray-600">Allow passengers to bring pets</p>
+                        <p className="font-medium text-[#111111]">Pets Allowed</p>
+                        <p className="text-sm text-[#4F4F4F]">Allow passengers to bring pets</p>
                       </div>
                     </div>
                     <Checkbox
@@ -445,16 +450,16 @@ export default function CreateRide() {
                         ...prev,
                         preferences: { ...prev.preferences, petsAllowed: checked }
                       }))}
-                      className="data-[state=checked]:bg-[#EC3399] data-[state=checked]:border-[#EC3399]"
+                      className="data-[state=checked]:bg-[#FFD400] data-[state=checked]:border-[#FFD400]"
                     />
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-[#F8F9FA] border border-[#E5E5E5] hover:border-[#FFD400] transition-colors">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">🎵</span>
                       <div>
-                        <p className="font-medium text-gray-900">Music Allowed</p>
-                        <p className="text-sm text-gray-600">Allow music during the journey</p>
+                        <p className="font-medium text-[#111111]">Music Allowed</p>
+                        <p className="text-sm text-[#4F4F4F]">Allow music during the journey</p>
                       </div>
                     </div>
                     <Checkbox
@@ -463,7 +468,7 @@ export default function CreateRide() {
                         ...prev,
                         preferences: { ...prev.preferences, musicAllowed: checked }
                       }))}
-                      className="data-[state=checked]:bg-[#EC3399] data-[state=checked]:border-[#EC3399]"
+                      className="data-[state=checked]:bg-[#FFD400] data-[state=checked]:border-[#FFD400]"
                     />
                   </div>
                 </div>
@@ -476,16 +481,16 @@ export default function CreateRide() {
                 <Button 
                   type="submit" 
                   disabled={loading}
-                  className="h-12 px-8 bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] hover:from-[#2d1f47] hover:to-[#d62d88] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full sm:w-auto h-14 px-12 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-lg"
                 >
                   {loading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#111111] mr-2"></div>
                       Creating...
                     </>
                   ) : (
                     <>
-                      <Route className="h-4 w-4 mr-2" />
+                      <Route className="h-5 w-5 mr-2" />
                       Create Ride
                     </>
                   )}
