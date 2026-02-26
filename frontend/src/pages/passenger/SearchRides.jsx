@@ -184,13 +184,13 @@ export default function SearchRides() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Search Header */}
-      <div className="bg-gradient-to-r from-[#3A2A5A] to-[#2d1f47] text-white">
-        <div className="container mx-auto px-4 py-8">
+      <div className="bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] text-[#111111] relative">
+        <div className="container mx-auto px-6 py-12">
           <div className="flex items-center gap-4 mb-6">
             <Button
               variant="ghost"
               onClick={() => navigate('/')}
-              className="text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
+              className="text-[#111111] hover:bg-[#111111]/10 rounded-full w-10 h-10 p-0"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -203,7 +203,7 @@ export default function SearchRides() {
           </div>
           
           {/* Quick Search Bar */}
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
+          <div className="bg-[#111111]/10 backdrop-blur-sm border border-[#111111]/20 rounded-lg p-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <Input
                 value={filters.from}
@@ -223,11 +223,18 @@ export default function SearchRides() {
                 onChange={(e) => updateFilters({ date: e.target.value })}
                 className="bg-white text-gray-900 h-12"
               />
-              <Button onClick={fetchRides} className="h-12 bg-[#EC3399] hover:bg-[#d62d88]">
+              <Button onClick={fetchRides} className="h-12 bg-[#111111] hover:bg-[#222222] text-white">
                 Search
               </Button>
             </div>
           </div>
+        </div>
+        
+        {/* Wave bottom */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg viewBox="0 0 1440 40" className="w-full h-[40px]" preserveAspectRatio="none">
+            <path fill="#f9fafb" d="M0,20 Q180,40 360,20 T720,20 T1080,20 T1440,20 L1440,40 L0,40 Z"></path>
+          </svg>
         </div>
       </div>
 
@@ -237,12 +244,12 @@ export default function SearchRides() {
           <Button 
             onClick={() => setShowMobileFilters(true)}
             variant="outline" 
-            className="w-full h-12 flex items-center gap-2 border-[#3A2A5A] text-[#3A2A5A]"
+            className="w-full h-12 flex items-center gap-2 border-[#111111] text-[#111111] hover:bg-[#FFD400]/20"
           >
             <SlidersHorizontal className="h-4 w-4" />
             Filters
             {getActiveFilterCount() > 0 && (
-              <Badge className="ml-auto bg-[#EC3399]">
+              <Badge className="ml-auto bg-[#FFD400] text-[#111111]">
                 {getActiveFilterCount()}
               </Badge>
             )}
@@ -252,19 +259,19 @@ export default function SearchRides() {
         <div className="flex gap-6">
           {/* Desktop Filters Sidebar */}
           <div className="hidden md:block w-80 h-fit sticky top-6">
-            <div className="bg-white rounded-lg shadow-lg border-0 p-6">
+            <div className="bg-white rounded-lg border-2 border-[#111111] p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <Filter className="h-5 w-5 text-[#3A2A5A]" />
-                  <h2 className="text-lg font-semibold text-[#3A2A5A]">Filters</h2>
+                  <Filter className="h-5 w-5 text-[#111111]" />
+                  <h2 className="text-lg font-semibold text-[#111111]">Filters</h2>
                   {getActiveFilterCount() > 0 && (
-                    <Badge className="bg-[#EC3399]">
+                    <Badge className="bg-[#FFD400] text-[#111111]">
                       {getActiveFilterCount()}
                     </Badge>
                   )}
                 </div>
                 {getActiveFilterCount() > 0 && (
-                  <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-8 text-xs text-[#EC3399] hover:text-[#d62d88]">
+                  <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-8 text-xs text-[#111111] hover:text-[#4F4F4F]">
                     Clear all
                   </Button>
                 )}
@@ -272,7 +279,7 @@ export default function SearchRides() {
               
               <div className="space-y-5">
                 <div>
-                  <Label htmlFor="seats" className="text-[#3A2A5A]">Seats needed</Label>
+                  <Label htmlFor="seats" className="text-[#111111]">Seats needed</Label>
                   <select
                     id="seats"
                     value={filters.seats}
@@ -288,8 +295,8 @@ export default function SearchRides() {
 
                 <div className="border-t pt-4">
                   <div className="flex items-center justify-between mb-3">
-                    <Label className="text-[#3A2A5A]">Price Range</Label>
-                    <span className="text-sm text-[#EC3399] font-medium">₹{filters.priceRange[0]} - ₹{filters.priceRange[1]}</span>
+                    <Label className="text-[#111111]">Price Range</Label>
+                    <span className="text-sm text-[#E6B800] font-medium">₹{filters.priceRange[0]} - ₹{filters.priceRange[1]}</span>
                   </div>
                   <Slider
                     min={0}
@@ -297,12 +304,12 @@ export default function SearchRides() {
                     step={50}
                     value={filters.priceRange}
                     onValueChange={(value) => updateFilters({ priceRange: value })}
-                    className="[&_[role=slider]]:bg-[#EC3399] [&_[role=slider]]:border-[#EC3399]"
+                    className="[&_[role=slider]]:bg-[#FFD400] [&_[role=slider]]:border-[#FFD400]"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="departureTime" className="text-[#3A2A5A]">Departure Time</Label>
+                  <Label htmlFor="departureTime" className="text-[#111111]">Departure Time</Label>
                   <select
                     id="departureTime"
                     value={filters.departureTime}
@@ -318,7 +325,7 @@ export default function SearchRides() {
                 </div>
 
                 <div>
-                  <Label className="mb-2 block text-[#3A2A5A]">Minimum Rating</Label>
+                  <Label className="mb-2 block text-[#111111]">Minimum Rating</Label>
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((rating) => (
                       <button
@@ -327,7 +334,7 @@ export default function SearchRides() {
                         className="p-1 hover:scale-110 transition-transform"
                       >
                         <Star
-                          className={`h-6 w-6 ${rating <= filters.minRating ? 'fill-[#EC3399] text-[#EC3399]' : 'text-gray-300'}`}
+                          className={`h-6 w-6 ${rating <= filters.minRating ? 'fill-[#FFD400] text-[#FFD400]' : 'text-gray-300'}`}
                         />
                       </button>
                     ))}
@@ -335,7 +342,7 @@ export default function SearchRides() {
                 </div>
 
                 <div>
-                  <Label htmlFor="vehicleType" className="text-[#3A2A5A]">Vehicle Type</Label>
+                  <Label htmlFor="vehicleType" className="text-[#111111]">Vehicle Type</Label>
                   <select
                     id="vehicleType"
                     value={filters.vehicleType}
@@ -351,7 +358,7 @@ export default function SearchRides() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="sortBy" className="text-[#3A2A5A]">Sort by</Label>
+                  <Label htmlFor="sortBy" className="text-[#111111]">Sort by</Label>
                   <select
                     id="sortBy"
                     value={filters.sortBy}
@@ -373,7 +380,7 @@ export default function SearchRides() {
               <div>
                 {!loading && (
                   <p className="text-gray-600">
-                    <span className="font-semibold text-[#3A2A5A]">{rides.length}</span> rides found
+                    <span className="font-semibold text-[#111111]">{rides.length}</span> rides found
                   </p>
                 )}
               </div>
@@ -381,7 +388,7 @@ export default function SearchRides() {
                 <Button
                   onClick={handleSaveRoute}
                   variant="outline"
-                  className="border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                  className="border-[#111111] text-[#111111] hover:bg-[#FFD400] hover:text-[#111111] hover:border-[#FFD400]"
                 >
                   <Bookmark className="h-4 w-4 mr-2" />
                   Save this route ★
@@ -411,27 +418,27 @@ export default function SearchRides() {
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">
                   <Car className="h-10 w-10 text-gray-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-[#3A2A5A] mb-2">No rides found</h3>
+                <h3 className="text-xl font-semibold text-[#111111] mb-2">No rides found</h3>
                 <p className="text-gray-600 mb-6">We couldn't find any rides matching your criteria</p>
-                <div className="space-y-3 text-sm text-left max-w-md mx-auto bg-pink-50 p-4 rounded-lg border border-pink-100">
-                  <p className="font-medium text-[#3A2A5A]">Try these suggestions:</p>
+                <div className="space-y-3 text-sm text-left max-w-md mx-auto bg-[#FFD400]/10 p-4 rounded-lg border border-[#FFD400]/30">
+                  <p className="font-medium text-[#111111]">Try these suggestions:</p>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-start gap-2">
-                      <MapPin className="h-4 w-4 mt-0.5 text-[#EC3399]" />
+                      <MapPin className="h-4 w-4 mt-0.5 text-[#FFD400]" />
                       <span>Check your departure and destination cities</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Clock className="h-4 w-4 mt-0.5 text-[#EC3399]" />
+                      <Clock className="h-4 w-4 mt-0.5 text-[#FFD400]" />
                       <span>Try different dates or times</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <X className="h-4 w-4 mt-0.5 text-[#EC3399]" />
+                      <X className="h-4 w-4 mt-0.5 text-[#FFD400]" />
                       <span>Remove some filters to see more results</span>
                     </li>
                   </ul>
                 </div>
                 {getActiveFilterCount() > 0 && (
-                  <Button onClick={clearAllFilters} className="mt-6 bg-[#EC3399] hover:bg-[#d62d88]">
+                  <Button onClick={clearAllFilters} className="mt-6 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]">
                     Clear all filters
                   </Button>
                 )}
@@ -451,18 +458,18 @@ export default function SearchRides() {
                   variant="outline"
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                  className="border-[#111111] text-[#111111] hover:bg-[#FFD400] hover:text-[#111111] hover:border-[#FFD400]"
                 >
                   Previous
                 </Button>
                 <span className="px-4 py-2 text-sm flex items-center">
-                  Page <span className="font-semibold text-[#EC3399] mx-1">{page}</span> of {totalPages}
+                  Page <span className="font-semibold text-[#FFD400] mx-1">{page}</span> of {totalPages}
                 </span>
                 <Button
                   variant="outline"
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                  className="border-[#111111] text-[#111111] hover:bg-[#FFD400] hover:text-[#111111] hover:border-[#FFD400]"
                 >
                   Next
                 </Button>

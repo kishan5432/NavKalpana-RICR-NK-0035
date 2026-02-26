@@ -62,8 +62,8 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Header with Gradient */}
-      <div className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <div className="relative bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] overflow-hidden">
+        <div className="absolute inset-0 bg-black/5"></div>
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col lg:flex-row items-center gap-8">
             {/* Profile Avatar */}
@@ -80,31 +80,31 @@ const Profile = () => {
               {isOwnProfile && (
                 <Button
                   size="sm"
-                  className="absolute -bottom-2 -right-2 rounded-full w-10 h-10 p-0 bg-[#EC3399] hover:bg-[#d62d88] shadow-lg"
+                  className="absolute -bottom-2 -right-2 rounded-full w-10 h-10 p-0 bg-[#111111] hover:bg-[#222222] shadow-lg text-white"
                   onClick={() => navigate('/profile/edit')}
                 >
-                  <Edit3 className="h-4 w-4" />
+                  <Edit3 className="h-4 w-4 text-white" />
                 </Button>
               )}
             </div>
 
             {/* Profile Info */}
-            <div className="flex-1 text-center lg:text-left text-white">
+            <div className="flex-1 text-center lg:text-left text-[#111111]">
               <h1 className="text-3xl lg:text-4xl font-bold mb-2">{profile.name}</h1>
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-4">
-                <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
+                <Badge className="bg-[#111111] text-white border-[#111111] hover:bg-[#222222]">
                   {profile.role === 'both' ? 'Driver & Passenger' : profile.role}
                 </Badge>
                 {profile.reliabilityLabel && (
                   <ReliabilityBadge label={profile.reliabilityLabel} />
                 )}
-                <div className="flex items-center gap-1 text-white/90">
+                <div className="flex items-center gap-1 text-[#4F4F4F]">
                   <MapPin className="h-4 w-4" />
                   <span className="text-sm">{profile.location || 'Location not set'}</span>
                 </div>
               </div>
               {profile.bio && (
-                <p className="text-white/90 max-w-2xl text-lg leading-relaxed">{profile.bio}</p>
+                <p className="text-[#4F4F4F] max-w-2xl text-lg leading-relaxed">{profile.bio}</p>
               )}
             </div>
 
@@ -114,27 +114,27 @@ const Profile = () => {
               <div className="col-span-3 mb-4">
                 <Button
                   onClick={() => navigate(currentUser?.role === 'driver' ? '/driver/dashboard' : '/passenger/dashboard')}
-                  className="bg-gradient-to-r from-[#EC3399] to-[#d62d88] hover:from-[#d62d88] hover:to-[#c02d7a] text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full"
+                  className="bg-[#111111] hover:bg-[#222222] text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full"
                 >
                   Go to Dashboard
                 </Button>
               </div>
               <div className="text-center">
-                <div className="text-2xl lg:text-3xl font-bold text-white">{tripCount}</div>
-                <div className="text-white/80 text-sm">Trips</div>
+                <div className="text-2xl lg:text-3xl font-bold text-[#111111]">{tripCount}</div>
+                <div className="text-[#4F4F4F] text-sm">Trips</div>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1">
-                  <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                  <span className="text-2xl lg:text-3xl font-bold text-white">{avgRating.toFixed(1)}</span>
+                  <Star className="h-5 w-5 text-[#FFD400] fill-[#FFD400]" />
+                  <span className="text-2xl lg:text-3xl font-bold text-[#111111]">{avgRating.toFixed(1)}</span>
                 </div>
-                <div className="text-white/80 text-sm">{ratings.length} Reviews</div>
+                <div className="text-[#4F4F4F] text-sm">{ratings.length} Reviews</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl lg:text-3xl font-bold text-white">
+                <div className="text-2xl lg:text-3xl font-bold text-[#111111]">
                   {new Date(profile.createdAt).getFullYear()}
                 </div>
-                <div className="text-white/80 text-sm">Since</div>
+                <div className="text-[#4F4F4F] text-sm">Since</div>
               </div>
             </div>
           </div>
@@ -154,7 +154,7 @@ const Profile = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="p-6 bg-white shadow-lg rounded-2xl border-0">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center shadow-md">
                 <TrendingUp className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -166,13 +166,13 @@ const Profile = () => {
           
           <Card className="p-6 bg-white shadow-lg rounded-2xl border-0">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center shadow-md">
                 <Award className="h-6 w-6 text-white" />
               </div>
               <div>
                 <div className="flex items-center gap-1">
                   <span className="text-2xl font-bold text-gray-900">{avgRating.toFixed(1)}</span>
-                  <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                  <Star className="h-5 w-5 text-[#FFD400] fill-[#FFD400]" />
                 </div>
                 <div className="text-gray-600 text-sm">Average Rating</div>
               </div>
@@ -181,7 +181,7 @@ const Profile = () => {
           
           <Card className="p-6 bg-white shadow-lg rounded-2xl border-0">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#EC3399] to-[#d62d88] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center shadow-md">
                 <Users className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -246,21 +246,21 @@ const Profile = () => {
             <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
                 profile.isIdVerified 
-                  ? 'bg-gradient-to-r from-[#EC3399] to-[#d62d88]' 
+                  ? 'bg-[#FFD400]' 
                   : 'bg-gray-300'
               }`}>
-                <IdCard className="h-6 w-6 text-white" />
+                <IdCard className="h-6 w-6 text-[#111111]" />
               </div>
               <div className="flex-1">
                 <div className="font-semibold text-gray-900">ID Document</div>
                 <div className={`text-sm ${
-                  profile.isIdVerified ? 'text-[#EC3399]' : 'text-gray-500'
+                  profile.isIdVerified ? 'text-[#FFD400]' : 'text-gray-500'
                 }`}>
                   {profile.isIdVerified ? 'Verified' : 'Not Verified'}
                 </div>
               </div>
               {profile.isIdVerified && (
-                <CheckCircle className="h-6 w-6 text-[#EC3399]" />
+                <CheckCircle className="h-6 w-6 text-[#FFD400]" />
               )}
             </div>
           </div>
@@ -268,20 +268,20 @@ const Profile = () => {
 
         {/* Referral Code */}
         {isOwnProfile && profile.referralCode && (
-          <Card className="mb-8 p-6 bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] shadow-lg rounded-2xl border-0">
+          <Card className="mb-8 p-6 bg-gradient-to-r from-[#FFD400] to-[#E6B800] shadow-lg rounded-2xl border-0">
             <div className="text-center">
-              <h3 className="font-bold text-lg mb-2 text-white">Your Referral Code</h3>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 inline-block">
-                <p className="text-3xl font-bold text-white tracking-wider">{profile.referralCode}</p>
+              <h3 className="font-bold text-lg mb-2 text-[#111111]">Your Referral Code</h3>
+              <div className="bg-[#111111]/10 backdrop-blur-sm rounded-xl p-4 inline-block">
+                <p className="text-3xl font-bold text-[#111111] tracking-wider">{profile.referralCode}</p>
               </div>
-              <p className="text-white/90 text-sm mt-3 mb-4">Share this code with friends to earn rewards!</p>
+              <p className="text-[#4F4F4F] text-sm mt-3 mb-4">Share this code with friends to earn rewards!</p>
               <Button
                 onClick={() => {
                   navigator.clipboard.writeText(profile.referralCode);
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
                 }}
-                className="bg-white text-[#3A2A5A] hover:bg-white/90 font-semibold"
+                className="bg-[#111111] text-white hover:bg-[#222222] font-semibold"
               >
                 {copied ? (
                   <>
@@ -306,14 +306,14 @@ const Profile = () => {
               <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:grid-cols-none lg:flex bg-gray-100 rounded-xl p-1">
                 <TabsTrigger 
                   value="reviews" 
-                  className="data-[state=active]:bg-white data-[state=active]:text-[#3A2A5A] data-[state=active]:shadow-sm rounded-lg font-medium"
+                  className="data-[state=active]:bg-white data-[state=active]:text-[#111111] data-[state=active]:shadow-sm rounded-lg font-medium"
                 >
                   Reviews
                 </TabsTrigger>
                 {(profile.role === 'driver' || profile.role === 'both') && (
                   <TabsTrigger 
                     value="vehicle" 
-                    className="data-[state=active]:bg-white data-[state=active]:text-[#3A2A5A] data-[state=active]:shadow-sm rounded-lg font-medium"
+                    className="data-[state=active]:bg-white data-[state=active]:text-[#111111] data-[state=active]:shadow-sm rounded-lg font-medium"
                   >
                     Vehicle
                   </TabsTrigger>
@@ -321,7 +321,7 @@ const Profile = () => {
                 {isOwnProfile && (
                   <TabsTrigger 
                     value="settings" 
-                    className="data-[state=active]:bg-white data-[state=active]:text-[#3A2A5A] data-[state=active]:shadow-sm rounded-lg font-medium"
+                    className="data-[state=active]:bg-white data-[state=active]:text-[#111111] data-[state=active]:shadow-sm rounded-lg font-medium"
                   >
                     Settings
                   </TabsTrigger>
@@ -333,8 +333,8 @@ const Profile = () => {
             <TabsContent value="reviews" className="p-6 mt-0">
               {ratings.length === 0 ? (
                 <div className="text-center py-16">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 flex items-center justify-center">
-                    <Star className="h-10 w-10 text-white" />
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                    <Star className="h-10 w-10 text-[#111111]" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">No reviews yet</h3>
                   <p className="text-gray-500">Start your first trip to receive reviews from other users</p>
@@ -384,8 +384,8 @@ const Profile = () => {
                 {profile.vehicle ? (
                   <div>
                     <div className="flex items-center gap-3 mb-8">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                        <Car className="h-6 w-6 text-white" />
+                      <div className="w-12 h-12 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                        <Car className="h-6 w-6 text-[#111111]" />
                       </div>
                       <h3 className="text-2xl font-bold text-gray-900">Vehicle Information</h3>
                     </div>
@@ -418,8 +418,8 @@ const Profile = () => {
                   </div>
                 ) : (
                   <div className="text-center py-16">
-                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                      <Car className="h-10 w-10 text-white" />
+                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                      <Car className="h-10 w-10 text-[#111111]" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">No vehicle information</h3>
                     <p className="text-gray-500">Add your vehicle details to start offering rides</p>
@@ -433,8 +433,8 @@ const Profile = () => {
               <TabsContent value="settings" className="p-6 mt-0">
                 <div>
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] flex items-center justify-center">
-                      <Settings className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 rounded-full bg-[#FFD400] flex items-center justify-center shadow-md">
+                      <Settings className="h-6 w-6 text-[#111111]" />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900">Notification Settings</h3>
                   </div>
@@ -452,7 +452,7 @@ const Profile = () => {
                       <Switch
                         checked={settings.emailNotifications}
                         onCheckedChange={(checked) => setSettings({ ...settings, emailNotifications: checked })}
-                        className="data-[state=checked]:bg-[#EC3399]"
+                        className="data-[state=checked]:bg-[#FFD400]"
                       />
                     </div>
                     
@@ -469,7 +469,7 @@ const Profile = () => {
                       <Switch
                         checked={settings.pushNotifications}
                         onCheckedChange={(checked) => setSettings({ ...settings, pushNotifications: checked })}
-                        className="data-[state=checked]:bg-[#EC3399]"
+                        className="data-[state=checked]:bg-[#FFD400]"
                       />
                     </div>
                     
@@ -486,7 +486,7 @@ const Profile = () => {
                       <Switch
                         checked={settings.smsNotifications}
                         onCheckedChange={(checked) => setSettings({ ...settings, smsNotifications: checked })}
-                        className="data-[state=checked]:bg-[#EC3399]"
+                        className="data-[state=checked]:bg-[#FFD400]"
                       />
                     </div>
                     
@@ -503,7 +503,7 @@ const Profile = () => {
                       <Switch
                         checked={settings.profileVisibility}
                         onCheckedChange={(checked) => setSettings({ ...settings, profileVisibility: checked })}
-                        className="data-[state=checked]:bg-[#EC3399]"
+                        className="data-[state=checked]:bg-[#FFD400]"
                       />
                     </div>
                   </div>

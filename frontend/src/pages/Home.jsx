@@ -33,15 +33,22 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#FFD400] via-[#F5C000] via-30% to-[#CC9A00] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Content */}
             <div className="text-left">
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              <h1 
+                className="text-3xl md:text-5xl lg:text-6xl font-bold text-[#111111] mb-6 leading-tight"
+                style={{ 
+                  fontFamily: '"Poppins", sans-serif',
+                  transform: 'perspective(450px) rotateY(-6deg)',
+                  transformOrigin: 'left center'
+                }}
+              >
                 Its simple, quick, and cheap way to<br />commute together.
               </h1>
-              <p className="text-lg md:text-xl text-white/90 mb-8">
+              <p className="text-lg md:text-xl text-[#111111]/90 mb-8">
                 Connect with people who need to travel with you. Grow your network.
               </p>
               
@@ -86,7 +93,7 @@ export default function Home() {
                         onChange={handleChange}
                         className="h-12"
                       />
-                      <Button type="submit" className="h-12 font-semibold bg-[#EC3399] hover:bg-[#d62d88]">
+                      <Button type="submit" className="h-12 font-semibold bg-[#111111] text-white hover:bg-[#222222]">
                         <Search className="mr-2 h-5 w-5" />
                         Search
                       </Button>
@@ -118,36 +125,36 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-[#111111] mb-16">
             Features
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-pink-100 mb-6">
-                <Clock className="h-8 w-8 text-[#EC3399]" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FFD400]/20 mb-6">
+                <Clock className="h-8 w-8 text-[#111111]" />
               </div>
               <h3 className="text-xl font-bold mb-3">Save Time & Money</h3>
-              <p className="text-gray-600">
+              <p className="text-[#4F4F4F]">
                 Save significantly on your commute cost and avoid paying our commission fees.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-pink-100 mb-6">
-                <Users className="h-8 w-8 text-[#EC3399]" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FFD400]/20 mb-6">
+                <Users className="h-8 w-8 text-[#111111]" />
               </div>
               <h3 className="text-xl font-bold mb-3">Meet New People</h3>
-              <p className="text-gray-600">
+              <p className="text-[#4F4F4F]">
                 Grow your network organically by meeting amazing new people daily.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-pink-100 mb-6">
-                <Shield className="h-8 w-8 text-[#EC3399]" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FFD400]/20 mb-6">
+                <Shield className="h-8 w-8 text-[#111111]" />
               </div>
               <h3 className="text-xl font-bold mb-3">Safe and Secure</h3>
-              <p className="text-gray-600">
+              <p className="text-[#4F4F4F]">
                 We have introduced a safety feature to make sure you have a safe experience.
               </p>
             </div>
@@ -158,14 +165,14 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            Loved <span className="text-[#EC3399]">by customers</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-[#111111] mb-4">
+            Loved <span className="text-[#FFD400]">by customers</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
             <Card className="relative">
               <CardContent className="p-8">
                 <Quote className="h-10 w-10 text-gray-300 mb-4" />
-                <p className="text-gray-700 mb-6">
+                <p className="text-[#4F4F4F] mb-6">
                   Made my life easy. No more waiting for cabs and buses. Great way to have company and cut costs. I'm a big need to have friends to talk to when you are doing a long journey.
                 </p>
                 <div className="flex items-center">
@@ -181,7 +188,7 @@ export default function Home() {
             <Card className="relative">
               <CardContent className="p-8">
                 <Quote className="h-10 w-10 text-gray-300 mb-4" />
-                <p className="text-gray-700 mb-6">
+                <p className="text-[#4F4F4F] mb-6">
                   Amazing experience! The platform is easy to use and I've met some wonderful people during my commutes. Highly recommended for daily travelers.
                 </p>
                 <div className="flex items-center">
@@ -198,21 +205,21 @@ export default function Home() {
       </section>
 
       {/* App Download Section */}
-      <section className="py-20 bg-gradient-to-r from-yellow-400 to-orange-400">
+      <section className="py-20 bg-[#FFD400]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#111111] mb-4">
               Here's where you can get it from.
             </h2>
-            <p className="text-gray-800 mb-8">
+            <p className="text-[#111111]/80 mb-8">
               Now open to Carpoolers, Bikers and Supports. Grow your network.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button className="bg-black hover:bg-gray-800 text-white h-14 px-8 rounded-lg">
+              <Button className="bg-[#111111] hover:bg-[#222222] text-white h-14 px-8 rounded-lg">
                 <Play className="mr-2 h-5 w-5" />
                 GET IT ON Google Play
               </Button>
-              <Button className="bg-black hover:bg-gray-800 text-white h-14 px-8 rounded-lg">
+              <Button className="bg-[#111111] hover:bg-[#222222] text-white h-14 px-8 rounded-lg">
                 <Apple className="mr-2 h-5 w-5" />
                 Download on the App Store
               </Button>

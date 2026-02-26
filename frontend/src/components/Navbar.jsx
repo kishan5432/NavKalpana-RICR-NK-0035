@@ -42,11 +42,11 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
             <img 
-              src="https://res.cloudinary.com/dse13zdp7/image/upload/v1771948723/WhatsApp_Image_2026-02-24_at_16.02.07-removebg-preview_o7jy9j.png"
+              src="https://res.cloudinary.com/dse13zdp7/image/upload/v1772089992/WhatsApp_Image_2026-02-26_at_10.40.35_ugzmxu.jpg"
               alt="RideShareX Logo"
               className="h-8 w-8 object-contain"
             />
-            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#3A2A5A] to-[#EC3399] bg-clip-text text-transparent">
+            <span className="text-xl md:text-2xl font-bold text-[#111111]">
               RideShareX
             </span>
           </Link>
@@ -58,7 +58,7 @@ export default function Navbar() {
               variant="outline" 
               size="sm" 
               asChild 
-              className="hidden md:flex touch-target border-[#3A2A5A] text-[#3A2A5A] hover:border-[#EC3399] hover:bg-[#EC3399]/10 transition-all duration-200"
+              className="hidden md:flex touch-target border-[#111111] text-[#111111] hover:bg-[#FFD400] hover:text-[#111111] hover:border-[#FFD400] transition-all duration-200"
             >
               <Link to="/search" className="flex items-center space-x-2">
                 <Search className="h-4 w-4" />
@@ -72,7 +72,7 @@ export default function Navbar() {
                 {canPostRide && (
                   <Button 
                     asChild 
-                    className="hidden md:flex touch-target bg-[#3A2A5A] hover:bg-[#2d1f47] shadow-sm hover:shadow-md transition-all duration-200"
+                    className="hidden md:flex touch-target bg-[#111111] hover:bg-[#222222] text-white shadow-sm hover:shadow-md transition-all duration-200"
                   >
                     <Link to="/post-ride" className="flex items-center space-x-2">
                       <Car className="h-4 w-4" />
@@ -92,51 +92,51 @@ export default function Navbar() {
                     <DropdownMenuTrigger asChild>
                       <Button 
                         variant="ghost" 
-                        className="flex items-center space-x-3 touch-target hover:bg-[#3A2A5A]/10 transition-all duration-200 px-4 py-2 rounded-xl border border-transparent hover:border-[#3A2A5A]/20"
+                        className="flex items-center space-x-3 touch-target hover:bg-[#111111]/10 transition-all duration-200 px-4 py-2 rounded-xl border border-transparent hover:border-[#111111]/20"
                       >
                         <Avatar className="h-9 w-9 ring-2 ring-[#3A2A5A]/20">
                           <AvatarImage src={user.profilePhoto} />
-                          <AvatarFallback className="bg-gradient-to-br from-[#3A2A5A] to-[#EC3399] text-white font-semibold">
+                          <AvatarFallback className="bg-[#111111] text-[#FFD400] font-semibold">
                             {user.name?.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="hidden sm:block text-left">
-                          <p className="font-semibold text-[#3A2A5A] text-sm">{user.name}</p>
-                          <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                          <p className="font-semibold text-[#111111] text-sm">{user.name}</p>
+                          <p className="text-xs text-[#4F4F4F] capitalize">{user.role}</p>
                         </div>
-                        <ChevronDown className="h-4 w-4 text-[#3A2A5A]" />
+                        <ChevronDown className="h-4 w-4 text-[#111111]" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 shadow-xl border-2 border-[#3A2A5A]/20 bg-white/95 backdrop-blur-md rounded-xl">
-                      <div className="px-4 py-3 border-b border-[#3A2A5A]/20 bg-gradient-to-r from-[#3A2A5A]/5 to-[#EC3399]/5">
-                        <p className="text-sm font-bold text-[#3A2A5A]">{user.name}</p>
-                        <p className="text-xs text-[#EC3399] font-semibold capitalize">{user.role} Account</p>
+                    <DropdownMenuContent align="end" className="w-56 shadow-xl border-2 border-[#111111]/20 bg-white/95 backdrop-blur-md rounded-xl">
+                      <div className="px-4 py-3 border-b border-[#111111]/20 bg-[#FFD400]/10">
+                        <p className="text-sm font-bold text-[#111111]">{user.name}</p>
+                        <p className="text-xs text-[#4F4F4F] font-semibold capitalize">{user.role} Account</p>
                       </div>
                       <DropdownMenuItem asChild>
-                        <Link to="/profile/me" className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#3A2A5A]/10 hover:to-[#EC3399]/10 transition-all duration-200 rounded-lg mx-1 my-1">
-                          <Settings className="mr-3 h-5 w-5 text-[#3A2A5A]" />
-                          <span className="font-semibold text-[#3A2A5A]">Profile</span>
+                        <Link to="/profile/me" className="flex items-center px-4 py-3 hover:bg-[#FFD400]/20 transition-all duration-200 rounded-lg mx-1 my-1">
+                          <Settings className="mr-3 h-5 w-5 text-[#111111]" />
+                          <span className="font-semibold text-[#111111]">Profile</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link 
                           to={user.role === 'driver' ? '/driver/dashboard' : '/passenger/dashboard'}
-                          className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#3A2A5A]/10 hover:to-[#EC3399]/10 transition-all duration-200 rounded-lg mx-1 my-1"
+                          className="flex items-center px-4 py-3 hover:bg-[#FFD400]/20 transition-all duration-200 rounded-lg mx-1 my-1"
                         >
-                          <User className="mr-3 h-5 w-5 text-[#3A2A5A]" />
-                          <span className="font-semibold text-[#3A2A5A]">Dashboard</span>
+                          <User className="mr-3 h-5 w-5 text-[#111111]" />
+                          <span className="font-semibold text-[#111111]">Dashboard</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link 
                           to={user.role === 'driver' ? '/driver/rides' : '/passenger/bookings'}
-                          className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#3A2A5A]/10 hover:to-[#EC3399]/10 transition-all duration-200 rounded-lg mx-1 my-1"
+                          className="flex items-center px-4 py-3 hover:bg-[#FFD400]/20 transition-all duration-200 rounded-lg mx-1 my-1"
                         >
-                          <BookOpen className="mr-3 h-5 w-5 text-[#3A2A5A]" />
-                          <span className="font-semibold text-[#3A2A5A]">My {user.role === 'driver' ? 'Rides' : 'Bookings'}</span>
+                          <BookOpen className="mr-3 h-5 w-5 text-[#111111]" />
+                          <span className="font-semibold text-[#111111]">My {user.role === 'driver' ? 'Rides' : 'Bookings'}</span>
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator className="my-2 bg-gradient-to-r from-[#3A2A5A]/20 to-[#EC3399]/20 h-0.5" />
+                      <DropdownMenuSeparator className="my-2 bg-[#111111]/20 h-0.5" />
                       <DropdownMenuItem 
                         onClick={handleLogout} 
                         className="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 rounded-lg mx-1 my-1 font-semibold"
@@ -159,7 +159,7 @@ export default function Navbar() {
                 </Button>
                 <Button 
                   asChild 
-                  className="touch-target bg-[#3A2A5A] hover:bg-[#2d1f47] shadow-sm hover:shadow-md transition-all duration-200"
+                  className="touch-target bg-[#111111] hover:bg-[#222222] text-white shadow-sm hover:shadow-md transition-all duration-200"
                 >
                   <Link to="/register">Get Started</Link>
                 </Button>

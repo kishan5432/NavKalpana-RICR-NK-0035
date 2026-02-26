@@ -155,8 +155,8 @@ export default function DriverRideDetail() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-[#3A3A6A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[#3A3A6A]">Loading ride details...</p>
+          <div className="w-8 h-8 border-4 border-[#111111] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#111111]">Loading ride details...</p>
         </div>
       </div>
     );
@@ -169,7 +169,7 @@ export default function DriverRideDetail() {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Ride not found</h2>
           <button 
             onClick={() => navigate('/driver/dashboard')}
-            className="px-4 py-2 bg-[#3A3A6A] text-white rounded-xl hover:bg-[#3A3A6A]/90 transition-colors"
+            className="px-4 py-2 bg-[#FFD400] text-[#111111] rounded-xl hover:bg-[#FFC400] transition-colors font-semibold"
           >
             Back to Dashboard
           </button>
@@ -181,27 +181,60 @@ export default function DriverRideDetail() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-[#3A3A6A] text-white">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-4 mb-4">
+      <div className="bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/5"></div>
+        <div className="container mx-auto px-4 py-8 relative z-10">
+          <div className="flex items-center gap-4 mb-6">
             <button 
               onClick={() => navigate('/driver/dashboard')} 
-              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+              className="p-2 hover:bg-[#111111]/10 rounded-full transition-colors"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5 text-[#111111]" />
             </button>
+            <div className={`px-4 py-2 rounded-full text-sm font-semibold shadow-md ${getStatusColor(ride.status)}`}>
+              {ride.status.replace('_', ' ').toUpperCase()}
+            </div>
           </div>
           
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">{ride.from} → {ride.to}</h1>
-            </div>
-            <div className="text-right">
-              <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(ride.status)}`}>
-                {ride.status.replace('_', ' ')}
+          <div className="relative">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-3">
+                <h2 className="text-2xl lg:text-3xl font-bold text-[#111111]">{ride.from}</h2>
+                <div className="w-3 h-3 bg-[#111111] rounded-full"></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-0.5 bg-[#111111]/30"></div>
+                <MapPin className="h-5 w-5 text-[#111111]" />
+                <div className="w-8 h-0.5 bg-[#111111]/30"></div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-[#111111] rounded-full"></div>
+                <h2 className="text-2xl lg:text-3xl font-bold text-[#111111]">{ride.to}</h2>
               </div>
             </div>
+            
+            {/* Floating Icons */}
+            <div className="hidden lg:flex absolute left-1/2 top-0 w-12 h-12 bg-white/50 backdrop-blur-sm rounded-full items-center justify-center shadow-md animate-bounce" style={{animationDelay: '0s', animationDuration: '3s'}}>
+              <span className="text-2xl">🚗</span>
+            </div>
+            <div className="hidden lg:flex absolute left-[60%] -top-8 w-10 h-10 bg-white/50 backdrop-blur-sm rounded-full items-center justify-center shadow-md animate-bounce" style={{animationDelay: '0.5s', animationDuration: '2.5s'}}>
+              <span className="text-xl">⚡</span>
+            </div>
+            <div className="hidden lg:flex absolute left-[70%] top-2 w-14 h-14 bg-white/50 backdrop-blur-sm rounded-full items-center justify-center shadow-md animate-bounce" style={{animationDelay: '1s', animationDuration: '3.5s'}}>
+              <span className="text-2xl">🎯</span>
+            </div>
+            <div className="hidden lg:flex absolute left-[80%] -top-4 w-11 h-11 bg-white/50 backdrop-blur-sm rounded-full items-center justify-center shadow-md animate-bounce" style={{animationDelay: '1.5s', animationDuration: '2.8s'}}>
+              <span className="text-xl">📍</span>
+            </div>
+            <div className="hidden lg:flex absolute left-[90%] top-4 w-12 h-12 bg-white/50 backdrop-blur-sm rounded-full items-center justify-center shadow-md animate-bounce" style={{animationDelay: '0.8s', animationDuration: '3.2s'}}>
+              <span className="text-2xl">🔥</span>
+            </div>
           </div>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg viewBox="0 0 1440 40" className="w-full h-[40px]" preserveAspectRatio="none">
+            <path fill="#f9fafb" d="M0,20 Q180,40 360,20 T720,20 T1080,20 T1440,20 L1440,40 L0,40 Z"></path>
+          </svg>
         </div>
       </div>
 
@@ -259,7 +292,7 @@ export default function DriverRideDetail() {
             {/* Ride Actions */}
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Settings className="h-5 w-5 text-[#3A3A6A]" />
+                <Settings className="h-5 w-5 text-[#111111]" />
                 Ride Controls
               </h3>
               <div className="flex flex-wrap gap-3">
@@ -267,7 +300,7 @@ export default function DriverRideDetail() {
                   <>
                     <button 
                       onClick={handleStartRide}
-                      className="flex items-center gap-2 px-6 py-3 bg-[#E63399] text-white rounded-xl font-medium hover:bg-[#E63399]/90 transition-colors"
+                      className="flex items-center gap-2 px-6 py-3 bg-[#FFD400] text-[#111111] rounded-xl font-medium hover:bg-[#FFC400] transition-colors"
                     >
                       <Play className="h-4 w-4" />
                       Start Ride
@@ -275,7 +308,7 @@ export default function DriverRideDetail() {
                     <button 
                       onClick={handleBoostRide}
                       disabled={boosting || (ride.is_premium_visible && new Date(ride.premium_visible_until) > new Date())}
-                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-white rounded-xl font-medium hover:from-yellow-500 hover:to-orange-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-[#111111] rounded-xl font-medium hover:from-yellow-500 hover:to-orange-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Sparkles className="h-4 w-4" />
                       {ride.is_premium_visible && new Date(ride.premium_visible_until) > new Date() ? 'Already Boosted' : boosting ? 'Boosting...' : 'Boost Ride (₹99)'}
@@ -312,17 +345,17 @@ export default function DriverRideDetail() {
             {/* Route Details */}
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <Route className="h-5 w-5 text-[#3A3A6A]" />
+                <Route className="h-5 w-5 text-[#111111]" />
                 Route Information
               </h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
-                    <div className="w-4 h-4 bg-[#3A3A6A] rounded-full" />
+                    <div className="w-4 h-4 bg-[#FFD400] rounded-full" />
                     <div className="w-0.5 h-12 bg-gray-200 mt-2" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-[#3A3A6A] text-lg">{ride.from}</p>
+                    <p className="font-semibold text-[#FFD400] text-lg">{ride.from}</p>
                     <p className="text-gray-600">{ride.departureTime} • Starting point</p>
                   </div>
                 </div>
@@ -341,9 +374,9 @@ export default function DriverRideDetail() {
                 ))}
                 
                 <div className="flex items-center gap-4">
-                  <div className="w-4 h-4 bg-[#E63399] rounded-full" />
+                  <div className="w-4 h-4 bg-[#111111] rounded-full" />
                   <div className="flex-1">
-                    <p className="font-semibold text-[#E63399] text-lg">{ride.to}</p>
+                    <p className="font-semibold text-[#111111] text-lg">{ride.to}</p>
                     <p className="text-gray-600">Destination</p>
                   </div>
                 </div>
@@ -353,7 +386,7 @@ export default function DriverRideDetail() {
             {/* Vehicle & Preferences */}
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Car className="h-5 w-5 text-[#3A3A6A]" />
+                <Car className="h-5 w-5 text-[#111111]" />
                 Vehicle & Preferences
               </h3>
               <div className="grid md:grid-cols-2 gap-6">
@@ -390,9 +423,9 @@ export default function DriverRideDetail() {
               ) : (
                 <div className="space-y-4">
                   {bookings.map((booking) => (
-                    <div key={booking._id} className="border border-gray-200 rounded-xl p-4 hover:border-[#3A3A6A]/30 transition-colors">
+                    <div key={booking._id} className="border border-gray-200 rounded-xl p-4 hover:border-[#FFD400] transition-colors">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="w-12 h-12 bg-[#3A3A6A] text-white rounded-full flex items-center justify-center font-semibold">
+                        <div className="w-12 h-12 bg-[#FFD400] text-[#111111] rounded-full flex items-center justify-center font-semibold">
                           {booking.passengerId?.name?.[0] || 'P'}
                         </div>
                         <div className="flex-1">
@@ -429,7 +462,7 @@ export default function DriverRideDetail() {
                         {booking.status === 'accepted' && (
                           <button 
                             onClick={() => navigate(`/chat/${booking._id}`)}
-                            className="w-full py-2 bg-[#3A3A6A] text-white rounded-lg text-sm font-medium hover:bg-[#3A3A6A]/90 transition-colors flex items-center justify-center gap-1"
+                            className="w-full py-2 bg-[#111111] text-white rounded-lg text-sm font-medium hover:bg-[#222222] transition-colors flex items-center justify-center gap-1"
                           >
                             <MessageCircle className="h-4 w-4" />
                             Message
@@ -439,7 +472,7 @@ export default function DriverRideDetail() {
                         {ride.status === 'completed' && booking.status === 'completed' && !booking.hasRated?.driver && (
                           <button 
                             onClick={() => setRatingModal({ open: true, booking, rating: 0, comment: '' })}
-                            className="w-full py-2 bg-[#E63399] text-white rounded-lg text-sm font-medium hover:bg-[#E63399]/90 transition-colors flex items-center justify-center gap-1"
+                            className="w-full py-2 bg-[#FFD400] text-[#111111] rounded-lg text-sm font-medium hover:bg-[#FFC400] transition-colors flex items-center justify-center gap-1"
                           >
                             <Star className="h-4 w-4" />
                             Rate Passenger
@@ -448,7 +481,7 @@ export default function DriverRideDetail() {
                         
                         <button 
                           onClick={() => navigate(`/profile/${booking.passengerId?._id}`)}
-                          className="px-3 py-2 border border-[#3A3A6A] text-[#3A3A6A] rounded-lg text-sm font-medium hover:bg-[#3A3A6A] hover:text-white transition-colors"
+                          className="px-3 py-2 border border-[#111111] text-[#111111] rounded-lg text-sm font-medium hover:bg-[#111111] hover:text-white transition-colors"
                         >
                           View Profile
                         </button>
@@ -465,7 +498,7 @@ export default function DriverRideDetail() {
               <div className="space-y-3">
                 <button 
                   onClick={() => navigate('/driver/dashboard')}
-                  className="w-full py-3 border border-[#3A3A6A] text-[#3A3A6A] rounded-xl font-medium hover:bg-[#3A3A6A] hover:text-white transition-colors"
+                  className="w-full py-3 border border-[#111111] text-[#111111] rounded-xl font-medium hover:bg-[#111111] hover:text-white transition-colors"
                 >
                   Dashboard
                 </button>
@@ -477,7 +510,7 @@ export default function DriverRideDetail() {
                 </button>
                 <button 
                   onClick={() => navigate(`/driver/edit-ride/${ride._id}`)}
-                  className="w-full py-3 bg-[#E63399] text-white rounded-xl font-medium hover:bg-[#E63399]/90 transition-colors"
+                  className="w-full py-3 bg-[#FFD400] text-[#111111] rounded-xl font-medium hover:bg-[#FFC400] transition-colors"
                 >
                   Edit This Ride
                 </button>
@@ -518,7 +551,7 @@ export default function DriverRideDetail() {
             <button 
               onClick={handleRatingSubmit}
               disabled={ratingModal.rating === 0}
-              className="w-full py-3 bg-[#E63399] text-white rounded-xl font-semibold hover:bg-[#E63399]/90 disabled:opacity-50 transition-colors"
+              className="w-full py-3 bg-[#FFD400] text-[#111111] rounded-xl font-semibold hover:bg-[#FFC400] disabled:opacity-50 transition-colors"
             >
               Submit Rating
             </button>

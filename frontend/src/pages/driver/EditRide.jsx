@@ -134,8 +134,8 @@ export default function EditRide() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-[#3A3A6A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[#3A3A6A]">Loading ride data...</p>
+          <div className="w-8 h-8 border-4 border-[#FFD400] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#111111]">Loading ride data...</p>
         </div>
       </div>
     );
@@ -144,7 +144,7 @@ export default function EditRide() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Header */}
-      <div className="relative bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] overflow-hidden">
+      <div className="relative bg-gradient-to-br from-[#FFD400] via-[#FFC400] to-[#E6B800] overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center gap-4 mb-6">
@@ -152,19 +152,19 @@ export default function EditRide() {
               onClick={() => navigate(`/driver/rides/${id}`)}
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
+              className="text-[#111111] hover:bg-black/10 rounded-full w-10 h-10 p-0"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                <Edit className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center">
+                <Edit className="h-6 w-6 text-[#FFD400]" />
               </div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-white">Edit Ride</h1>
+              <h1 className="text-3xl lg:text-4xl font-bold text-[#111111]">Edit Ride</h1>
             </div>
           </div>
           
-          <p className="text-white/90 text-lg max-w-2xl">
+          <p className="text-[#111111]/90 text-lg max-w-2xl">
             Update your ride details and preferences
           </p>
         </div>
@@ -184,8 +184,8 @@ export default function EditRide() {
           <Card className="bg-white shadow-lg rounded-2xl border-0">
             <CardContent className="p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                  <MapPin className="h-5 w-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-[#FFD400] flex items-center justify-center">
+                  <MapPin className="h-5 w-5 text-[#111111]" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">Route Information</h2>
               </div>
@@ -227,14 +227,14 @@ export default function EditRide() {
                   <Input
                     value={stopInput}
                     onChange={(e) => setStopInput(e.target.value)}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Add a stop along the way"
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addStop())}
                   />
                   <Button 
                     type="button" 
                     onClick={addStop}
-                    className="h-12 px-6 bg-[#EC3399] hover:bg-[#d62d88] text-white rounded-xl"
+                    className="h-12 px-6 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] rounded-xl"
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
@@ -261,8 +261,8 @@ export default function EditRide() {
           <Card className="bg-white shadow-lg rounded-2xl border-0">
             <CardContent className="p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center">
-                  <Calendar className="h-5 w-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-[#FFD400] flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-[#111111]" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">Schedule & Pricing</h2>
               </div>
@@ -278,7 +278,7 @@ export default function EditRide() {
                     type="date"
                     value={formData.date}
                     onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     required
                   />
                 </div>
@@ -292,7 +292,7 @@ export default function EditRide() {
                     type="time"
                     value={formData.departureTime}
                     onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     required
                   />
                 </div>
@@ -324,7 +324,7 @@ export default function EditRide() {
                     min="0"
                     value={formData.pricePerSeat}
                     onChange={handleInputChange}
-                    className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Enter price per seat"
                     required
                   />
@@ -337,8 +337,8 @@ export default function EditRide() {
           <Card className="bg-white shadow-lg rounded-2xl border-0">
             <CardContent className="p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#EC3399] to-[#d62d88] flex items-center justify-center">
-                  <Settings className="h-5 w-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-[#FFD400] flex items-center justify-center">
+                  <Settings className="h-5 w-5 text-[#111111]" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">Preferences & Settings</h2>
               </div>
@@ -348,7 +348,7 @@ export default function EditRide() {
                   Luggage Allowance
                 </Label>
                 <Select value={formData.luggageAllowance} onValueChange={(value) => setFormData(prev => ({ ...prev, luggageAllowance: value }))}>
-                  <SelectTrigger className="h-12 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]">
+                  <SelectTrigger className="h-12 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]">
                     <SelectValue placeholder="Select luggage allowance" />
                   </SelectTrigger>
                   <SelectContent>
@@ -378,7 +378,7 @@ export default function EditRide() {
                         ...prev,
                         preferences: { ...prev.preferences, smokingAllowed: checked }
                       }))}
-                      className="data-[state=checked]:bg-[#EC3399] data-[state=checked]:border-[#EC3399]"
+                      className="data-[state=checked]:bg-[#FFD400] data-[state=checked]:border-[#FFD400]"
                     />
                   </div>
                   
@@ -396,7 +396,7 @@ export default function EditRide() {
                         ...prev,
                         preferences: { ...prev.preferences, petsAllowed: checked }
                       }))}
-                      className="data-[state=checked]:bg-[#EC3399] data-[state=checked]:border-[#EC3399]"
+                      className="data-[state=checked]:bg-[#FFD400] data-[state=checked]:border-[#FFD400]"
                     />
                   </div>
                   
@@ -414,7 +414,7 @@ export default function EditRide() {
                         ...prev,
                         preferences: { ...prev.preferences, musicAllowed: checked }
                       }))}
-                      className="data-[state=checked]:bg-[#EC3399] data-[state=checked]:border-[#EC3399]"
+                      className="data-[state=checked]:bg-[#FFD400] data-[state=checked]:border-[#FFD400]"
                     />
                   </div>
                 </div>
@@ -427,11 +427,11 @@ export default function EditRide() {
             <Button 
               type="submit" 
               disabled={loading}
-              className="h-14 px-12 bg-[#EC3399] hover:bg-[#d62d88] text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="h-14 px-12 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#111111] mr-3"></div>
                   Updating Ride...
                 </>
               ) : (

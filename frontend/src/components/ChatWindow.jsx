@@ -92,9 +92,9 @@ const ChatWindow = ({ bookingId, otherUser }) => {
           const isMine = msg.senderId?._id === user._id || msg.sender === user._id;
           return (
             <div key={msg._id || idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[70%] ${isMine ? 'bg-[#E63399] text-white' : 'bg-gray-100 text-gray-900'} rounded-2xl px-4 py-3`}>
+              <div className={`max-w-[70%] ${isMine ? 'bg-[#FFD400] text-[#111111]' : 'bg-gray-100 text-gray-900'} rounded-2xl px-4 py-3 shadow-sm`}>
                 <p className="text-sm">{msg.content}</p>
-                <div className={`text-xs mt-1 ${isMine ? 'text-pink-100' : 'text-gray-500'}`}>
+                <div className={`text-xs mt-1 ${isMine ? 'text-[#4F4F4F]' : 'text-gray-500'}`}>
                   {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
               </div>
@@ -112,12 +112,12 @@ const ChatWindow = ({ bookingId, otherUser }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-[#3A3A6A] transition-colors"
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-[#FFD400] focus:ring-2 focus:ring-[#FFD400]/20 transition-colors"
           />
           <button
             onClick={handleSend}
             disabled={!input.trim()}
-            className="bg-[#3A3A6A] text-white p-3 rounded-full hover:bg-[#2d2d52] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="bg-[#111111] text-white p-3 rounded-full hover:bg-[#222222] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
           >
             <Send className="h-5 w-5" />
           </button>

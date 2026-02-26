@@ -225,20 +225,38 @@ export default function RideDetail() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-[#3A3A6A] text-white">
-        <div className="container mx-auto px-4 py-6">
+      <div className="bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] text-[#111111] border-b-4 border-[#111111] relative overflow-hidden">
+        {/* Animated passenger icons */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-[40%] animate-bounce" style={{animationDelay: '0s', animationDuration: '3s'}}>
+            <span className="text-4xl">🚶</span>
+          </div>
+          <div className="absolute top-1/2 left-[50%] animate-bounce" style={{animationDelay: '0.5s', animationDuration: '3.5s'}}>
+            <span className="text-4xl">🧳</span>
+          </div>
+          <div className="absolute top-1/2 left-[60%] animate-bounce" style={{animationDelay: '1s', animationDuration: '4s'}}>
+            <span className="text-4xl">🚗</span>
+          </div>
+          <div className="absolute top-1/2 left-[70%] animate-bounce" style={{animationDelay: '1.5s', animationDuration: '3.2s'}}>
+            <span className="text-4xl">🎒</span>
+          </div>
+          <div className="absolute top-1/2 left-[80%] animate-bounce" style={{animationDelay: '2s', animationDuration: '3.8s'}}>
+            <span className="text-4xl">💼</span>
+          </div>
+        </div>
+        <div className="container mx-auto px-4 py-6 relative z-10">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-3xl font-bold">{ride.from} → {ride.to}</h1>
             <div className="flex gap-3">
               <Button
                 onClick={() => navigate('/search')}
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                className="bg-[#111111]/20 hover:bg-[#111111]/30 text-[#111111] border-[#111111]/30"
               >
                 Search Rides
               </Button>
               <Button
                 onClick={() => navigate(user?.role === 'driver' ? '/driver/dashboard' : '/passenger/dashboard')}
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                className="bg-[#111111]/20 hover:bg-[#111111]/30 text-[#111111] border-[#111111]/30"
               >
                 Dashboard
               </Button>
@@ -293,17 +311,17 @@ export default function RideDetail() {
             {/* Route Timeline */}
             <div className="bg-white rounded-2xl shadow-sm border p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-[#3A3A6A]" />
+                <MapPin className="h-5 w-5 text-[#111111]" />
                 Route Details
               </h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
-                    <div className="w-4 h-4 bg-[#3A3A6A] rounded-full" />
+                    <div className="w-4 h-4 bg-[#FFD400] rounded-full" />
                     <div className="w-0.5 h-12 bg-gray-200 mt-2" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-[#3A3A6A] text-lg">{ride.from}</p>
+                    <p className="font-semibold text-[#FFD400] text-lg">{ride.from}</p>
                     <p className="text-gray-600">{ride.departureTime} • Starting point</p>
                   </div>
                 </div>
@@ -322,9 +340,9 @@ export default function RideDetail() {
                 ))}
                 
                 <div className="flex items-center gap-4">
-                  <div className="w-4 h-4 bg-[#E63399] rounded-full" />
+                  <div className="w-4 h-4 bg-[#111111] rounded-full" />
                   <div className="flex-1">
-                    <p className="font-semibold text-[#E63399] text-lg">{ride.to}</p>
+                    <p className="font-semibold text-[#111111] text-lg">{ride.to}</p>
                     <p className="text-gray-600">Destination</p>
                   </div>
                 </div>
@@ -335,12 +353,12 @@ export default function RideDetail() {
             {ride.vehicle && (
               <div className="bg-white rounded-2xl shadow-sm border p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Car className="h-5 w-5 text-[#3A3A6A]" />
+                  <Car className="h-5 w-5 text-[#111111]" />
                   Vehicle Details
                 </h3>
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-[#3A3A6A]/10 rounded-xl flex items-center justify-center">
-                    <Car className="h-8 w-8 text-[#3A3A6A]" />
+                  <div className="w-16 h-16 bg-[#FFD400]/10 rounded-xl flex items-center justify-center">
+                    <Car className="h-8 w-8 text-[#FFD400]" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg">{ride.vehicle.make} {ride.vehicle.model}</h4>
@@ -368,7 +386,7 @@ export default function RideDetail() {
                   {ratings.slice(0, 3).map((rating) => (
                     <div key={rating._id} className="p-4 bg-gray-50 rounded-xl">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-[#3A3A6A] text-white rounded-full flex items-center justify-center font-semibold">
+                        <div className="w-10 h-10 bg-[#FFD400] text-[#111111] rounded-full flex items-center justify-center font-semibold">
                           {rating.raterId?.name?.[0] || 'A'}
                         </div>
                         <div className="flex-1">
@@ -397,7 +415,7 @@ export default function RideDetail() {
               <div className="text-center mb-6">
                 <Avatar className="w-20 h-20 mx-auto mb-3">
                   <AvatarImage src={ride.driverId?.profilePhoto} />
-                  <AvatarFallback className="bg-[#3A3A6A] text-white text-2xl font-bold">
+                  <AvatarFallback className="bg-[#FFD400] text-[#111111] text-2xl font-bold">
                     {ride.driverId?.name?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
@@ -436,7 +454,7 @@ export default function RideDetail() {
               
               <button 
                 onClick={() => navigate(`/profile/${ride.driverId._id}`)}
-                className="w-full py-3 border border-[#3A3A6A] text-[#3A3A6A] rounded-xl font-medium hover:bg-[#3A3A6A] hover:text-white transition-colors mb-2"
+                className="w-full py-3 border border-[#111111] text-[#111111] rounded-xl font-medium hover:bg-[#111111] hover:text-white transition-colors mb-2"
               >
                 View Profile
               </button>
@@ -449,7 +467,7 @@ export default function RideDetail() {
                 ) : (
                   <button 
                     onClick={() => setRatingModal({ open: true, rating: 0, comment: '' })}
-                    className="w-full py-3 bg-yellow-500 text-white rounded-xl font-medium hover:bg-yellow-600 transition-colors"
+                    className="w-full py-3 bg-[#FFD400] text-[#111111] rounded-xl font-medium hover:bg-[#FFC400] transition-colors"
                   >
                     Rate Driver
                   </button>
@@ -463,7 +481,7 @@ export default function RideDetail() {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-gray-600">Price per seat</span>
-                    <span className="text-2xl font-bold text-[#3A3A6A]">₹{ride.pricePerSeat}</span>
+                    <span className="text-2xl font-bold text-[#111111]">₹{ride.pricePerSeat}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm text-gray-600">
                     <span>Available seats</span>
@@ -477,7 +495,7 @@ export default function RideDetail() {
                     <select 
                       value={selectedSeats} 
                       onChange={(e) => setSelectedSeats(Number(e.target.value))}
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#3A3A6A]"
+                      className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#FFD400]"
                     >
                       {[...Array(Math.min(ride.availableSeats, 4))].map((_, i) => (
                         <option key={i + 1} value={i + 1}>{i + 1} seat{i > 0 ? 's' : ''}</option>
@@ -488,13 +506,13 @@ export default function RideDetail() {
                   <div className="border-t pt-4">
                     <div className="flex items-center justify-between mb-4">
                       <span className="font-medium">Total</span>
-                      <span className="text-xl font-bold text-[#3A3A6A]">₹{ride.pricePerSeat * selectedSeats}</span>
+                      <span className="text-xl font-bold text-[#111111]">₹{ride.pricePerSeat * selectedSeats}</span>
                     </div>
                     
                     <button 
                       onClick={() => handleBooking({ seatsBooked: selectedSeats })}
                       disabled={booking}
-                      className="w-full py-4 bg-[#E63399] text-white rounded-xl font-semibold hover:bg-[#E63399]/90 disabled:opacity-50 transition-colors"
+                      className="w-full py-4 bg-[#FFD400] text-[#111111] rounded-xl font-semibold hover:bg-[#FFC400] disabled:opacity-50 transition-colors"
                     >
                       {booking ? 'Booking...' : 'Book Now'}
                     </button>
@@ -531,7 +549,7 @@ export default function RideDetail() {
                     {userBooking.status === 'accepted' && (
                       <button 
                         onClick={() => navigate(`/chat/${userBooking._id}`)}
-                        className="w-full py-3 bg-[#3A3A6A] text-white rounded-xl font-medium hover:bg-[#3A3A6A]/90 transition-colors"
+                        className="w-full py-3 bg-[#111111] text-white rounded-xl font-medium hover:bg-[#222222] transition-colors"
                       >
                         Message Driver
                       </button>
@@ -556,7 +574,7 @@ export default function RideDetail() {
                 <p className="text-gray-600 mb-4">Login to secure your seat</p>
                 <button 
                   onClick={() => navigate(`/login?redirect=/rides/${id}`)}
-                  className="w-full py-3 bg-[#E63399] text-white rounded-xl font-semibold hover:bg-[#E63399]/90 transition-colors"
+                  className="w-full py-3 bg-[#FFD400] text-[#111111] rounded-xl font-semibold hover:bg-[#FFC400] transition-colors"
                 >
                   Login to Book
                 </button>
@@ -597,7 +615,7 @@ export default function RideDetail() {
             <button 
               onClick={handleRatingSubmit}
               disabled={ratingModal.rating === 0}
-              className="w-full py-3 bg-[#E63399] text-white rounded-xl font-semibold hover:bg-[#E63399]/90 disabled:opacity-50 transition-colors"
+              className="w-full py-3 bg-[#FFD400] text-[#111111] rounded-xl font-semibold hover:bg-[#FFC400] disabled:opacity-50 transition-colors"
             >
               Submit Rating
             </button>

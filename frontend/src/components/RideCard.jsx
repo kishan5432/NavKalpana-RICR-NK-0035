@@ -157,7 +157,7 @@ export default function RideCard({ ride, onBook }) {
               </Badge>
             ) : (
               <Button 
-                className="bg-[#3A2A5A] hover:bg-[#2d1f47] text-white font-semibold px-4 py-1.5 rounded text-xs transition-all duration-200"
+                className="bg-[#111111] hover:bg-[#222222] text-white font-semibold px-4 py-1.5 rounded text-xs transition-all duration-200"
                 onClick={() => navigate(`/rides/${ride._id}`)}
               >
                 BOOK NOW

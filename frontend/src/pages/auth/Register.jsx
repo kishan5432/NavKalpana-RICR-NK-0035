@@ -81,9 +81,12 @@ export default function Register() {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] items-center justify-center p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#FFD400] via-[#FFC400] to-[#E6B800] items-center justify-center p-12 relative overflow-hidden">
+        <svg className="absolute top-0 left-0 w-full" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{height: '80px'}}>
+          <path d="M0,0 L0,40 Q300,100 600,40 T1200,40 L1200,0 Z" fill="#f9fafb"></path>
+        </svg>
         <img 
-          src="https://res.cloudinary.com/dse13zdp7/image/upload/v1771946793/enhance_igr5xwtygunn6th1lzy5_poz8uy.png"
+          src="https://i.pinimg.com/736x/ab/70/5c/ab705c18ff9394d8861f14e587d39897.jpg"
           alt="Register illustration"
           className="w-full max-w-lg rounded-2xl shadow-2xl"
         />
@@ -96,12 +99,12 @@ export default function Register() {
             <Button
               variant="ghost"
               onClick={() => navigate('/')}
-              className="mb-4 text-[#3A2A5A] hover:bg-gray-100"
+              className="mb-4 text-[#111111] hover:bg-gray-100"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
             </Button>
-            <h1 className="text-3xl font-bold text-[#3A2A5A] mb-2">
+            <h1 className="text-3xl font-bold text-[#111111] mb-2">
               Join RideShareX
             </h1>
             <p className="text-gray-600">Create your account to get started</p>
@@ -120,7 +123,7 @@ export default function Register() {
                     type="text"
                     value={formData.fullName}
                     onChange={handleChange}
-                    className="h-10 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-10 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Enter your full name"
                   />
                   {errors.fullName && (
@@ -138,7 +141,7 @@ export default function Register() {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="h-10 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-10 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Enter your email"
                   />
                   {errors.email && (
@@ -156,7 +159,7 @@ export default function Register() {
                     type="tel"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="h-10 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-10 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Enter your phone number"
                   />
                   {errors.phone && (
@@ -175,7 +178,7 @@ export default function Register() {
                       type={showPassword ? 'text' : 'password'}
                       value={formData.password}
                       onChange={handleChange}
-                      className="h-10 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399] pr-10"
+                      className="h-10 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400] pr-10"
                       placeholder="Create a password"
                     />
                     <button
@@ -201,7 +204,7 @@ export default function Register() {
                     type="text"
                     value={formData.referredBy}
                     onChange={handleChange}
-                    className="h-10 rounded-xl border-gray-200 focus:border-[#EC3399] focus:ring-[#EC3399]"
+                    className="h-10 rounded-xl border-gray-200 focus:border-[#FFD400] focus:ring-[#FFD400]"
                     placeholder="Enter referral code"
                   />
                 </div>
@@ -218,7 +221,7 @@ export default function Register() {
                         value="passenger"
                         checked={formData.role === 'passenger'}
                         onChange={handleChange}
-                        className="text-[#EC3399] focus:ring-[#EC3399] mr-3"
+                        className="text-[#FFD400] focus:ring-[#FFD400] mr-3"
                       />
                       <div>
                         <span className="font-medium text-gray-900">Book rides</span>
@@ -232,7 +235,7 @@ export default function Register() {
                         value="driver"
                         checked={formData.role === 'driver'}
                         onChange={handleChange}
-                        className="text-[#EC3399] focus:ring-[#EC3399] mr-3"
+                        className="text-[#FFD400] focus:ring-[#FFD400] mr-3"
                       />
                       <div>
                         <span className="font-medium text-gray-900">Offer rides</span>
@@ -244,7 +247,7 @@ export default function Register() {
 
                 <Button
                   type="submit"
-                  className="w-full h-10 bg-[#EC3399] hover:bg-[#d62d88] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="w-full h-10 bg-[#FFD400] hover:bg-[#FFC400] text-[#111111] font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -261,7 +264,7 @@ export default function Register() {
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
                   Already have an account?{' '}
-                  <Link to="/login" className="text-[#EC3399] hover:underline font-semibold">
+                  <Link to="/login" className="text-[#FFD400] hover:underline font-semibold">
                     Sign In
                   </Link>
                 </p>

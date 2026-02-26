@@ -87,7 +87,7 @@ export default function Verify() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3A2A5A] via-[#4A3A6A] to-[#EC3399] px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FFD400] via-[#FFC400] to-[#E6B800] px-4 py-8">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-full mb-4">
@@ -114,7 +114,7 @@ export default function Verify() {
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                   placeholder="000000"
                   maxLength={6}
-                  className="h-14 text-center text-2xl tracking-[0.5em] font-bold border-2 focus:border-[#EC3399] focus:ring-[#EC3399] rounded-xl"
+                  className="h-14 text-center text-2xl tracking-[0.5em] font-bold border-2 focus:border-[#FFD400] focus:ring-[#FFD400] rounded-xl"
                   autoComplete="off"
                 />
                 <p className="text-xs text-gray-500 mt-2 text-center">Enter the 6-digit code from your email</p>
@@ -122,7 +122,7 @@ export default function Verify() {
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-[#3A2A5A] hover:bg-[#2d1f47] text-white font-semibold rounded-xl shadow-lg transition-all duration-200"
+                className="w-full h-12 bg-[#111111] hover:bg-[#222222] text-white font-semibold rounded-xl shadow-lg transition-all duration-200"
                 disabled={isLoading || otp.length !== 6}
               >
                 {isLoading ? (
@@ -145,7 +145,7 @@ export default function Verify() {
                 variant="outline"
                 onClick={handleResend}
                 disabled={isResending}
-                className="text-[#EC3399] border-[#EC3399] hover:bg-[#EC3399] hover:text-white font-medium"
+                className="text-[#111111] border-[#111111] hover:bg-[#FFD400] hover:text-[#111111] font-medium"
               >
                 {isResending ? (
                   <>

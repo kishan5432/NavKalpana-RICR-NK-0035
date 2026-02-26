@@ -206,85 +206,85 @@ export default function DriverDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-[#3A2A5A] to-[#2d1f47] text-white">
+      <div className="bg-gradient-to-r from-[#FFD400] via-[#FFC400] to-[#E6B800] text-[#111111]">
         <div className="container mx-auto px-6 py-8">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name}!</h1>
-              <p className="text-white/80">Manage your rides and earnings</p>
+              <p className="text-[#4F4F4F]">Manage your rides and earnings</p>
             </div>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <Card className="bg-white border-2 border-[#E5E5E5] shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/80 mb-1">Total Earnings</p>
-                    <p className="text-3xl font-bold">₹{earnings?.total_earned || stats.totalEarnings}</p>
+                    <p className="text-sm text-[#4F4F4F] mb-1">Total Earnings</p>
+                    <p className="text-3xl font-bold text-[#111111]">₹{earnings?.total_earned || stats.totalEarnings}</p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-full">
-                    <DollarSign className="h-6 w-6" />
+                  <div className="p-3 bg-[#FFD400] rounded-full">
+                    <DollarSign className="h-6 w-6 text-[#111111]" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <Card className="bg-white border-2 border-[#E5E5E5] shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/80 mb-1">Platform Fee</p>
-                    <p className="text-3xl font-bold">₹{earnings?.total_platform_fee || 0}</p>
+                    <p className="text-sm text-[#4F4F4F] mb-1">Platform Fee</p>
+                    <p className="text-3xl font-bold text-[#111111]">₹{earnings?.total_platform_fee || 0}</p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-full">
-                    <DollarSign className="h-6 w-6" />
+                  <div className="p-3 bg-[#FFD400] rounded-full">
+                    <DollarSign className="h-6 w-6 text-[#111111]" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <Card className="bg-white border-2 border-[#E5E5E5] shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/80 mb-1">Active Rides</p>
-                    <p className="text-3xl font-bold">{stats.activeRides}</p>
+                    <p className="text-sm text-[#4F4F4F] mb-1">Active Rides</p>
+                    <p className="text-3xl font-bold text-[#111111]">{stats.activeRides}</p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-full">
-                    <Car className="h-6 w-6" />
+                  <div className="p-3 bg-[#FFD400] rounded-full">
+                    <Car className="h-6 w-6 text-[#111111]" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <Card className="bg-white border-2 border-[#E5E5E5] shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/80 mb-1">Completed</p>
-                    <p className="text-3xl font-bold">{stats.completedRides}</p>
+                    <p className="text-sm text-[#4F4F4F] mb-1">Completed</p>
+                    <p className="text-3xl font-bold text-[#111111]">{stats.completedRides}</p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-full">
-                    <CheckCircle className="h-6 w-6" />
+                  <div className="p-3 bg-[#FFD400] rounded-full">
+                    <CheckCircle className="h-6 w-6 text-[#111111]" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <Card className="bg-white border-2 border-[#E5E5E5] shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/80 mb-1">Rating</p>
+                    <p className="text-sm text-[#4F4F4F] mb-1">Rating</p>
                     <div className="flex items-center gap-2">
-                      <p className="text-3xl font-bold">{stats.rating}</p>
-                      <Star className="h-5 w-5 fill-current" />
+                      <p className="text-3xl font-bold text-[#111111]">{stats.rating}</p>
+                      <Star className="h-5 w-5 fill-[#FFD400] text-[#FFD400]" />
                     </div>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-full">
-                    <Star className="h-6 w-6" />
+                  <div className="p-3 bg-[#FFD400] rounded-full">
+                    <Star className="h-6 w-6 text-[#111111]" />
                   </div>
                 </div>
               </CardContent>
@@ -300,7 +300,7 @@ export default function DriverDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Button 
                 onClick={() => navigate('/post-ride')} 
-                className="h-16 text-lg font-semibold bg-[#EC3399] hover:bg-[#d62d88]"
+                className="h-16 text-lg font-semibold bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]"
               >
                 <Plus className="h-5 w-5 mr-2" />
                 Post New Ride
@@ -308,7 +308,7 @@ export default function DriverDashboard() {
               <Button 
                 onClick={() => navigate('/driver/bookings')} 
                 variant="outline" 
-                className="h-16 text-lg font-semibold border-2 border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                className="h-16 text-lg font-semibold border-2 border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white"
               >
                 <Calendar className="h-5 w-5 mr-2" />
                 View Bookings
@@ -316,7 +316,7 @@ export default function DriverDashboard() {
               <Button 
                 onClick={() => navigate('/driver/rides')} 
                 variant="outline" 
-                className="h-16 text-lg font-semibold border-2 border-[#3A2A5A] text-[#3A2A5A] hover:bg-[#3A2A5A] hover:text-white"
+                className="h-16 text-lg font-semibold border-2 border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white"
               >
                 <Car className="h-5 w-5 mr-2" />
                 My Rides
@@ -376,7 +376,7 @@ export default function DriverDashboard() {
           {/* Upcoming Rides */}
           <Card className="shadow-lg border-0">
             <CardHeader className="border-b bg-gray-50">
-              <CardTitle className="flex items-center gap-2 text-[#3A2A5A]">
+              <CardTitle className="flex items-center gap-2 text-[#111111]">
                 <Clock className="h-5 w-5" />
                 Upcoming Rides
               </CardTitle>
@@ -397,19 +397,19 @@ export default function DriverDashboard() {
                         <div className="absolute left-4 top-8 w-0.5 h-16 bg-gray-200" />
                       )}
                       <div 
-                        className="flex items-start gap-4 p-4 rounded-lg border-l-4 border-[#EC3399] bg-gray-50 hover:shadow-md transition-shadow cursor-pointer"
+                        className="flex items-start gap-4 p-4 rounded-lg border-l-4 border-[#FFD400] bg-gray-50 hover:shadow-md transition-shadow cursor-pointer"
                         onClick={() => navigate(`/driver/rides/${ride._id}`)}
                       >
-                        <div className="p-2 bg-[#EC3399]/10 rounded-full">
-                          <MapPin className="h-4 w-4 text-[#EC3399]" />
+                        <div className="p-2 bg-[#FFD400]/20 rounded-full">
+                          <MapPin className="h-4 w-4 text-[#111111]" />
                         </div>
                         <div className="flex-1">
-                          <p className="font-semibold text-[#3A2A5A]">{ride.from} → {ride.to}</p>
+                          <p className="font-semibold text-[#111111]">{ride.from} → {ride.to}</p>
                           <p className="text-sm text-gray-600">
                             {new Date(ride.date).toLocaleDateString()} at {ride.departureTime}
                           </p>
                           <div className="flex items-center gap-4 mt-2">
-                            <span className="text-sm text-[#EC3399] font-medium">₹{ride.pricePerSeat}/seat</span>
+                            <span className="text-sm text-[#E6B800] font-medium">₹{ride.pricePerSeat}/seat</span>
                             <span className="text-sm text-gray-500">{ride.availableSeats}/{ride.totalSeats} seats</span>
                             {getStatusBadge(ride.status)}
                           </div>
@@ -471,7 +471,7 @@ export default function DriverDashboard() {
           {/* Booking Requests */}
           <Card className="shadow-lg border-0">
             <CardHeader className="border-b bg-gray-50">
-              <CardTitle className="flex items-center gap-2 text-[#3A2A5A]">
+              <CardTitle className="flex items-center gap-2 text-[#111111]">
                 <Users className="h-5 w-5" />
                 Booking Requests
               </CardTitle>
@@ -489,12 +489,12 @@ export default function DriverDashboard() {
                   {bookingRequests.map((booking) => (
                     <div key={booking._id} className="p-4 bg-gray-50 rounded-lg hover:shadow-md transition-shadow">
                       <div className="flex items-center gap-3 mb-3">
-                        <Avatar className="h-10 w-10 ring-2 ring-[#EC3399]">
+                        <Avatar className="h-10 w-10 ring-2 ring-[#FFD400]">
                           <AvatarImage src={booking.passengerId?.profilePhoto} />
-                          <AvatarFallback className="bg-[#3A2A5A] text-white">{booking.passengerId?.name?.[0]}</AvatarFallback>
+                          <AvatarFallback className="bg-[#111111] text-white">{booking.passengerId?.name?.[0]}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <p className="font-semibold text-[#3A2A5A]">{booking.passengerId?.name}</p>
+                          <p className="font-semibold text-[#111111]">{booking.passengerId?.name}</p>
                           <p className="text-sm text-gray-600">
                             {booking.seatsBooked} seat(s) • ₹{booking.totalPrice}
                           </p>
@@ -533,7 +533,7 @@ export default function DriverDashboard() {
         {stats.inProgressRides.length > 0 && (
           <Card className="shadow-lg border-0">
             <CardHeader className="border-b bg-gray-50">
-              <CardTitle className="flex items-center gap-2 text-[#3A2A5A]">
+              <CardTitle className="flex items-center gap-2 text-[#111111]">
                 <Car className="h-5 w-5" />
                 In Progress Rides
               </CardTitle>
@@ -547,16 +547,16 @@ export default function DriverDashboard() {
                     onClick={() => navigate(`/driver/rides/${ride._id}`)}
                   >
                     <div>
-                      <p className="font-semibold text-[#3A2A5A]">{ride.from} → {ride.to}</p>
+                      <p className="font-semibold text-[#111111]">{ride.from} → {ride.to}</p>
                       <p className="text-sm text-gray-600">
                         {new Date(ride.date).toLocaleDateString()} at {ride.departureTime}
                       </p>
-                      <p className="text-sm text-[#EC3399] font-medium">₹{ride.pricePerSeat} per seat</p>
+                      <p className="text-sm text-[#E6B800] font-medium">₹{ride.pricePerSeat} per seat</p>
                     </div>
                     <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
                       <span className="text-sm">{ride.availableSeats}/{ride.totalSeats} seats</span>
                       {getStatusBadge(ride.status)}
-                      <Button size="sm" className="bg-[#EC3399] hover:bg-[#d62d88]" onClick={() => handleCompleteRide(ride._id)}>
+                      <Button size="sm" className="bg-[#FFD400] hover:bg-[#FFC400] text-[#111111]" onClick={() => handleCompleteRide(ride._id)}>
                         Complete Ride
                       </Button>
                     </div>
@@ -570,7 +570,7 @@ export default function DriverDashboard() {
         {/* Earnings Chart */}
         <Card className="shadow-lg border-0">
           <CardHeader className="border-b bg-gray-50">
-            <CardTitle className="flex items-center gap-2 text-[#3A2A5A]">
+            <CardTitle className="flex items-center gap-2 text-[#111111]">
               <TrendingUp className="h-5 w-5" />
               Earnings (Last 7 Days)
             </CardTitle>
@@ -583,9 +583,9 @@ export default function DriverDashboard() {
                 const height = (day.earnings / maxEarnings) * 200;
                 return (
                   <div key={index} className="flex flex-col items-center flex-1">
-                    <div className="text-xs font-medium mb-2 text-[#EC3399]">₹{day.earnings}</div>
+                    <div className="text-xs font-medium mb-2 text-[#111111]">₹{day.earnings}</div>
                     <div 
-                      className="w-full bg-gradient-to-t from-[#EC3399] to-pink-300 rounded-t-md min-h-[20px]"
+                      className="w-full bg-gradient-to-t from-[#111111] to-[#333333] rounded-t-md min-h-[20px]"
                       style={{ height: `${height}px` }}
                     />
                     <div className="text-xs text-gray-600 mt-2">
@@ -602,14 +602,14 @@ export default function DriverDashboard() {
         {earnings && (
           <Card className="shadow-lg border-0">
             <CardHeader className="border-b bg-gray-50">
-              <CardTitle className="flex items-center gap-2 text-[#3A2A5A]">
+              <CardTitle className="flex items-center gap-2 text-[#111111]">
                 <DollarSign className="h-5 w-5" />
                 Transaction History
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
               <div>
-                <h3 className="font-semibold text-lg mb-4 text-[#3A2A5A]">Recent Transactions</h3>
+                <h3 className="font-semibold text-lg mb-4 text-[#111111]">Recent Transactions</h3>
                 {earnings.recent_transactions.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full">
