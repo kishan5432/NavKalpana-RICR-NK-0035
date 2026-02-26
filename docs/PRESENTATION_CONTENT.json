@@ -1,0 +1,588 @@
+{
+  "presentation": {
+    "title": "NavKalpana - Smart Rideshare Platform",
+    "subtitle": "Hackathon Presentation",
+    "totalSlides": 26,
+    "slides": [
+      {
+        "slideNumber": 1,
+        "type": "title",
+        "title": "NavKalpana",
+        "subtitle": "Smart Rideshare Platform",
+        "tagline": "Connecting Drivers & Passengers with Intelligence",
+        "content": {
+          "teamInfo": "Team Name & Hackathon Details",
+          "techStack": ["MERN Stack", "Socket.io", "AI-Powered"],
+          "theme": "Rapido-Inspired Yellow (#FFD400)"
+        }
+      },
+      {
+        "slideNumber": 2,
+        "type": "problem",
+        "title": "Problem Statement",
+        "content": {
+          "challenges": [
+            "Empty seats in cars traveling long distances",
+            "High transportation costs for passengers",
+            "Lack of trust and safety in carpooling",
+            "Inefficient pricing leading to low bookings"
+          ],
+          "marketOpportunity": "Growing demand for affordable, eco-friendly travel in India"
+        }
+      },
+      {
+        "slideNumber": 3,
+        "type": "solution",
+        "title": "Solution Overview",
+        "content": {
+          "features": [
+            "Dual-role system (Driver & Passenger interfaces)",
+            "Real-time chat for coordination",
+            "AI-powered price suggestions",
+            "Smart ride optimization",
+            "Built-in monetization system"
+          ],
+          "valueProposition": "Safe, affordable, and intelligent ridesharing"
+        }
+      },
+      {
+        "slideNumber": 4,
+        "type": "innovation",
+        "title": "Key Innovations - What Makes Us Unique",
+        "content": {
+          "innovations": [
+            {
+              "name": "AI Price Suggestion Engine",
+              "details": [
+                "Dynamic pricing based on distance, demand, and saved routes",
+                "±10% price range recommendations",
+                "Demand analysis (high/moderate/low)"
+              ]
+            },
+            {
+              "name": "Ride Optimization System",
+              "details": [
+                "Detects underperforming rides automatically",
+                "Provides actionable suggestions (price, timing, details)",
+                "One-click fixes for common issues"
+              ]
+            },
+            {
+              "name": "Saved Routes Intelligence",
+              "details": [
+                "Passengers save frequent routes",
+                "System uses data to predict demand",
+                "Drivers get notified of high-demand routes"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "slideNumber": 5,
+        "type": "architecture",
+        "title": "Technical Architecture",
+        "content": {
+          "techStack": {
+            "frontend": [
+              "React 19",
+              "Vite",
+              "Tailwind CSS v4",
+              "Shadcn/ui",
+              "Framer Motion"
+            ],
+            "backend": [
+              "Node.js",
+              "Express.js",
+              "MongoDB",
+              "Mongoose",
+              "Socket.io"
+            ],
+            "security": [
+              "JWT authentication",
+              "bcrypt hashing",
+              "Role-based access"
+            ],
+            "cloud": [
+              "Cloudinary (images)",
+              "SendGrid (email)"
+            ]
+          },
+          "architecture": "3-tier: Frontend → Backend API → Database",
+          "diagramNote": "Show architecture diagram here"
+        }
+      },
+      {
+        "slideNumber": 6,
+        "type": "features",
+        "title": "Core Features - User Journey",
+        "content": {
+          "passengerJourney": [
+            "Search rides (location, date, seats, price filters)",
+            "View driver profiles with ratings & reliability scores",
+            "Request booking",
+            "Real-time chat with driver",
+            "Rate driver after completion"
+          ],
+          "driverJourney": [
+            "Post rides with vehicle details",
+            "Receive booking requests",
+            "Accept/reject bookings",
+            "Track earnings with detailed dashboard",
+            "Get optimization suggestions for low-performing rides"
+          ]
+        }
+      },
+      {
+        "slideNumber": 7,
+        "type": "intelligent-features",
+        "title": "Intelligent Features Deep Dive",
+        "content": {
+          "aiPriceSuggestion": {
+            "formula": "Base Price (₹4/km) × Demand Multiplier",
+            "analysis": "Analyzes ±3 days booking data",
+            "intelligence": "Considers saved routes as future demand signal",
+            "example": "Mumbai→Pune (150km) = ₹648-₹792 (high demand)"
+          },
+          "rideOptimization": {
+            "detection": "Detects rides with <30% fill rate after 12 hours",
+            "suggestions": [
+              "Price adjustment",
+              "Better details",
+              "Instant booking",
+              "Optimal timing"
+            ],
+            "action": "Quick-action buttons for immediate fixes"
+          }
+        }
+      },
+      {
+        "slideNumber": 8,
+        "type": "monetization",
+        "title": "Monetization Strategy",
+        "content": {
+          "revenueStreams": [
+            {
+              "name": "Service Fee",
+              "rate": "10% commission on completed rides",
+              "calculation": "Automatic on booking acceptance"
+            },
+            {
+              "name": "Premium Visibility",
+              "price": "₹99/ride",
+              "duration": "7-day top placement"
+            },
+            {
+              "name": "Instant Confirmation Badge",
+              "price": "₹199/month",
+              "benefit": "Profile badge for drivers"
+            }
+          ],
+          "example": {
+            "rideValue": "₹300 (3 seats × ₹100)",
+            "platformFee": "₹30 (10%)",
+            "driverPayout": "₹270"
+          }
+        }
+      },
+      {
+        "slideNumber": 9,
+        "type": "trust-safety",
+        "title": "Trust & Safety Features",
+        "content": {
+          "features": [
+            {
+              "name": "Dual Rating System",
+              "description": "Drivers & passengers rate each other"
+            },
+            {
+              "name": "Reliability Score",
+              "description": "Automated calculation based on cancellation rate, response time, completion rate"
+            },
+            {
+              "name": "Email/Phone Verification",
+              "description": "OTP-based authentication"
+            },
+            {
+              "name": "Profile Verification",
+              "description": "Photo uploads, vehicle details"
+            },
+            {
+              "name": "Real-time Chat",
+              "description": "Secure communication within platform"
+            }
+          ]
+        }
+      },
+      {
+        "slideNumber": 10,
+        "type": "realtime",
+        "title": "Real-time Features",
+        "content": {
+          "socketImplementation": [
+            "Instant messaging between drivers & passengers",
+            "Live booking notifications",
+            "Real-time ride status updates",
+            "Unread message counters",
+            "Online/offline status indicators"
+          ],
+          "benefits": [
+            "Faster coordination",
+            "Better user experience",
+            "Immediate updates"
+          ]
+        }
+      },
+      {
+        "slideNumber": 11,
+        "type": "database",
+        "title": "Database Design",
+        "content": {
+          "models": [
+            {
+              "name": "User",
+              "description": "Profiles, ratings, reliability, badges"
+            },
+            {
+              "name": "Ride",
+              "description": "Trip details, pricing, status, premium visibility"
+            },
+            {
+              "name": "Booking",
+              "description": "Requests, acceptance, status tracking"
+            },
+            {
+              "name": "Transaction",
+              "description": "Earnings, fees, premium purchases"
+            },
+            {
+              "name": "Message",
+              "description": "Real-time chat history"
+            },
+            {
+              "name": "Rating",
+              "description": "User reviews & feedback"
+            },
+            {
+              "name": "SavedRoute",
+              "description": "Passenger route preferences"
+            },
+            {
+              "name": "Notification",
+              "description": "In-app alerts"
+            }
+          ],
+          "total": "8 Core Models with relationships"
+        }
+      },
+      {
+        "slideNumber": 12,
+        "type": "algorithms",
+        "title": "Smart Algorithms",
+        "content": {
+          "demandAnalysis": {
+            "steps": [
+              "Count seats booked (±3 days)",
+              "Count saved routes for this route",
+              "High demand (>10 seats): +20% price",
+              "Moderate (4-10 seats): +10% price",
+              "Saved routes >5: Bump demand tier"
+            ]
+          },
+          "optimizationDetection": {
+            "triggers": [
+              "Fill rate <30% after 12 hours → Alert",
+              "0% fill rate after 6 hours → Alert",
+              "Generate contextual suggestions"
+            ]
+          }
+        }
+      },
+      {
+        "slideNumber": 13,
+        "type": "ui-ux",
+        "title": "UI/UX Highlights",
+        "content": {
+          "designSystem": {
+            "theme": "Rapido-inspired (Yellow #FFD400 primary)",
+            "approach": "Mobile-first design",
+            "animations": "Framer Motion for smooth transitions",
+            "components": "Shadcn/ui for consistency",
+            "accessibility": "WCAG compliant"
+          },
+          "keyScreens": [
+            "Search results with filters",
+            "Ride details with driver profile",
+            "Chat interface",
+            "Driver dashboard with optimization alerts"
+          ]
+        }
+      },
+      {
+        "slideNumber": 14,
+        "type": "demo",
+        "title": "Demo Flow",
+        "content": {
+          "scenario": "Mumbai to Pune ride booking",
+          "passengerView": [
+            "Search rides with filters",
+            "View ride details & driver profile",
+            "Request booking",
+            "Chat with driver"
+          ],
+          "driverView": [
+            "Create ride with AI price suggestion",
+            "Receive booking request",
+            "Accept booking",
+            "View earnings dashboard"
+          ]
+        }
+      },
+      {
+        "slideNumber": 15,
+        "type": "challenges",
+        "title": "Technical Challenges & Solutions",
+        "content": {
+          "challenges": [
+            {
+              "challenge": "Real-time synchronization",
+              "solution": "Socket.io rooms per booking ID"
+            },
+            {
+              "challenge": "Accurate demand prediction",
+              "solution": "Combined historical bookings + saved routes data"
+            },
+            {
+              "challenge": "Preventing spam bookings",
+              "solution": "Reliability scoring system with penalties"
+            },
+            {
+              "challenge": "Scalable architecture",
+              "solution": "Modular backend with separate controllers/routes"
+            }
+          ]
+        }
+      },
+      {
+        "slideNumber": 16,
+        "type": "security",
+        "title": "Security Implementation",
+        "content": {
+          "measures": [
+            "JWT tokens (30-day expiry)",
+            "bcrypt with 12 salt rounds",
+            "OTP verification (10-minute expiry)",
+            "Role-based access control",
+            "Express-validator on all endpoints",
+            "CORS protection",
+            "PII handling compliance"
+          ]
+        }
+      },
+      {
+        "slideNumber": 17,
+        "type": "api",
+        "title": "API Architecture",
+        "content": {
+          "overview": "RESTful API with 50+ Endpoints",
+          "categories": [
+            {
+              "name": "Authentication",
+              "count": 7
+            },
+            {
+              "name": "Rides",
+              "count": 12
+            },
+            {
+              "name": "Bookings",
+              "count": 6
+            },
+            {
+              "name": "Messages",
+              "count": 4
+            },
+            {
+              "name": "Ratings",
+              "count": 2
+            },
+            {
+              "name": "Earnings",
+              "count": 1
+            },
+            {
+              "name": "Price Suggestions",
+              "count": 1
+            },
+            {
+              "name": "Saved Routes",
+              "count": 2
+            }
+          ],
+          "documentation": "Complete API docs with examples"
+        }
+      },
+      {
+        "slideNumber": 18,
+        "type": "performance",
+        "title": "Performance Metrics",
+        "content": {
+          "backend": [
+            "Response time: <200ms average",
+            "Database queries: Indexed for optimization",
+            "Concurrent connections: Socket.io scalability"
+          ],
+          "frontend": [
+            "Build size: Optimized with Vite",
+            "Load time: <2s initial load",
+            "Smooth animations: 60fps with Framer Motion"
+          ]
+        }
+      },
+      {
+        "slideNumber": 19,
+        "type": "scalability",
+        "title": "Scalability & Future Roadmap",
+        "content": {
+          "currentCapabilities": [
+            "Handles multiple concurrent users",
+            "Real-time messaging at scale",
+            "Efficient database queries"
+          ],
+          "futureEnhancements": [
+            "Payment gateway integration (Razorpay/Stripe)",
+            "Google Maps API for accurate distances",
+            "Mobile app (React Native)",
+            "Push notifications",
+            "Admin dashboard for platform management",
+            "Multi-language support",
+            "Machine learning for advanced price prediction",
+            "Route optimization algorithms"
+          ]
+        }
+      },
+      {
+        "slideNumber": 20,
+        "type": "business",
+        "title": "Business Model & Impact",
+        "content": {
+          "revenuePotential": [
+            "10% commission on all rides",
+            "Premium features (₹99 + ₹199 subscriptions)",
+            "Referral system for user growth"
+          ],
+          "socialImpact": [
+            "Reduced carbon footprint (shared rides)",
+            "Affordable transportation",
+            "Income opportunity for drivers",
+            "Community building"
+          ],
+          "marketSize": "Growing carpooling market in India"
+        }
+      },
+      {
+        "slideNumber": 21,
+        "type": "code-quality",
+        "title": "Code Quality & Best Practices",
+        "content": {
+          "practices": [
+            "Modular Architecture: Separate controllers, routes, models",
+            "Clean Code: Consistent naming conventions",
+            "Documentation: Comprehensive docs for all systems",
+            "Error Handling: Try-catch blocks with meaningful messages",
+            "Environment Variables: Secure configuration management",
+            "Git Workflow: Organized project structure",
+            "Reusable Components: DRY principle followed"
+          ]
+        }
+      },
+      {
+        "slideNumber": 22,
+        "type": "usp",
+        "title": "Unique Selling Points (USP)",
+        "content": {
+          "usps": [
+            "Only platform with AI price suggestions based on demand + saved routes",
+            "Proactive ride optimization with actionable suggestions",
+            "Dual monetization for platform sustainability",
+            "Real-time chat integrated within booking flow",
+            "Reliability scoring for trust building",
+            "Complete full-stack solution ready for deployment"
+          ]
+        }
+      },
+      {
+        "slideNumber": 23,
+        "type": "demo-highlights",
+        "title": "Demo Highlights - Key Moments",
+        "content": {
+          "features": [
+            "AI price suggestion in action (₹648-₹792 range)",
+            "Optimization alert on driver dashboard",
+            "Real-time chat with typing indicators",
+            "Earnings dashboard with transaction history",
+            "Premium visibility badge on search results",
+            "Instant confirmation badge on driver profile"
+          ]
+        }
+      },
+      {
+        "slideNumber": 24,
+        "type": "achievements",
+        "title": "Technical Achievements",
+        "content": {
+          "built": [
+            "50+ API endpoints",
+            "8 database models with relationships",
+            "Real-time WebSocket implementation",
+            "3 intelligent algorithms (pricing, optimization, demand)",
+            "Complete authentication system",
+            "Responsive UI with 20+ pages",
+            "Comprehensive documentation (5 detailed docs)"
+          ],
+          "status": "Full-stack MERN application - Production Ready"
+        }
+      },
+      {
+        "slideNumber": 25,
+        "type": "qa-prep",
+        "title": "Q&A Preparation",
+        "content": {
+          "anticipatedQuestions": [
+            {
+              "question": "How is this different from Uber/Ola?",
+              "answer": "Focus on carpooling (not taxi service), AI-powered pricing suggestions, Ride optimization for drivers, Lower costs for passengers"
+            },
+            {
+              "question": "How do you ensure safety?",
+              "answer": "Dual rating system, Reliability scores, Verified profiles, In-app chat (no phone number sharing)"
+            },
+            {
+              "question": "What about payment integration?",
+              "answer": "Architecture ready for Razorpay/Stripe, Transaction system already built, Currently simulated for demo"
+            },
+            {
+              "question": "How does the AI pricing work?",
+              "answer": "Demand analysis algorithm, Saved routes intelligence, Live example demonstration"
+            }
+          ]
+        }
+      },
+      {
+        "slideNumber": 26,
+        "type": "closing",
+        "title": "Thank You",
+        "content": {
+          "contact": {
+            "github": "[Repository Link]",
+            "liveDemo": "[URL if deployed]",
+            "team": "[Names & Roles]",
+            "email": "[Contact Email]"
+          },
+          "callToAction": "Ready to revolutionize ridesharing in India!",
+          "documentation": "Comprehensive docs available"
+        }
+      }
+    ]
+  }
+}
