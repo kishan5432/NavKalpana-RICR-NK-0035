@@ -1,4 +1,4 @@
-# NavKalpana - Rideshare Platform
+# RideShareX - Rideshare Platform
 
 A full-stack carpooling/rideshare platform built with MERN stack, featuring real-time chat, intelligent pricing, monetization system, and ride optimization.
 

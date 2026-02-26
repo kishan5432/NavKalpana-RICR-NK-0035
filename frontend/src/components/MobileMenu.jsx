@@ -26,7 +26,6 @@ export default function MobileMenu() {
         { label: 'Dashboard', path: '/passenger/dashboard' },
         { label: 'Search Rides', path: '/search' },
         { label: 'My Bookings', path: '/passenger/bookings' },
-        { label: 'Booking History', path: '/passenger/bookings' },
       ];
 
   return (
@@ -39,32 +38,32 @@ export default function MobileMenu() {
       </button>
 
       {isOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-black bg-opacity-50">
-          <div className="fixed left-0 top-0 h-full w-80 bg-white shadow-lg animate-slide-up">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold">Menu</h2>
+        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm" onClick={() => setIsOpen(false)}>
+          <div className="fixed left-0 top-0 bottom-0 h-screen w-80 max-w-[85vw] bg-white shadow-2xl overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b bg-[#FFD400]">
+              <h2 className="text-lg font-bold text-[#111111]">Menu</h2>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="touch-target p-2 -m-2 rounded-lg hover:bg-gray-100"
+                className="touch-target p-2 -m-2 rounded-lg hover:bg-black/10 transition-colors"
               >
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6 text-[#111111]" />
               </button>
             </div>
 
-            <div className="p-4 mobile-spacing">
+            <div className="p-4">
               {user && (
-                <div className="flex items-center gap-3 mb-6 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                <div className="flex items-center gap-3 mb-6 p-4 bg-[#FFD400]/10 rounded-lg border border-[#FFD400]/30">
+                  <div className="w-12 h-12 bg-[#111111] rounded-full flex items-center justify-center text-[#FFD400] font-bold text-xl">
                     {user.name?.[0]}
                   </div>
                   <div>
-                    <p className="font-medium mobile-text">{user.name}</p>
-                    <p className="text-sm text-gray-600 capitalize">{user.role}</p>
+                    <p className="font-bold text-[#111111]">{user.name}</p>
+                    <p className="text-sm text-[#4F4F4F] capitalize font-medium">{user.role}</p>
                   </div>
                 </div>
               )}
 
-              <nav className="space-y-2">
+              <nav className="space-y-1">
                 {menuItems.map((item) => (
                   <button
                     key={item.path}
@@ -72,7 +71,7 @@ export default function MobileMenu() {
                       navigate(item.path);
                       setIsOpen(false);
                     }}
-                    className="w-full text-left p-4 rounded-lg hover:bg-gray-100 mobile-text touch-target transition-colors"
+                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#FFD400]/20 font-medium text-[#111111] touch-target transition-colors"
                   >
                     {item.label}
                   </button>
@@ -83,10 +82,10 @@ export default function MobileMenu() {
                     navigate('/notifications');
                     setIsOpen(false);
                   }}
-                  className="w-full text-left p-4 rounded-lg hover:bg-gray-100 flex items-center gap-3 touch-target transition-colors"
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#FFD400]/20 flex items-center gap-3 font-medium text-[#111111] touch-target transition-colors"
                 >
                   <Bell className="h-5 w-5" />
-                  <span className="mobile-text">Notifications</span>
+                  <span>Notifications</span>
                 </button>
                 
                 <button
@@ -94,19 +93,19 @@ export default function MobileMenu() {
                     navigate('/profile/edit');
                     setIsOpen(false);
                   }}
-                  className="w-full text-left p-4 rounded-lg hover:bg-gray-100 flex items-center gap-3 touch-target transition-colors"
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#FFD400]/20 flex items-center gap-3 font-medium text-[#111111] touch-target transition-colors"
                 >
                   <Settings className="h-5 w-5" />
-                  <span className="mobile-text">Settings</span>
+                  <span>Settings</span>
                 </button>
               </nav>
 
               {user && (
-                <div className="mt-6 pt-6 border-t">
+                <div className="mt-6 pt-6 border-t border-gray-200">
                   <Button
                     onClick={handleLogout}
                     variant="outline"
-                    className="w-full flex items-center gap-2 touch-target mobile-text"
+                    className="w-full flex items-center justify-center gap-2 touch-target font-semibold text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
                   >
                     <LogOut className="h-4 w-4" />
                     Logout

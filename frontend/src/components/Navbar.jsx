@@ -107,7 +107,7 @@ export default function Navbar() {
                         <ChevronDown className="h-4 w-4 text-[#111111]" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 shadow-xl border-2 border-[#111111]/20 bg-white/95 backdrop-blur-md rounded-xl">
+                    <DropdownMenuContent align="end" className="w-56 shadow-xl border-2 border-[#111111]/20 bg-white rounded-xl">
                       <div className="px-4 py-3 border-b border-[#111111]/20 bg-[#FFD400]/10">
                         <p className="text-sm font-bold text-[#111111]">{user.name}</p>
                         <p className="text-xs text-[#4F4F4F] font-semibold capitalize">{user.role} Account</p>
